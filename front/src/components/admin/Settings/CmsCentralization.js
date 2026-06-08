@@ -1,3 +1,15 @@
+/**
+ * Registre central des pages et sections éditables via le CMS admin.
+ *
+ * Comment ajouter une nouvelle section :
+ * 1. Créer le formulaire dans `front/src/components/Form/CMS/<Page>/<Nom>Form.jsx`
+ * 2. L'importer en haut de ce fichier (regrouper par page, comme les imports existants)
+ * 3. Ajouter `{ id, label, component }` dans `sections[]` de la page concernée
+ *    — ou créer un nouvel objet `{ pageId, label, sections: [...] }` pour une nouvelle page
+ * 4. Les ids (`pageId`, `id` de section) sont des clés API côté backend : ne pas les renommer sans migration
+ *
+ * Consommé par `AdminCmsSettings.jsx` qui affiche `activeSection.component` dans `CmsPanel`.
+ */
 // Import formulaire CMS Layout
 import HeaderForm from "../../Form/CMS/Layout/HeaderForm";
 import FooterForm from "../../Form/CMS/Layout/FooterForm.jsx";

@@ -1,132 +1,48 @@
-﻿import { useState, useEffect, useMemo } from "react";
-import {
-  getUsers,
-  updateUserRole,
-  deleteUser,
-} from "../../services/Admin/Users.api.js";
-import { decodeToken } from "../../utils/decodeToken.js";
-import RegisterForm from "./RegisterForm.jsx";
+﻿import RegisterForm from "./RegisterForm.jsx";
 import InviteForm from "./InviteForm.jsx";
 import { typeBadge } from "../../utils/typography.js";
 import AdminSelect from "./AdminSelect.jsx";
 import ConfirmDialog from "../ConfirmDialog.jsx";
+import useDashboardUsers from "../../hooks/useDashboardUsers.js";
+import {
+  ROLE_FILTER_ALL,
+  ROLE_LABELS,
+  ROLE_OPTIONS,
+} from "../../utils/dashboardUserConstants.js";
 
-const ROLE_OPTIONS = ["Filtrer par rôle", "admin", "selector", "superadmin"];
-
-/*======================================
-  Libellés des rôles pour l'affichage
-======================================*/
-const ROLE_LABELS = {
-  "Filtrer par rôle": "Filtrer par rôle",
-  admin: "Administrateur",
-  selector: "Sélectionneur",
-  superadmin: "Super admin",
-};
+const cardClass =
+  "overflow-hidden rounded-[22px] border border-black/10 bg-white shadow-[0_18px_60px_rgba(0,0,0,0.08)] dark:border-white/10 dark:bg-[#0B0F1A]/70 dark:backdrop-blur-xl dark:shadow-[0_18px_60px_rgba(0,0,0,0.55)]";
 
 function DashboardUser() {
-  const [users, setUsers] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
-  const [roleFilter, setRoleFilter] = useState("Filtrer par rôle");
-  const [busyId, setBusyId] = useState(null);
-  const [currentUser, setCurrentUser] = useState(null);
-  const [showAddForm, setShowAddForm] = useState(false);
-  const [showInviteForm, setShowInviteForm] = useState(false);
-  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-  const [userToDelete, setUserToDelete] = useState(null);
-  const [roleDialogOpen, setRoleDialogOpen] = useState(false);
-  const [pendingRoleChange, setPendingRoleChange] = useState(null);
+  const {
+    loading,
+    error,
+    success,
+    roleFilter,
+    setRoleFilter,
+    busyId,
+    currentUser,
+    showAddForm,
+    setShowAddForm,
+    showInviteForm,
+    setShowInviteForm,
+    deleteDialogOpen,
+    setDeleteDialogOpen,
+    userToDelete,
+    setUserToDelete,
+    roleDialogOpen,
+    setRoleDialogOpen,
+    pendingRoleChange,
+    setPendingRoleChange,
+    filtered,
+    refresh,
+    onChangeRole,
+    onDeleteUser,
+    showSuccessMessage,
+  } = useDashboardUsers();
 
-  /*============================================
-   Charge la liste des users depuis le backend
- =============================================*/
-  async function refresh() {
-    try {
-      setLoading(true);
-      setError("");
-      const data = await getUsers();
-      setUsers(Array.isArray(data?.users) ? data.users : []);
-    } catch (error) {
-      setError(error?.message || "Erreur de chargement");
-    } finally {
-      setLoading(false);
-    }
-  }
-
-  /*=====================================================================================
-   Filtre les utilisateurs selon le rôle sélectionné et place le superadmins en premier
- ====================================================================================*/
-  const filtered = useMemo(() => {
-    const superadmins = users.filter((user) => user.role === "superadmin");
-    const others = users.filter((user) => {
-      if (user.role === "superadmin") return false;
-      if (roleFilter === "Filtrer par rôle") return true;
-
-      return user.role === roleFilter;
-    });
-
-    return [...superadmins, ...others];
-  }, [users, roleFilter]);
-
-  useEffect(() => {
-    refresh();
-    setCurrentUser(decodeToken());
-  }, []);
-
-  /*==================================
-   Modifie le rôle d'un utilisateur
- ===================================*/
-  async function onChangeRole(userId, newRole) {
-    setBusyId(userId);
-
-    const previousUsers = [...users];
-
-    setUsers((prev) =>
-      prev.map((user) =>
-        user.id === userId ? { ...user, role: newRole } : user,
-      ),
-    );
-
-    try {
-      await updateUserRole(userId, newRole);
-      setSuccess(`Le rôle a été changé en "${newRole}" avec succès`);
-      setTimeout(() => setSuccess(""), 3000);
-    } catch (error) {
-      setUsers(previousUsers);
-      setError(error?.message || "Erreur lors du changement de rôle");
-    } finally {
-      setBusyId(null);
-    }
-  }
-
-  /*=================
-    Delete un user
- =================*/
-  async function onDeleteUser(userId) {
-
-    setBusyId(userId);
-    const previousUsers = [...users];
-    setUsers((prev) => prev.filter((user) => user.id !== userId));
-
-    try {
-      await deleteUser(userId);
-      setSuccess("L'utilisateur a été supprimé avec succès");
-      setTimeout(() => setSuccess(""), 3000);
-    } catch (error) {
-      setUsers(previousUsers);
-      setError(error?.message || "Erreur lors de la suppression");
-    } finally {
-      setBusyId(null);
-    }
-  }
-
-  const cardClass =
-    "overflow-hidden rounded-[22px] border border-black/10 bg-white shadow-[0_18px_60px_rgba(0,0,0,0.08)] dark:border-white/10 dark:bg-[#0B0F1A]/70 dark:backdrop-blur-xl dark:shadow-[0_18px_60px_rgba(0,0,0,0.55)]";
-
-   return (
+  return (
     <>
-      {/* Modal confirmation suppression */}
       <ConfirmDialog
         isOpen={deleteDialogOpen}
         onClose={() => {
@@ -144,7 +60,6 @@ function DashboardUser() {
         confirmVariant="danger"
       />
 
-      {/* Modal confirmation changement de rôle */}
       <ConfirmDialog
         isOpen={roleDialogOpen}
         onClose={() => {
@@ -179,7 +94,6 @@ function DashboardUser() {
         </div>
       )}
 
-      {/* Volet dépliable */}
       <div className={`${cardClass} mb-6`}>
         <button
           type="button"
@@ -214,8 +128,7 @@ function DashboardUser() {
                 onSuccess={() => {
                   setShowAddForm(false);
                   refresh();
-                  setSuccess("Utilisateur créé avec succès.");
-                  setTimeout(() => setSuccess(""), 3000);
+                  showSuccessMessage("Utilisateur créé avec succès.");
                 }}
                 onCancel={() => setShowAddForm(false)}
               />
@@ -224,7 +137,6 @@ function DashboardUser() {
         </div>
       </div>
 
-      {/* Volet invitation */}
       <div className={`${cardClass} mb-6`}>
         <button
           type="button"
@@ -256,8 +168,7 @@ function DashboardUser() {
               <InviteForm
                 onSuccess={() => {
                   setShowInviteForm(false);
-                  setSuccess("Invitation envoyée avec succès.");
-                  setTimeout(() => setSuccess(""), 3000);
+                  showSuccessMessage("Invitation envoyée avec succès.");
                 }}
                 onCancel={() => setShowInviteForm(false)}
               />
@@ -266,7 +177,6 @@ function DashboardUser() {
         </div>
       </div>
 
-      {/* Gestion des utilisateurs */}
       <div className={cardClass}>
         <div className="px-6 py-5">
           <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between md:gap-4">
@@ -274,9 +184,7 @@ function DashboardUser() {
               <span className="inline-flex h-10 w-10 items-center justify-center rounded-2xl bg-[#FFF3E0] ring-1 ring-black/10 dark:bg-white/5 dark:ring-white/10">
                 👥
               </span>
-              <div className="text-sm font-semibold">
-                Gestion des utilisateurs
-              </div>
+              <div className="text-sm font-semibold">Gestion des utilisateurs</div>
             </div>
 
             <AdminSelect
@@ -306,7 +214,6 @@ function DashboardUser() {
           )}
           {!loading && filtered.length > 0 && (
             <>
-              {/* Header */}
               <div
                 className="grid grid-cols-[1fr_1fr_1.5fr_0.8fr_0.8fr_0.6fr] gap-4 border-t border-black/10 py-3 text-xs font-semibold tracking-wider text-black/55
                          dark:border-white/10 dark:text-white/55"
@@ -315,9 +222,7 @@ function DashboardUser() {
                 <div>NOM</div>
                 <div>E-MAIL</div>
                 <div>RÔLE</div>
-                {currentUser?.role === "superadmin" && (
-                  <div>CHANGER LE RÔLE</div>
-                )}
+                {currentUser?.role === "superadmin" && <div>CHANGER LE RÔLE</div>}
                 {currentUser?.role === "superadmin" && (
                   <div className="text-right">ACTIONS</div>
                 )}
@@ -357,7 +262,6 @@ function DashboardUser() {
                       </span>
                     </div>
 
-                    {/* Changer le rôle */}
                     {currentUser?.role === "superadmin" && (
                       <div>
                         {user.role !== "superadmin" ? (
@@ -377,8 +281,7 @@ function DashboardUser() {
                             disabled={busyId === user.id}
                             options={ROLE_OPTIONS.filter(
                               (role) =>
-                                role !== "Filtrer par rôle" &&
-                                role !== "superadmin",
+                                role !== ROLE_FILTER_ALL && role !== "superadmin",
                             ).map((role) => ({
                               value: role,
                               label: ROLE_LABELS[role] || role,
@@ -390,7 +293,6 @@ function DashboardUser() {
                       </div>
                     )}
 
-                    {/* Bouton supprimer */}
                     {currentUser?.role === "superadmin" && (
                       <div className="text-right">
                         {user.role !== "superadmin" && (

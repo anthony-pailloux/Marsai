@@ -31,6 +31,30 @@ export function formatTimeFR(iso) {
     return str.charAt(0).toUpperCase() + str.slice(1);
   }
 
+  /** Normalise un événement brut de l'API pour l'affichage admin. */
+  export function normalizeAdminEvent(ev) {
+    const dayKey = getDayKeyFromDate(ev.date);
+    return {
+      ...ev,
+      day: ev.day ?? dayKey,
+      startAt: ev.startAt ?? ev.date,
+      capacity: ev.capacity ?? ev.stock ?? 0,
+      type: ev.type ?? "atelier",
+      published: ev.published ?? false,
+      registered: ev.registered ?? 0,
+    };
+  }
+
+  export const DEFAULT_EVENT_FORM = {
+    title: "",
+    description: "",
+    startAt: "",
+    location: "",
+    capacity: 30,
+    type: "atelier",
+    length: 90,
+  };
+
   /** Construit la liste des onglets "jour" à partir des events.
    */
   export function getDayTabsFromEvents(events) {
