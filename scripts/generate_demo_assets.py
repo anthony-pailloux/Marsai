@@ -2,6 +2,8 @@
 from __future__ import annotations
 
 import shutil
+import urllib.request
+from io import BytesIO
 from pathlib import Path
 
 from PIL import Image, ImageDraw, ImageFont
@@ -53,16 +55,67 @@ def gradient_cover(path: Path, title: str, subtitle: str, palette_idx: int) -> N
     img.save(path, quality=92)
 
 
-def avatar(path: Path, initials: str, palette_idx: int) -> None:
-    bg, accent, _ = PALETTES[palette_idx % len(PALETTES)]
-    size = 400
-    img = Image.new("RGB", (size, size), bg)
-    draw = ImageDraw.Draw(img)
-    draw.ellipse((20, 20, size - 20, size - 20), fill=accent)
-    draw.ellipse((40, 40, size - 40, size - 40), fill=bg)
-    draw.text((size // 2, size // 2), initials, fill="#FFFFFF", font=_font(120), anchor="mm")
+# Photos réalistes (Unsplash, licence libre) — recadrées en portrait 400×500
+JURY_PHOTOS = [
+    (
+        "demo-jury-julien-valros.jpg",
+        "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=400&h=500&fit=crop&crop=faces",
+    ),
+    (
+        "demo-jury-julie-masson.jpg",
+        "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&h=500&fit=crop&crop=faces",
+    ),
+    (
+        "demo-jury-sarah-chen.jpg",
+        "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=400&h=500&fit=crop&crop=faces",
+    ),
+    (
+        "demo-jury-marc-dubois.jpg",
+        "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=500&fit=crop&crop=faces",
+    ),
+    (
+        "demo-jury-aisha-okafor.jpg",
+        "https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=400&h=500&fit=crop&crop=faces",
+    ),
+    (
+        "demo-jury-elena-rossi.jpg",
+        "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&h=500&fit=crop&crop=faces",
+    ),
+    (
+        "demo-jury-lucas-petit.jpg",
+        "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=400&h=500&fit=crop&crop=faces",
+    ),
+]
+
+
+def _crop_center(img: Image.Image, target_w: int, target_h: int) -> Image.Image:
+    """Recadre au centre pour obtenir le ratio cible."""
+    src_w, src_h = img.size
+    target_ratio = target_w / target_h
+    src_ratio = src_w / src_h
+
+    if src_ratio > target_ratio:
+        new_w = int(src_h * target_ratio)
+        left = (src_w - new_w) // 2
+        img = img.crop((left, 0, left + new_w, src_h))
+    else:
+        new_h = int(src_w / target_ratio)
+        top = (src_h - new_h) // 2
+        img = img.crop((0, top, src_w, top + new_h))
+
+    return img.resize((target_w, target_h), Image.Resampling.LANCZOS)
+
+
+def download_portrait(path: Path, url: str) -> None:
+    """Télécharge une photo humaine réaliste et la sauvegarde en portrait."""
+    req = urllib.request.Request(url, headers={"User-Agent": "MarsAI-Demo-Asset-Generator/1.0"})
+    with urllib.request.urlopen(req, timeout=30) as response:
+        data = response.read()
+
+    img = Image.open(BytesIO(data)).convert("RGB")
+    img = _crop_center(img, 400, 500)
     path.parent.mkdir(parents=True, exist_ok=True)
-    img.save(path, quality=90)
+    img.save(path, quality=92)
 
 
 def award_badge(path: Path, label: str, palette_idx: int) -> None:
@@ -123,16 +176,8 @@ def main() -> None:
             continue
         gradient_cover(covers_dir / fname, title, sub, i)
 
-    jury_members = [
-        ("demo-jury-julien-valros.jpg", "JV"),
-        ("demo-jury-julie-masson.jpg", "JM"),
-        ("demo-jury-sarah-chen.jpg", "SC"),
-        ("demo-jury-marc-dubois.jpg", "MD"),
-        ("demo-jury-aisha-okafor.jpg", "AO"),
-        ("demo-jury-elena-rossi.jpg", "ER"),
-    ]
-    for i, (fname, initials) in enumerate(jury_members):
-        avatar(jury_dir / fname, initials, i + 2)
+    for fname, url in JURY_PHOTOS:
+        download_portrait(jury_dir / fname, url)
 
     for i, label in enumerate(["GRAND PRIX", "PUBLIC", "INNOVATION"], start=1):
         award_badge(awards_dir / f"demo-award-0{i}.png", label, i)

@@ -733,8 +733,13 @@ CREATE TABLE `jury` (
 --
 
 INSERT INTO `jury` (`id`, `name`, `first_name`, `img`, `bio`, `profession`, `created_at`, `updated_at`, `role_label`, `is_president`, `filmography_url`, `sort_order`) VALUES
-(1, 'VALROS', 'JULIEN', 'julien.png', '...', 'Réalisateur', '2026-02-06 13:11:39', '2026-02-06 13:11:39', 'PRÉSIDENT DU JURY', 1, 'https://exemple.com', 1),
-(2, 'MASSON', 'JULIE', 'julie.png', '...', 'Productrice', '2026-02-06 13:11:39', '2026-02-06 13:11:39', 'PRODUCTRICE', 0, 'https://exemple.com', 2);
+(1, 'VALROS', 'JULIEN', 'demo-jury-julien-valros.jpg', 'Réalisateur et expert en narration immersive. Président du jury Mars.AI 2026.', 'Réalisateur', '2026-02-06 13:11:39', '2026-02-06 13:11:39', 'PRÉSIDENT DU JURY', 1, 'https://exemple.com', 1),
+(2, 'MASSON', 'JULIE', 'demo-jury-julie-masson.jpg', 'Productrice de films courts et consultante en innovation créative.', 'Productrice', '2026-02-06 13:11:39', '2026-02-06 13:11:39', 'PRODUCTRICE', 0, 'https://exemple.com', 2),
+(3, 'CHEN', 'Sarah', 'demo-jury-sarah-chen.jpg', 'Membre du jury Mars.AI — sélection 2026.', 'Directrice artistique IA', '2026-02-06 13:11:39', '2026-02-06 13:11:39', 'CRÉATRICE', 0, 'https://marsai.demo', 3),
+(4, 'DUBOIS', 'Marc', 'demo-jury-marc-dubois.jpg', 'Membre du jury Mars.AI — sélection 2026.', 'Scénariste & chercheur', '2026-02-06 13:11:39', '2026-02-06 13:11:39', 'SCÉNARISTE', 0, 'https://marsai.demo', 4),
+(5, 'OKAFOR', 'Aisha', 'demo-jury-aisha-okafor.jpg', 'Membre du jury Mars.AI — sélection 2026.', 'Documentariste', '2026-02-06 13:11:39', '2026-02-06 13:11:39', 'DOCUMENTARISTE', 0, 'https://marsai.demo', 5),
+(6, 'ROSSI', 'Elena', 'demo-jury-elena-rossi.jpg', 'Membre du jury Mars.AI — sélection 2026.', 'Experte éthique IA', '2026-02-06 13:11:39', '2026-02-06 13:11:39', 'ÉTHIQUE IA', 0, 'https://marsai.demo', 6),
+(7, 'PETIT', 'Lucas', 'demo-jury-lucas-petit.jpg', 'Membre du jury Mars.AI — sélection 2026.', 'Monteur & compositeur', '2026-02-06 13:11:39', '2026-02-06 13:11:39', 'MONTAGE', 0, 'https://marsai.demo', 7);
 
 -- --------------------------------------------------------
 
@@ -1374,7 +1379,7 @@ ALTER TABLE `faq`
 -- AUTO_INCREMENT pour la table `jury`
 --
 ALTER TABLE `jury`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT pour la table `memo_selector`

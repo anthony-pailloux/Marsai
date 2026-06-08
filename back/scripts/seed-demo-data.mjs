@@ -323,6 +323,7 @@ async function seed(conn) {
     ["DUBOIS", "Marc", "demo-jury-marc-dubois.jpg", "Scénariste & chercheur", "SCÉNARISTE", 4],
     ["OKAFOR", "Aisha", "demo-jury-aisha-okafor.jpg", "Documentariste", "DOCUMENTARISTE", 5],
     ["ROSSI", "Elena", "demo-jury-elena-rossi.jpg", "Experte éthique IA", "ÉTHIQUE IA", 6],
+    ["PETIT", "Lucas", "demo-jury-lucas-petit.jpg", "Monteur & compositeur", "MONTAGE", 7],
   ];
   for (const [name, first, img, profession, role, order] of extraJury) {
     await conn.query(
