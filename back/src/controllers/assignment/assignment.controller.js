@@ -1,12 +1,9 @@
-import * as assignmentModel from "../../models/assignment.model.js";
-import { pool } from "../../db/index.js";
+import * as assignmentService from "../../services/assignment/assignment.service.js";
 
 export async function listSelectors(req, res) {
   try {
-    const [rows] = await pool.execute(
-      "SELECT id, email, name, last_name, role FROM users WHERE role = 'selector' ORDER BY name ASC",
-    );
-    return res.status(200).json({ selectors: rows });
+    const selectors = await assignmentService.listSelectors();
+    return res.status(200).json({ selectors });
   } catch (error) {
     console.error("listSelectors error:", error);
     return res.status(500).json({ error: "Erreur serveur" });
@@ -15,7 +12,7 @@ export async function listSelectors(req, res) {
 
 export async function listAssignments(req, res) {
   try {
-    const assignments = await assignmentModel.findAllAssignments();
+    const assignments = await assignmentService.listAssignments();
     return res.status(200).json({ assignments });
   } catch (error) {
     console.error("listAssignments error:", error);
@@ -25,29 +22,20 @@ export async function listAssignments(req, res) {
 
 export async function createAssignment(req, res) {
   try {
-    const selectorId = Number(req.body.selector_id);
-    const videoId = Number(req.body.video_id);
+    const parsed = assignmentService.parseAssignmentPair(req.body);
+    if (parsed.error) return res.status(400).json({ error: parsed.error });
 
-    if (!Number.isFinite(selectorId) || !Number.isFinite(videoId)) {
-      return res.status(400).json({ error: "selector_id et video_id requis" });
-    }
+    const { selectorId, videoId } = parsed;
 
-    const [users] = await pool.execute(
-      "SELECT id FROM users WHERE id = ? AND role = 'selector'",
-      [selectorId],
-    );
-    if (!users[0]) {
+    if (!(await assignmentService.ensureSelectorExists(selectorId))) {
       return res.status(400).json({ error: "Sélectionneur introuvable" });
     }
 
-    const [videos] = await pool.execute("SELECT id FROM videos WHERE id = ?", [
-      videoId,
-    ]);
-    if (!videos[0]) {
+    if (!(await assignmentService.ensureVideoExists(videoId))) {
       return res.status(400).json({ error: "Vidéo introuvable" });
     }
 
-    await assignmentModel.assignVideo(selectorId, videoId);
+    await assignmentService.createAssignment(selectorId, videoId);
     return res.status(201).json({ ok: true });
   } catch (error) {
     console.error("createAssignment error:", error);
@@ -57,15 +45,16 @@ export async function createAssignment(req, res) {
 
 export async function deleteAssignment(req, res) {
   try {
-    const selectorId = Number(req.body.selector_id);
-    const videoId = Number(req.body.video_id);
+    const parsed = assignmentService.parseAssignmentPair(req.body);
+    if (parsed.error) return res.status(400).json({ error: parsed.error });
 
-    if (!Number.isFinite(selectorId) || !Number.isFinite(videoId)) {
-      return res.status(400).json({ error: "selector_id et video_id requis" });
+    const { selectorId, videoId } = parsed;
+    const deleted = await assignmentService.deleteAssignment(selectorId, videoId);
+
+    if (!deleted) {
+      return res.status(404).json({ error: "Assignation introuvable" });
     }
 
-    const deleted = await assignmentModel.unassignVideo(selectorId, videoId);
-    if (!deleted) return res.status(404).json({ error: "Assignation introuvable" });
     return res.status(200).json({ ok: true });
   } catch (error) {
     console.error("deleteAssignment error:", error);
