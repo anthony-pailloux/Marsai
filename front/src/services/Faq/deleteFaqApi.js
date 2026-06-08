@@ -1,8 +1,11 @@
-const API_URL = import.meta.env.VITE_API_URL;
+import { getAuthHeaders } from "../../utils/authHeaders.js";
+
+import { getApiUrl } from "../../utils/apiBase.js";
 
 async function deleteFaq(id) {
-    const res = await fetch(`${API_URL}/api/faq/${id}`, {
+    const res = await fetch(`${getApiUrl()}/faq/${id}`, {
         method: "DELETE",
+        headers: getAuthHeaders(),
     });
 
     if (!res.ok) throw new Error(`Failed to delete FAQ ${res.status}`);

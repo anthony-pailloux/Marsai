@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import useCmsContent from "../../hooks/useCmsContent";
+import { typeEyebrow } from "../../utils/typography.js";
+import { HOME_EYEBROW, HOME_EYEBROW_ICON } from "../Home/homeCardStyles.js";
 
 function pad2(n) {
     return String(n).padStart(2, "0");
@@ -28,20 +30,21 @@ function CountdownHero() {
     const section = "countdown";
 
     // cherche les données en bdd
-    const { content, loading, message } = useCmsContent(page, locale);
+    const { content, loading } = useCmsContent(page, locale);
     
 
     const startDate = content?.[page]?.[section]?.start_date;
     const endDate = content?.[page]?.[section]?.end_date;
 
-    // Dates festival (heure locale)
-    const FESTIVAL_START = startDate 
-        ? new Date(`${startDate}T00:00:00`) 
-        : new Date(2026, 10, 2, 0, 0, 0); // 02 nov 2026
+    const FESTIVAL_START = useMemo(
+        () => (startDate ? new Date(`${startDate}T00:00:00`) : new Date(2026, 10, 2, 0, 0, 0)),
+        [startDate],
+    );
 
-    const FESTIVAL_END = endDate
-        ? new Date(`${endDate}T23:59:59`)
-        : new Date(2026, 10, 30, 23, 59, 59); // 30 nov 2026
+    const FESTIVAL_END = useMemo(
+        () => (endDate ? new Date(`${endDate}T23:59:59`) : new Date(2026, 10, 30, 23, 59, 59)),
+        [endDate],
+    );
 
     useEffect(() => {
         const timer = setInterval(() => setNow(new Date()), 1000);
@@ -77,11 +80,6 @@ function CountdownHero() {
         year: "numeric",
     });
 
-    const endFullDate = FESTIVAL_END.toLocaleDateString(locale, {
-        day: "2-digit",
-        month: "long",
-        year: "numeric",
-    });
     
     if (loading) return null;
     
@@ -90,7 +88,7 @@ function CountdownHero() {
             <div className="relative">
                 <div className="absolute inset-0 opacity-60 dark:opacity-70">
                     <div className="absolute -top-32 -left-32 h-72 w-72 rounded-full bg-blue-500/25 blur-3xl" />
-                    <div className="absolute -bottom-32 -right-32 h-72 w-72 rounded-full bg-pink-500/25 blur-3xl" />
+                    <div className="absolute -bottom-32 -right-32 h-72 w-72 rounded-full bg-orange-500/25 blur-3xl" />
                     <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(124,58,237,0.18),transparent_60%)]" />
                 </div>
 
@@ -102,22 +100,22 @@ function CountdownHero() {
                         style={{ fontSize: "clamp(44px, 6vw, 96px)" }}
                         >
                             <span className="text-neutral-900 dark:text-white">
-                                {content?.[page]?.[section]?.title_main || t("hero.festivalName.mars")}
+                                {content?.[page]?.[section]?.title_main || t("hero.festivalName.mars")}
                             </span>
-                            <span className="bg-linear-to-r from-violet-500 to-pink-500 bg-clip-text text-transparent">
-                                {content?.[page]?.[section]?.title_accent || t("hero.festivalName.ai")}
+                            <span className="bg-linear-to-r from-amber-500 to-orange-500 bg-clip-text text-transparent">
+                                {content?.[page]?.[section]?.title_accent || t("hero.festivalName.ai")}
                             </span>
                         </h2>
 
                         {/* Message */}
                         <p className="max-w-3xl text-sm leading-relaxed text-neutral-700 dark:text-white/75 sm:text-base">
-                            {content?.[page]?.[section]?.description || t("hero.message")}
+                            {content?.[page]?.[section]?.description || t("hero.message")}
                         </p>
 
                         {/* Badge */}
-                        <div className="mt-2 inline-flex w-fit items-center gap-2 rounded-full border border-neutral-200 bg-white/70 px-4 py-2 text-xs font-semibold uppercase tracking-wide text-neutral-700 backdrop-blur dark:border-white/10 dark:bg-white/5 dark:text-white/70">
-                            <span className="inline-block h-2 w-2 rounded-full bg-pink-500" />
-                            {label}
+                        <div className={`mt-2 ${HOME_EYEBROW} ${typeEyebrow} text-black dark:text-white`}>
+                            <img src="/icons/home/IconClock.svg" alt="" className={HOME_EYEBROW_ICON} />
+                            <span>{label}</span>
                         </div>
 
                         {/* Countdown */}
@@ -144,7 +142,7 @@ function CountdownHero() {
                                     >
                                         {b.v}
                                     </div>
-                                    <div className="mt-2 text-[11px] font-semibold uppercase tracking-wider text-neutral-600 dark:text-white/60">
+                                    <div className={`mt-2 text-neutral-600 dark:text-white/60 ${typeEyebrow}`}>
                                         {b.k}
                                     </div>
                                     </div>
@@ -156,7 +154,7 @@ function CountdownHero() {
                         <div className="mt-4 text-xs text-neutral-500 dark:text-white/45">
                             {phase !== "after" ? (
                             <>
-                                {content?.[page]?.[section]?.target || t("hero.targetDateLabel")}{" : "}
+                                {content?.[page]?.[section]?.target || t("hero.targetDateLabel")}{" : "}
                                 <span className="font-semibold text-neutral-700 dark:text-white/70">
                                     {targetDateLabel}
                                 </span>

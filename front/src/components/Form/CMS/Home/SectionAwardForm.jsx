@@ -67,7 +67,7 @@ function SectionAwardForm({ forcedLocale }) {
         ctaSeeMore:"",
         ctaSeeMore_is_active: 1,
 
-        ctaSeeMore_color: "#E1BDFF",
+        ctaSeeMore_color: "rgba(255, 200, 87, 0.52)",
         ctaSeeMore_color_is_active: 1,
 
         ctaSeeMore_link:"",

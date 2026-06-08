@@ -1,5 +1,6 @@
 import CmsLanguageTabs from "./CmsLanguageTabs";
 import CmsBreadcrumb from "./CmsBreadcrumb";
+import { typeAdminMeta, typeAdminSection } from "../../../utils/typography.js";
 
 function CmsHeader({ activePageLabel, activeSectionLabel, forcedLocale, onLocaleChange }) {
     return (
@@ -8,10 +9,10 @@ function CmsHeader({ activePageLabel, activeSectionLabel, forcedLocale, onLocale
             <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
 
                 <div>
-                    <h1 className="text-[26px] font-bold tracking-[1px] text-black dark:text-white">
+                    <h1 className={`text-black dark:text-white ${typeAdminSection}`}>
                         CMS · Settings
                     </h1>
-                    <p className="text-[13px] text-black/60 dark:text-white/60">
+                    <p className={typeAdminMeta}>
                         Choisis une page, une section, puis édite le contenu en FR/EN.
                     </p>
                 </div>

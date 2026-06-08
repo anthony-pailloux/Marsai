@@ -1,6 +1,5 @@
 import express from "express";
 
-import testController from "../controllers/videos/test.controller.js";
 import videosListController from "../controllers/videos/videosList.controller.js";
 import oneVideoController from "../controllers/videos/oneVideo.controller.js";
 import streamVideoController from "../controllers/videos/streamVideoController.js";
@@ -28,16 +27,13 @@ import { uploadFilmFilesSchema, createFilmSchema } from "../zodSchema/zodIndex.j
 
 const router = express.Router();
 
-// Route de test
-router.get("/test", testController);
-
 // Routes admin
 router.get("/admin", verifyToken, isAdminOrSelector, adminVideosListController);
 router.get("/admin/leaderboard", verifyToken, isAdminOrSelector, adminLeaderboardController);
 router.get("/admin/:id/reviews", verifyToken, isAdminOrSelector, adminVideoReviewsController);
 router.get("/admin/:id", verifyToken, isAdminOrSelector, adminOneVideoController);
-router.patch("/admin/:id/status", verifyToken, isAdminOrSelector, patchVideoStatusController);
-router.patch("/admin/:id/featured", verifyToken, isAdminOrSelector, patchVideoFeaturedController);
+router.patch("/admin/:id/status", verifyToken, isAdmin, patchVideoStatusController);
+router.patch("/admin/:id/featured", verifyToken, isAdmin, patchVideoFeaturedController);
 
 
 /* =====================================================

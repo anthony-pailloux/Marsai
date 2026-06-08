@@ -11,15 +11,15 @@ import SectionProjected from "../components/Home/SectionProjected.jsx"
 function Home() {
     return(
         <div className="flex pb-[50px] flex-col items-center gap-[50px] self-stretch dark:text-[#FFFFFF]">
-            < SectionHero />
-            < SectionConcept />
-            < SectionAward />
-            < SectionGoal />
-            < SectionEvent />
-            < SectionClosingEvent />
-            < SectionLocalisation />
-            < SectionProjected />
-            < SectionPartner />
+            <SectionHero />
+            <SectionConcept />
+            <SectionAward />
+            <SectionGoal />
+            <SectionEvent />
+            <SectionClosingEvent />
+            <SectionLocalisation />
+            <SectionProjected />
+            <SectionPartner />
         </div>
     )
 }

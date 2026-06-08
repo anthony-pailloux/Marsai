@@ -1,51 +1,38 @@
-function BtnSubmitForm({ type="submit", children,  loading = false, disabled = false, variant = "primary", onClick }) {
+﻿import Button from "../ui/Button.jsx";
+import { cn } from "../../utils/cn.js";
 
-    const baseStyle = `
-        flex w-[200px] h-[53px] items-center justify-center gap-[13px]
-        px-[21px] py-[10px] rounded-[5px]
-        transition-all duration-200
-        active:scale-[0.98]
-        disabled:opacity-60 disabled:cursor-not-allowed
-    `;
+const variantMap = {
+  primary: "secondary",
+  success: "primary",
+  danger: "danger",
+  submit: "primary",
+};
 
-    const variants = {
-        primary: "border border-[#DBE3E6] bg-white dark:bg-[#333] hover:bg-[#D5D5D5] dark:hover:bg-[#DBE3E6] dark:hover:text-[#000000]",
-        success: "bg-green-600 text-white hover:bg-green-700",
-        danger: "bg-[#FB64B6] text-white hover:bg-red-700",
-        submit: "bg-blue-600 text-white hover:bg-blue-800",
-    };
+function BtnSubmitForm({
+  type = "submit",
+  children,
+  loading = false,
+  disabled = false,
+  variant = "primary",
+  onClick,
+  className = "",
+}) {
+  const buttonVariant = variantMap[variant] ?? "primary";
 
-    return(
-        <div className="flex justify-center">
-            <button type={type} onClick={onClick} disabled={loading || disabled} 
-                className={`${baseStyle} ${variants[variant]}`}
-            >
-            {loading ? (
-                <span className="animate-pulse">Chargement...</span>
-                ) : (
-                children
-            )}
-            </button>
-        </div>
-    )
+  return (
+    <div className="flex justify-center">
+      <Button
+        type={type}
+        onClick={onClick}
+        loading={loading}
+        disabled={disabled}
+        variant={buttonVariant}
+        className={cn("min-w-[200px] rounded-sm", className)}
+      >
+        {children}
+      </Button>
+    </div>
+  );
 }
 
-export default BtnSubmitForm
-
-// exemple sur l'affichage dans le formulaire:
-
-// Mise à jour :
-// <BtnSubmitForm loading={loading}>
-//    Mettre à jour
-// </BtnSubmitForm>
-
-
-// Ajout
-// <BtnSubmitForm variant="success" loading={loading}>
-//      Ajouter
-// </BtnSubmitForm>
-
-// Suppression
-//<BtnSubmitForm type="button" variant="danger" onClick={() => handleDelete()(ou le nom de votre fonction)>
-//    Supprimer
-//</BtnSubmitForm>
+export default BtnSubmitForm;

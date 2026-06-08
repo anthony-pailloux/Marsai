@@ -1,6 +1,7 @@
-import { useState } from "react";
+﻿import { useState } from "react";
 import { inviteUser } from "../../services/Admin/Users.api.js";
 import AdminSelect from "./AdminSelect.jsx";
+import { typeBodySm } from "../../utils/typography.js";
 
 export default function InviteForm({ onSuccess, onCancel }) {
   const [email, setEmail] = useState("");
@@ -40,7 +41,7 @@ export default function InviteForm({ onSuccess, onCancel }) {
 
   return (
     <form onSubmit={onSubmit} className="flex flex-col gap-3 w-full">
-      <h3 className="text-sm font-semibold text-black/90 dark:text-white/90">
+      <h3 className={`text-black/90 dark:text-white/90 ${typeBodySm}`}>
         Inviter un admin / sélectionneur
       </h3>
 
@@ -72,7 +73,7 @@ export default function InviteForm({ onSuccess, onCancel }) {
         />
       </div>
 
-      {error && <p className="text-sm text-[#FF3D6E]">{error}</p>}
+      {error && <p className="text-sm text-[#DC2626]">{error}</p>}
       {success && <p className="text-sm text-[#1AFF7A]">{success}</p>}
 
       <div className="w-full flex gap-3">

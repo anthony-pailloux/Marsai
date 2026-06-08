@@ -15,16 +15,10 @@ export async function register(data, role) {
     throw error;
   }
 
-  console.log("tout est passé", email, password, firstname, lastname);
-
   /*========================
      Hash du mot de passe
   =======================*/
   const passwordHash = await bcrypt.hash(password, 10);
-
-  /*============================================
-    Préparation et exécution de la requête SQL
-  ============================================*/
   const query = `INSERT INTO users (email, password_hash, role, name, last_name) VALUES (?, ?, ?, ?, ?)`;
 
   const [result] = await pool.execute(query, [

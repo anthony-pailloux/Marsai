@@ -3,26 +3,19 @@
 import "dotenv/config"; // ⚠️ DOIT être chargé avant les autres imports
 
 import app from "./app.js";
+import { env } from "./config/env.js";
 import { testConnection } from "./db/index.js";
 import { startNewsletterCron } from "./jobs/newsletterCron.job.js";
 
 // Lancement du cron pour les newsletters
 startNewsletterCron();
 
-console.log("HAS REFRESH TOKEN?", !!process.env.YOUTUBE_REFRESH_TOKEN);
-
-const PORT = process.env.PORT;
-
-if (!PORT) {
-  console.log("PORT absent veuillez compléter le fichier .env");
-  process.exit(1);
-}
+const PORT = env.port;
 
 // ----------------------------
 // Test de connexion MySQL
 // ----------------------------
 try {
-  console.log("try dans server.js pour le test");
   await testConnection();
 } catch (error) {
   console.error("Erreur connexion MySQL (raw):", error);

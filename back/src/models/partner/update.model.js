@@ -8,7 +8,6 @@ async function updatePartner(id, { name, img, url }) {
         SET name = ?, img = ?, url = ?
         WHERE id = ?
     `;
-    console.log(query);
 
     const values = [name, img, url, id];
     // console.log(values);

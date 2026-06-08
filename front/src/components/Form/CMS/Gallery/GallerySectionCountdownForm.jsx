@@ -1,7 +1,3 @@
-import { useEffect, useState } from "react";
-import { useForm } from "../../../../hooks/useForm";
-import buildInitialValuesFromCms from "../../../../utils/buildInitialValuesFromCms";
-import useCmsContent from "../../../../hooks/useCmsContent";
 import { useTranslation } from "react-i18next";
 import CmsFormHeader from "../Titles/CmsFormHeader";
 import BtnSubmitForm from "../../../Buttons/BtnSubmitForm";
@@ -14,39 +10,26 @@ import CmsTextarea from "../Fields/CmsTextarea";
 import CmsSubtitleBlock from "../Titles/CmsSubtitleBlock";
 import CmsFieldsRow from "../Titles/CmsFieldsRow";
 import CmsInputDate from "../Fields/CmsInputDate";
-import saveCmsSection from "../../../../utils/saveCmsSection";
+import useCmsSectionForm from "../../../../hooks/useCmsSectionForm.js";
 
 function GallerySectionCountdownForm({ forcedLocale }) {
+  const { t } = useTranslation("gallery");
 
-    const { t, i18n } = useTranslation("gallery");
-    const locale = forcedLocale ?? (i18n.language.startsWith("fr") ? "fr" : "en");
+  const PAGE = "gallery";
+  const SECTION = "countdown";
+  const FIELDS = [
+  "section_visibility",
+  "title_main",
+  "title_accent",
+  "description",
+  "badge",
+  "countdown",
+  "target",
+  "start_date",
+  "end_date",
+  ];
 
-    // Page et section
-    const page = "gallery";
-    const section = "countdown";
-    // console.log("Page:", page);
-    // console.log("Section:", section);
-
-    // champs récupérés
-    const fields = [
-
-        "section_visibility",
-        "title_main",
-        "title_accent",
-        "description",
-        "badge",
-        "countdown",
-        "target",
-        "start_date",
-        "end_date"
-
-    ]
-    // console.log("Champs:", fields);
-
-    // données envoyé à useForm
-    const { values, setValues, handleChange } = useForm({
-
-        section_visibility:"1",
+  const DEFAULT_VALUES = {section_visibility:"1",
         section_visibility_is_active: 1,
 
         title_main: "",
@@ -71,69 +54,25 @@ function GallerySectionCountdownForm({ forcedLocale }) {
         start_date_is_active: 1,
 
         end_date: "",
-        end_date_is_active: 1
+        end_date_is_active: 1};
 
-    })
-    const [message, setMessage] = useState("");
-    const [loading, setLoading] = useState(false);
-    const { content, loading: cmsLoading } = useCmsContent(page, locale);
-    const [initialValues, setInitialValues] = useState({});
-    const [hasHydrated, setHasHydrated] = useState(false);
+  const {
+    page,
+    section,
+    locale,
+    values,
+    handleChange,
+    submitLoading,
+    handleSubmit,
+  } = useCmsSectionForm({
+    page: PAGE,
+    section: SECTION,
+    fields: FIELDS,
+    defaultValues: DEFAULT_VALUES,
+    forcedLocale,
+    successMessage: "Section mise à jour",
+  });
 
-    useEffect(()=>{
-        if (cmsLoading) {
-            return;
-        }
-
-        if (hasHydrated) return;
-
-        const cmsSection = content?.[page]?.[section];
-
-        if (!cmsSection) return;
-
-        // construit les valeurs initiales depuis le CMS
-        const built = buildInitialValuesFromCms(fields, cmsSection);
-
-        setValues(built);
-
-        setInitialValues(built);
-
-        setHasHydrated(true);
-
-    }, [cmsLoading, content, page, section, hasHydrated, setValues, locale])
-
-    useEffect(()=> {
-        setHasHydrated(false);
-    }, [locale]);
-
-    async function handleSubmit(event) {
-        // console.log("Fonction handleSubmit OK");
-        
-        event.preventDefault();
-
-        setLoading(true)
-
-        try {
-            // console.log("try dans handleSubmit OK");
-
-            await saveCmsSection({ page, section, locale, fields, values });
-
-            setMessage("Section mise à jour");
-
-        } catch (error) {
-
-            console.error("erreur:", error);
-            setMessage("Erreur lors de la mise à jour");
-
-        } finally {
-
-            setLoading(false);
-
-        }
-
-    }
-
-    if (loading) return null;
 
     return(
         <section>
@@ -198,7 +137,7 @@ function GallerySectionCountdownForm({ forcedLocale }) {
 
                 {/**** Footer du formulaire : bouton de submission ****/}
                 <div className="w-full flex justify-center">
-                    <BtnSubmitForm loading={loading} className="flex w-50 h-13.25 items-center justify-center gap-3.25 px-5.25 py-2.5 rounded-[5px] border border-[#DBE3E6] bg-white dark:border-[rgba(0,0,0,0.11)] dark:bg-[#333]">
+                    <BtnSubmitForm loading={submitLoading} className="flex w-50 h-13.25 items-center justify-center gap-3.25 px-5.25 py-2.5 rounded-[5px] border border-[#DBE3E6] bg-white dark:border-[rgba(0,0,0,0.11)] dark:bg-[#333]">
                         Mettre à jour
                     </BtnSubmitForm>
                 </div>

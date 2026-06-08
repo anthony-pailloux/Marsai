@@ -3,7 +3,6 @@ import iconPaint from "../../../../assets/imgs/icones/IconPaint.svg";
 import iconImg from "../../../../assets/imgs/icones/iconImg.svg";
 import iconClose from "../../../../assets/imgs/icones/x.svg"
 import { useForm } from "../../../../hooks/useForm.js";
-import { useState } from "react";
 import InsertPartnerApi from "../../../../services/Partner/InsertPartnerApi.js";
 
 function PartnerAdd({ onClose, onAdded }) {
@@ -13,15 +12,11 @@ function PartnerAdd({ onClose, onAdded }) {
         file:"",
         url:""
     })
-    const [message, setMessage] = useState("");
-    const [loading, setLoading] = useState(false);
 
     async function handleSubmit(event) {
         // console.log("Fonction handleSubmit OK");
         
         event.preventDefault();
-        setLoading(true);
-
         try {
             // console.log("try dans la fonction handleSubmit OK");
             
@@ -31,11 +26,9 @@ function PartnerAdd({ onClose, onAdded }) {
             formData.append("img", values.file);
             formData.append("url", values.url);
 
-            const res = await InsertPartnerApi(formData)
+            await InsertPartnerApi(formData)
             // console.log(result);
             
-            setMessage("Partener ajouté")
-
             if (onAdded) {
                 onAdded();
             }
@@ -43,10 +36,7 @@ function PartnerAdd({ onClose, onAdded }) {
         } catch (error) {
 
             console.error("erreur:", error);
-            setMessage("Erreur lors de l'envoi");
 
-        } finally {
-            setLoading(false);
         }
 
     }

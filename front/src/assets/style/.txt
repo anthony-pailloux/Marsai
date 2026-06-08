@@ -1,1 +1,0 @@
-Privilègier tailwind car obligatoir dans le cahier de charges

@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { decodeToken } from "../../utils/decodeToken.js";
+import { typeFooterMeta } from "../../utils/typography.js";
 
 function AdminEntryButton() {
     const navigate = useNavigate();
@@ -18,7 +19,7 @@ function AdminEntryButton() {
     };
 
     return (
-        <button type="button" onClick={handleGo} className="text-[10px] font-bold tracking-[5px] uppercase cursor-pointer" >
+        <button type="button" onClick={handleGo} className={`cursor-pointer ${typeFooterMeta}`}>
             Espace administrateur
         </button>
     );

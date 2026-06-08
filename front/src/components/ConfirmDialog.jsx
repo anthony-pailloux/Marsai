@@ -1,4 +1,6 @@
-/*Permet d'avoir une modal de confirmation avant de changer le role*/
+﻿/*Permet d'avoir une modal de confirmation avant de changer le role*/
+
+import Button from "./ui/Button.jsx";
 
 export default function ConfirmDialog({
   isOpen,
@@ -19,12 +21,6 @@ export default function ConfirmDialog({
     onClose();
   };
 
-  
-  const confirmButtonClass =
-    confirmVariant === "danger"
-      ? "rounded-2xl bg-[#FF3D6E]/90 px-4 py-3 text-sm font-semibold text-white hover:bg-[#FF3D6E] transition-colors"
-      : "rounded-2xl bg-[#2F6BFF] px-4 py-3 text-sm font-semibold text-white hover:bg-[#2F6BFF]/90 transition-colors";
-
   return (
     <div
       role="dialog"
@@ -36,35 +32,31 @@ export default function ConfirmDialog({
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className="w-full max-w-md rounded-3xl border border-black/10 bg-white p-6 shadow-xl dark:border-white/10 dark:bg-[#0b0b0b] dark:shadow-[0_0_40px_rgba(0,0,0,0.3)]"
+        className="w-full max-w-md rounded-lg border border-black/10 bg-white p-6 shadow-xl dark:border-white/10 dark:bg-neutral-950 dark:shadow-[0_0_40px_rgba(0,0,0,0.3)]"
       >
         <h2
           id="confirm-dialog-title"
-          className="text-lg font-semibold text-black/90 dark:text-white/90"
+          className="text-lg font-semibold text-neutral-900 dark:text-white/90"
         >
           {title}
         </h2>
         <p
           id="confirm-dialog-message"
-          className="mt-2 text-sm text-black/70 dark:text-white/70"
+          className="mt-2 text-sm text-neutral-700 dark:text-white/70"
         >
           {message}
         </p>
         <div className="mt-6 flex justify-end gap-3">
-          <button
-            type="button"
-            onClick={onClose}
-            className="rounded-2xl bg-black/10 px-4 py-3 text-sm font-semibold hover:bg-black/15 dark:bg-white/10 dark:hover:bg-white/15"
-          >
+          <Button type="button" variant="secondary" onClick={onClose}>
             {cancelLabel}
-          </button>
-          <button
+          </Button>
+          <Button
             type="button"
+            variant={confirmVariant === "danger" ? "danger" : "primary"}
             onClick={handleConfirm}
-            className={confirmButtonClass}
           >
             {confirmLabel}
-          </button>
+          </Button>
         </div>
       </div>
     </div>

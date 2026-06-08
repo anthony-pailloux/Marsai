@@ -1,6 +1,8 @@
 // src/pages/LearnMore.jsx
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router";
+import { typeBody, typeEyebrow, typePageHero, typeSectionSubtitle } from "../utils/typography.js";
+import { HOME_EYEBROW } from "../components/Home/homeCardStyles.js";
 
 function InfoCard({ title, children, icon }) {
   return (
@@ -18,11 +20,11 @@ function InfoCard({ title, children, icon }) {
 
         {/* CONTENT */}
         <div className="min-w-0">
-          <h3 className="text-2xl font-extrabold tracking-tight text-black dark:text-white">
+          <h3 className={`text-black dark:text-white ${typeSectionSubtitle}`}>
             {title}
           </h3>
 
-          <div className="mt-4 text-base leading-7 text-black/70 dark:text-white/70">
+          <div className={`mt-4 text-black/70 dark:text-white/70 ${typeBody}`}>
             {children}
           </div>
         </div>
@@ -35,15 +37,14 @@ function InfoCard({ title, children, icon }) {
 
 function Pill({ children }) {
   return (
-    <span className="inline-flex items-center rounded-full border border-black/10 bg-black/[0.03] px-3 py-1 text-xs font-bold tracking-wide text-black/70 dark:border-white/10 dark:bg-white/5 dark:text-white/70">
+    <span className={`${HOME_EYEBROW} ${typeEyebrow} text-black dark:text-white`}>
       {children}
     </span>
   );
 }
 
 function LearnMore() {
-  // i18n namespace optionnel : si "learnMore" n'existe pas, ça ne casse pas la page
-  const { i18n } = useTranslation("learnMore");
+  const { i18n } = useTranslation();
   const locale = i18n.language?.startsWith("fr") ? "fr" : "en";
 
   // Textes fallback (tu pourras les mettre dans i18n plus tard)
@@ -142,9 +143,9 @@ function LearnMore() {
     <main className="relative min-h-screen bg-white text-black dark:bg-[#07040F] dark:text-white">
       {/* glow uniquement en dark */}
       <div className="pointer-events-none absolute inset-0 hidden dark:block">
-        <div className="absolute -top-24 left-1/2 h-72 w-[800px] -translate-x-1/2 rounded-full bg-[#AD46FF]/20 blur-3xl" />
+        <div className="absolute -top-24 left-1/2 h-72 w-[800px] -translate-x-1/2 rounded-full bg-[#FFB020]/20 blur-3xl" />
         <div className="absolute top-40 left-10 h-72 w-72 rounded-full bg-[#51A2FF]/15 blur-3xl" />
-        <div className="absolute top-56 right-10 h-72 w-72 rounded-full bg-[#FF2B7F]/10 blur-3xl" />
+        <div className="absolute top-56 right-10 h-72 w-72 rounded-full bg-[#FF8C42]/10 blur-3xl" />
       </div>
 
       <div className="relative mx-auto w-full max-w-6xl px-5 py-10 md:px-10 md:py-14">
@@ -152,14 +153,14 @@ function LearnMore() {
         <div className="flex flex-col gap-4">
         
 
-          <h1 className="text-3xl font-extrabold tracking-tight md:text-5xl">
+          <h1 className={typePageHero}>
             <span className="text-black dark:text-white">{c.title}</span>
-            <span className="ml-2 bg-gradient-to-r from-[#51A2FF] via-[#AD46FF] to-[#FF2B7F] bg-clip-text text-transparent">
+            <span className="ml-2 bg-gradient-to-r from-[#51A2FF] via-[#FFB020] to-[#FF8C42] bg-clip-text text-transparent">
               MarsAI
             </span>
           </h1>
 
-          <p className="max-w-3xl text-base leading-7 text-black/70 dark:text-white/70 md:text-lg">
+          <p className={`max-w-3xl text-black/70 dark:text-white/70 ${typeBody}`}>
             {c.subtitle}
           </p>
         </div>

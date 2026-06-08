@@ -5,13 +5,14 @@ import deletePartnerApi from "../../../services/Partner/DeletePartnerApi";
 import BtnAdd from "../../Buttons/BtnAdd";
 import PartnerAdd from "../../Form/CMS/Partners/PartnerAdd";
 
-const API_URL = import.meta.env.VITE_API_URL;
+import { getApiBaseUrl } from "../../../utils/apiBase.js";
+import { typeAdminTitle } from "../../../utils/typography.js";
 
 function PartnersManagement() {
     
     const [partners, setPartners] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [message, setMessage] = useState("");
+    const [, setLoading] = useState(true);
+    const [, setMessage] = useState("");
     const [selectedPartner, setSelectedPartner] = useState(null);
     const [modalType, setModalType] = useState(null);
 
@@ -83,7 +84,7 @@ function PartnersManagement() {
     return(
         <section className="w-full">
             <div className="flex justify-between pr-6">
-                <h3 className="text-[42px] font-extrabold tracking-tight">Gestion de nos partnaires</h3>
+                <h3 className={typeAdminTitle}>Gestion de nos partnaires</h3>
                 <div className="pt-5 flex justify-end">
                     <BtnAdd onClick={handleCreate}></BtnAdd>
                 </div>
@@ -112,7 +113,7 @@ function PartnersManagement() {
                         {partners.length > 0 && partners.map((p) => (
                             <tr key={ p.id ?? p.name } className="align-middle rounded-xl bg-black/5 dark:bg-white/10 border border-black/10 dark:border-white/10">
                                 <td className="px-8 py-3">
-                                    <img src={`${API_URL}${p.img}`} alt={p.name} className="h-16 w-auto object-contain" />
+                                    <img src={`${getApiBaseUrl()}${p.img}`} alt={p.name} className="h-16 w-auto object-contain" />
                                 </td>
                                 <td className="px-4 py-3 font-medium">
                                     {p.name}

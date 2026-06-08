@@ -24,8 +24,9 @@ if (process.env.DB_PASSWORD === undefined) {
 }
 
 export const env = {
-  port: Number(process.env.PORT ?? 4000),
+  port: Number(process.env.PORT ?? 3000),
   jwtSecret: process.env.JWT_SECRET,
+  jwtExpiresIn: process.env.JWT_EXPIRES_IN || "24h",
   db: {
     host: process.env.DB_HOST,
     port: Number(process.env.DB_PORT ?? 3306),

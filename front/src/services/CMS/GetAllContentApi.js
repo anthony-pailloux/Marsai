@@ -1,9 +1,8 @@
-const API_URL = import.meta.env.VITE_API_URL;
-
+import { getApiUrl } from "../../utils/apiBase.js";
 async function GetAllContentApi() {
     // console.log("fonction API GetAllContent OK");
 
-    const response = await fetch(`${API_URL}/api/cms`)
+    const response = await fetch(`${getApiUrl()}/cms`)
     // console.log("response :",response);
     
     const data = await response.json();

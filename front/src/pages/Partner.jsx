@@ -7,14 +7,13 @@ import { isSectionVisible } from "../utils/isVisible";
 function PartnersPage() {
 
     // Gére la traduction
-    const { t, i18n } = useTranslation("partners");
+    const { i18n } = useTranslation("partners");
     const locale = i18n.language?.startsWith("fr") ? "fr" : "en";
 
-    const page = "gallery";
+    const page = "partners";
     const hero = "hero";
 
-    // cherche les données en bdd
-    const { content, loading, message } = useCmsContent(page, locale);
+    const { content, loading } = useCmsContent(page, locale);
     
     if (loading) return null;
 

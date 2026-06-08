@@ -7,8 +7,14 @@ export function decodeToken() {
 
   try {
     const payload = JSON.parse(atob(token.split(".")[1]));
+
+    if (payload?.exp && payload.exp * 1000 < Date.now()) {
+      localStorage.removeItem("token");
+      return null;
+    }
+
     return payload;
-  } catch (error) {
+  } catch {
     return null;
   }
 }

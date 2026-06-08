@@ -1,5 +1,6 @@
 import { useEffect, useId, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { typeAdminSection, typeBodySm } from "../../../utils/typography.js";
 
 export default function JuryForm({
   open,
@@ -26,7 +27,10 @@ export default function JuryForm({
   });
 
   useEffect(() => {
-    if (initialValues) setForm((prev) => ({ ...prev, ...initialValues }));
+    if (initialValues) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- hydrate edit form when jury changes
+      setForm((prev) => ({ ...prev, ...initialValues }));
+    }
   }, [initialValues]);
 
   const fileName = useMemo(() => form.imgFile?.name || "", [form.imgFile]);
@@ -58,10 +62,10 @@ export default function JuryForm({
         {/* Header */}
         <div className="flex items-start justify-between px-8 pb-5 pt-7">
           <div>
-            <h2 className="text-2xl font-extrabold">
+            <h2 className={typeAdminSection}>
               {mode === "create" ? t("form.titleCreate") : t("form.titleEdit")}
             </h2>
-            <p className="mt-1 text-sm text-neutral-600 dark:text-white/60">
+            <p className={`mt-1 text-neutral-600 dark:text-white/60 ${typeBodySm}`}>
               {t("form.helper")}
             </p>
           </div>
@@ -229,7 +233,7 @@ export default function JuryForm({
               <button
                 type="submit"
                 disabled={saving}
-                className="rounded-full bg-linear-to-r from-blue-600 to-pink-500 px-7 py-2 text-sm font-extrabold text-white shadow-sm disabled:opacity-50"
+                className="rounded-full bg-[#FF8C42] hover:bg-[#E07830] transition-colors px-7 py-2 text-sm font-extrabold text-white shadow-sm disabled:opacity-50"
               >
                 {saving
                   ? t("form.actions.saving")
@@ -250,7 +254,7 @@ function Field({ label, required, children }) {
   return (
     <div>
       <div className="text-sm font-semibold text-neutral-800 dark:text-white/85">
-        {label} {required ? <span className="text-pink-500">*</span> : null}
+        {label} {required ? <span className="text-orange-500">*</span> : null}
       </div>
       <div className="mt-2">{children}</div>
     </div>

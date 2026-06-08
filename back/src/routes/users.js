@@ -2,6 +2,8 @@ import { isSuperAdmin, verifyToken } from "../utils/isAdmin.js";
 import { Router } from "express";
 import createRegisterController from '../controllers/users/register.controller.js';
 import { loginController } from '../controllers/users/login.controller.js';
+import { requestPasswordResetController } from "../controllers/users/requestPasswordReset.controller.js";
+import { resetPasswordController } from "../controllers/users/resetPassword.controller.js";
 import { getAllUsersController } from "../controllers/users/getAllUsers.controller.js";
 import { updateUserRoleController } from "../controllers/users/updateUserRole.controller.js";
 import { deleteUserController } from "../controllers/users/deleteUser.controller.js";
@@ -10,7 +12,7 @@ import { registerWithInviteController } from "../controllers/users/registerWithI
 //import du middleware zod
 import { validate } from "../middlewares/zod/zodValidator.js";
 //import des schémas zod
-import { emailSchema, passwordSchema, createUserSchema, roleSchema } from "../zodSchema/zodIndex.js";
+import { emailSchema, passwordSchema, createUserSchema, roleSchema, passwordResetTokenSchema } from "../zodSchema/zodIndex.js";
 
 const router = Router();
 
@@ -29,6 +31,8 @@ router.post('/superAdmin/register', verifyToken, isSuperAdmin, validate([emailSc
 router.post('/admin/register', verifyToken, isSuperAdmin, validate([emailSchema, passwordSchema, createUserSchema]),createRegisterController({ fixedRole:'admin'}));
 router.post('/selector/register', verifyToken, isSuperAdmin, validate([emailSchema, passwordSchema, createUserSchema]),createRegisterController({ fixedRole:'selector'}));
 router.post('/login', validate([emailSchema, passwordSchema]), loginController);
+router.post('/forgot-password', validate(emailSchema), requestPasswordResetController);
+router.post('/reset-password', validate([passwordResetTokenSchema, passwordSchema]), resetPasswordController);
 
 /* ==================
    Route PUT role

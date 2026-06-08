@@ -1,7 +1,9 @@
 // URL de base de l’API (depuis les variables d’environnement)
 import { getAuthHeaders } from "../../utils/authHeaders.js";
 
-const API = import.meta.env.VITE_API_URL || "";
+import { getApiBaseUrl } from "../../utils/apiBase.js";
+
+const API = getApiBaseUrl();
 
 // Fonction pour enregistrer un utilisateur 
 export async function registerUser(data, role) {

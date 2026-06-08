@@ -1,6 +1,7 @@
 import { useState } from "react";
 
-const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:3000";
+import { getApiUrl } from "../../../utils/apiBase.js";
+import { typeBodySm } from "../../../utils/typography.js";
 
 export default function ContactForm() {
   // Etat du formulaire
@@ -37,7 +38,7 @@ export default function ContactForm() {
         message: form.message,
       };
 
-      const r = await fetch(`${API_BASE}/api/contact`, {
+      const r = await fetch(`${getApiUrl()}/contact`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -65,7 +66,7 @@ export default function ContactForm() {
     "focus:ring-2 focus:ring-blue-500/20 " +
     "dark:border-white/10 dark:bg-white/10 dark:text-white/90 dark:placeholder:text-white/35 dark:focus:ring-blue-400/20";
 
-  const labelCls = "block text-[13px] text-black/80 dark:text-white/80";
+  const labelCls = `block text-black/80 dark:text-white/80 ${typeBodySm}`;
 
   return (
     <div className="w-full max-w-[460px] rounded-2xl bg-transparent p-0 dark:rounded-2xl dark:bg-black/0">

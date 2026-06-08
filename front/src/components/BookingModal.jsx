@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { createBooking } from "../services/Events/EventsApi.js";
 import { inputBaseClasses } from "../utils/formInputClasses.js";
+import { typeAdminSection, typeBodySm, typeCaption } from "../utils/typography.js";
 
 export default function BookingModal({ event, onClose, onSuccess }) {
   const [first_name, setFirst_name] = useState("");
@@ -28,16 +29,16 @@ export default function BookingModal({ event, onClose, onSuccess }) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50" onClick={onClose}>
-      <div className="bg-white dark:bg-black rounded-2xl border border-black/10 dark:border-[#F6339A]/60 shadow-xl dark:shadow-[0_0_40px_rgba(246,51,154,0.4)] max-w-md w-full p-6" onClick={(e) => e.stopPropagation()}>
-        <h3 className="text-lg font-semibold text-black dark:text-white">
+      <div className="bg-white dark:bg-black rounded-2xl border border-black/10 dark:border-[#FF8C42]/60 shadow-xl dark:shadow-[0_0_40px_rgba(255,140,66,0.4)] max-w-md w-full p-6" onClick={(e) => e.stopPropagation()}>
+        <h3 className={`text-black dark:text-white ${typeAdminSection}`}>
           Réserver pour : {event.title}
         </h3>
         <form onSubmit={handleSubmit} className="mt-4 space-y-4">
           {error && (
-            <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
+            <p className={`text-red-600 dark:text-red-400 ${typeBodySm}`}>{error}</p>
           )}
           <div>
-            <label className="block text-xs font-medium text-black/70 dark:text-white/70 mb-1">Prénom</label>
+            <label className={`block text-black/70 dark:text-white/70 mb-1 ${typeCaption} font-medium`}>Prénom</label>
             <input
               type="text"
               value={first_name}
@@ -47,7 +48,7 @@ export default function BookingModal({ event, onClose, onSuccess }) {
             />
           </div>
           <div>
-            <label className="block text-xs font-medium text-black/70 dark:text-white/70 mb-1">Nom</label>
+            <label className={`block text-black/70 dark:text-white/70 mb-1 ${typeCaption} font-medium`}>Nom</label>
             <input
               type="text"
               value={last_name}
@@ -57,7 +58,7 @@ export default function BookingModal({ event, onClose, onSuccess }) {
             />
           </div>
           <div>
-            <label className="block text-xs font-medium text-black/70 dark:text-white/70 mb-1">Email</label>
+            <label className={`block text-black/70 dark:text-white/70 mb-1 ${typeCaption} font-medium`}>Email</label>
             <input
               type="email"
               value={email}
@@ -70,14 +71,14 @@ export default function BookingModal({ event, onClose, onSuccess }) {
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 rounded-xl border border-black/20 dark:border-[#F6339A]/60 px-4 py-2 text-sm font-medium"
+              className="flex-1 rounded-xl border border-black/20 dark:border-[#FF8C42]/60 px-4 py-2 text-sm font-medium"
             >
               Annuler
             </button>
             <button
               type="submit"
               disabled={loading}
-              className="flex-1 rounded-xl bg-gradient-to-r from-sky-500 to-fuchsia-500 px-4 py-2 text-sm font-semibold text-white disabled:opacity-50"
+              className="flex-1 rounded-xl bg-[#FF8C42] hover:bg-[#E07830] transition-colors px-4 py-2 text-sm font-semibold text-white disabled:opacity-50"
             >
               {loading ? "Envoi…" : "Confirmer"}
             </button>

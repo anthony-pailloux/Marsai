@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { toMediaUrl } from "../../utils/mediaUrl";
+import { typeBadge, typeBodySm, typeCardTitle, typeEyebrow } from "../../utils/typography.js";
 
 function useIsMobile() {
   const [isMobile, setIsMobile] = useState(() => {
@@ -16,8 +17,6 @@ function useIsMobile() {
     // Safari < 14 fallback
     if (mq.addEventListener) mq.addEventListener("change", onChange);
     else mq.addListener(onChange);
-
-    setIsMobile(mq.matches);
 
     return () => {
       if (mq.removeEventListener) mq.removeEventListener("change", onChange);
@@ -49,7 +48,7 @@ export default function VideoCard({ video, apiBase }) {
   // ✅ S3 + fallback local automatique
   const coverUrl = video.cover
     ? toMediaUrl(video.cover, "covers", apiBase)
-    : "https://via.placeholder.com/800x450?text=Cover";
+    : "/cover-fallback.jpg";
 
   // ✅ mobile => feed, desktop => details
   const to = isMobile ? `/gallery/feed/${video.id}` : `/gallery/${video.id}`;
@@ -89,16 +88,16 @@ export default function VideoCard({ video, apiBase }) {
       </div>
 
       <div className="mt-4 space-y-2">
-        <h3 className="text-sm font-extrabold uppercase tracking-wide text-neutral-900 dark:text-white">
+        <h3 className={`text-neutral-900 dark:text-white ${typeCardTitle}`}>
           {title}
         </h3>
 
-        <div className="grid grid-cols-2 gap-x-10 text-[10px] uppercase tracking-wide text-neutral-500 dark:text-white/50">
+        <div className={`grid grid-cols-2 gap-x-10 text-neutral-500 dark:text-white/50 ${typeEyebrow}`}>
           <div>
             <div className="font-semibold leading-none">
               {t("card.labels.director")}
             </div>
-            <div className="mt-3 text-[11px] font-semibold normal-case text-neutral-800 dark:text-white/80 leading-none">
+            <div className={`mt-3 normal-case text-neutral-800 dark:text-white/80 leading-none ${typeBadge}`}>
               {director}
             </div>
           </div>
@@ -119,7 +118,7 @@ export default function VideoCard({ video, apiBase }) {
                 />
               </span>
 
-              <span className="text-[11px] font-semibold normal-case text-neutral-800 dark:text-white/80 leading-none">
+              <span className={`normal-case text-neutral-800 dark:text-white/80 leading-none ${typeBadge}`}>
                 {country}
               </span>
             </div>

@@ -1,18 +1,20 @@
-const base = import.meta.env.VITE_API_URL ?? "http://localhost:3000";
-const API_BASE = base.endsWith("/api") ? base : `${base}/api`;
+import { getAuthHeaders } from "../../utils/authHeaders.js";
+import { getApiUrl } from "../../utils/apiBase.js";
 
 // ADMIN — récupérer tous les events (publiés + brouillons)
 export async function getAdminEvents() {
-  const res = await fetch(`${API_BASE}/admin/events`);
+  const res = await fetch(`${getApiUrl()}/admin/events`, {
+    headers: getAuthHeaders({ Accept: "application/json" }),
+  });
   if (!res.ok) throw new Error("Erreur chargement events admin");
   return res.json();
 }
 
 // ADMIN — créer un event
 export async function createEvent(payload) {
-  const res = await fetch(`${API_BASE}/admin/events`, {
+  const res = await fetch(`${getApiUrl()}/admin/events`, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: getAuthHeaders({ "Content-Type": "application/json" }),
     body: JSON.stringify(payload),
   });
   if (!res.ok) throw new Error("Erreur création event");
@@ -21,9 +23,9 @@ export async function createEvent(payload) {
 
 // ADMIN — modifier un event
 export async function updateEvent(id, payload) {
-  const res = await fetch(`${API_BASE}/admin/events/${id}`, {
+  const res = await fetch(`${getApiUrl()}/admin/events/${id}`, {
     method: "PUT",
-    headers: { "Content-Type": "application/json" },
+    headers: getAuthHeaders({ "Content-Type": "application/json" }),
     body: JSON.stringify(payload),
   });
   if (!res.ok) throw new Error("Erreur update event");
@@ -32,8 +34,9 @@ export async function updateEvent(id, payload) {
 
 // ADMIN — supprimer
 export async function deleteEvent(id) {
-  const res = await fetch(`${API_BASE}/admin/events/${id}`, {
+  const res = await fetch(`${getApiUrl()}/admin/events/${id}`, {
     method: "DELETE",
+    headers: getAuthHeaders(),
   });
   if (!res.ok) throw new Error("Erreur suppression event");
   return true;
@@ -41,9 +44,9 @@ export async function deleteEvent(id) {
 
 // ADMIN — publier / dépublier
 export async function togglePublish(id, published) {
-  const res = await fetch(`${API_BASE}/admin/events/${id}/publish`, {
+  const res = await fetch(`${getApiUrl()}/admin/events/${id}/publish`, {
     method: "PATCH",
-    headers: { "Content-Type": "application/json" },
+    headers: getAuthHeaders({ "Content-Type": "application/json" }),
     body: JSON.stringify({ published }),
   });
   if (!res.ok) throw new Error("Erreur publication");
@@ -52,7 +55,9 @@ export async function togglePublish(id, published) {
 
 // ADMIN — liste des participants (réservations) d’un événement
 export async function getEventBookings(eventId) {
-  const res = await fetch(`${API_BASE}/admin/events/${eventId}/bookings`);
+  const res = await fetch(`${getApiUrl()}/admin/events/${eventId}/bookings`, {
+    headers: getAuthHeaders({ Accept: "application/json" }),
+  });
   if (!res.ok) throw new Error("Erreur chargement participants");
   return res.json();
 }

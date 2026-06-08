@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { getAuthHeaders } from "../../utils/authHeaders.js";
 
-const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:3000";
+import { getApiUrl } from "../../utils/apiBase.js";
+import { typeAdminTitle, typeBadge } from "../../utils/typography.js";
 
 function formatDateTime(v) {
   if (!v) return null;
@@ -26,7 +28,7 @@ function StatusBadge({ status }) {
 
   return (
     <span
-      className={`inline-flex items-center rounded-full px-3 py-1 text-[11px] font-bold tracking-widest ${cls}`}
+      className={`inline-flex items-center rounded-full px-3 py-1 tracking-widest ${typeBadge} ${cls}`}
     >
       {label}
     </span>
@@ -41,8 +43,8 @@ export default function AdminNewsletters() {
   async function load() {
     setLoading(true);
     try {
-      const res = await fetch(`${API_BASE}/api/admin/newsletters`, {
-        headers: { Accept: "application/json" },
+      const res = await fetch(`${getApiUrl()}/admin/newsletters`, {
+        headers: getAuthHeaders({ Accept: "application/json" }),
       });
       const data = await res.json().catch(() => null);
       setItems(data?.items || []);
@@ -65,7 +67,7 @@ export default function AdminNewsletters() {
 
             <div className="mt-10 flex items-center justify-between w-full">
           <div className="w-full">
-            <h1 className="text-4xl font-black w-full">NEWSLETTERS</h1>
+            <h1 className={`w-full ${typeAdminTitle}`}>NEWSLETTERS</h1>
             <p className="mt-2 text-sm opacity-70">
               Brouillons, programmation et historique d’envoi.
             </p>

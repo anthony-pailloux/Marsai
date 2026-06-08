@@ -1,20 +1,20 @@
 {
    "hero": {
-      "medias":"../../public/imgs/backgroundSections/HomeSectionHero.mp4",
+      "media":"/imgs/backgroundSections/HomeSectionHero.mp4",
       "title_main": "MARS",
       "title_accent":"AI",
       "protocol": "le protocole temporel 2026",
-      "protocol_icon":"../src/assets/imgs/icones/iconStars.svg",
+      "protocol_icon":"/icons/home/IconStars.svg",
       "tagline_before": "Imaginez des",
       "tagline_highlight": "Futurs",
       "tagline_after": "souhaitables",
       "desc1": "Le festival de courts-métrages de 60 secondes réalisés par IA.",
       "desc2": "2 jours d'immersion au cœur de Marseille.",
       "ctaParticipate": "Participer",
-      "ctaParticipate_signe": "../src/assets/imgs/icones/arrowRight.svg",
+      "ctaParticipate_signe": "/icons/home/arrowRight.svg",
       "ctaParticipate_link": "/participation",
       "ctaLearnMore": "En savoir plus",
-      "ctaLearnMore_signe":"+",
+      "ctaLearnMore_signe":"/icons/home/plus.svg",
       "ctaLearnMore_link":"/learnMore"
    },
    "concept":{
@@ -22,33 +22,38 @@
       "card1":{
          "title": "1 minute",
          "description": "Format ultra-court pour un impact maximum.",
-         "title_color":"#C27AFF"
+         "title_color":"#FF8C42",
+         "icon":"/icons/home/IconClock.svg"
       },
       "card2": {
          "title": "Gratuité",
          "description": "Conférences et workshops accessibles.",
-         "title_color":"#00D492"
+         "title_color":"#FF8C42",
+         "icon":"/icons/home/ticket.svg"
       },
       "card3": {
         "title": "Pour tous",
         "description": "Professionnels, étudiants et curieux.",
-         "title_color":"#FB64B6"
+         "title_color":"#FF8C42",
+         "icon":"/icons/home/IconPeople.svg"
       },
       "card4": {
         "title": "Expertise",
         "description": "Leaders mondiaux de l’IA générative.",
-         "title_color":"#2B7FFF"
+         "title_color":"#FF8C42",
+         "icon":"/icons/home/IconAward.svg"
       }      
    },
    "award":{
       "eyebrow":"Le projet MARS.AI",
+      "eyebrow_icon":"/icons/home/IconStars.svg",
       "eyebrow_color":"#2B7FFF",
       "title1":"Films en",
       "title2":"compétition",
       "description":"Découvrez une sélection d'œuvres pionnières explorant les nouvelles frontières de l'imaginaire assisté par l'IA.",
       "ctaSeeMore":"Voir la sélection",
       "ctaSeeMore_link":"/gallery",
-      "ctaSeeMore_color":"rgba(194, 122, 255, 0.52)",
+      "ctaSeeMore_color":"rgba(255, 200, 87, 0.52)",
       "loading":"Chargement des vidéos...",
       "error":"Impossible de charger les vidéos:",
       "notFound":"Pas encore de vidéos.",
@@ -61,25 +66,26 @@
          "card1":{
             "title":"L'humain au centre",
             "description":"Mettre l'humain au coeur de la création pour ne pas perdre l'émotion.",
-            "icon":"/src/assets/imgs/icones/IconTarget.svg"
+            "icon":"/icons/home/IconTarget.svg"
          },
          "card2":{
             "title":"Challenge créatif",
             "description":"Challenger la créativité grâce à un format ultra court de 60s.",
-            "icon":"/src/assets/imgs/icones/IconLightning.svg"
+            "icon":"/icons/home/IconLightning.svg"
          },
          "card3":{
             "title":"Futurs souhaitables",
             "description":"Explorer les futurs désirables via les technologies émergentes.",
-            "icon":"/src/assets/imgs/icones/IconRocket.svg"
+            "icon":"/icons/home/IconRocket.svg"
          }
       }
    },
    "events":{
+      "eyebrow":"Conférences",
       "title_main":"Deux journées de",
       "title_main_color":"",
       "title_accent":"Conférences gratuites",
-      "title_accent_color":"#AD46FF",
+      "title_accent_color":"#FF8C42",
       "list":{
          "item1":"Débats engagés sur l’éthique et le futur",
          "item2":"Confrontations d'idées entre artistes et tech",
@@ -87,24 +93,24 @@
       },
       "ctaAgenda":"Agenda Complet",
       "ctaAgenda_link":"/events",
-      "ctaAgenda_icon":"../../assets/imgs/icones/IconCalendar.svg",      
+      "ctaAgenda_icon":"/icons/home/IconCalendar.svg",
       "cards":{
          "card1":{
-            "icon":"../../assets/imgs/icones/IconPlay.svg",
+            "icon":"/icons/home/IconPlay.svg",
             "title":"Projections",
             "title_color":"",
             "description":"Diffusion sur écran géant en présence des réalisateurs.",
             "link":"/events"
          },
          "card2":{
-            "icon":"../../assets/imgs/icones/IconPeople.svg",
+            "icon":"/icons/home/IconPeople.svg",
             "title":"Workshops",
             "title_color":"",
             "description":"Sessions pratiques pour maîtriser les outils IA.",
             "link":"/events"
          },
          "card3":{
-            "icon":"../../assets/imgs/icones/IconAward.svg",
+            "icon":"/icons/home/IconAward.svg",
             "title":"Awards",
             "title_color":"",
             "description":"Cérémonie de clôture récompensant l'audace.",
@@ -114,18 +120,18 @@
    },
    "closingEvent":{
       "eyebrow":"Soirée de Clôture",
-      "eyebrow_text_color":"#C27AFF",
-      "eyebrow_bg_color":"rgba(173, 70, 255, 0.2)",
+      "eyebrow_text_color":"#FFC857",
+      "eyebrow_bg_color":"rgba(255, 176, 32, 0.2)",
       "title_main":"MARS.A.I",
       "title_main_color":"",
       "title_accent":"NIGHT",
-      "title_accent_color":"#F6339A",
+      "title_accent_color":"#FF8C42",
       "description":{
          "ligne1":"Fête Électro mêlant IA et futurs souhaitables.",
          "ligne2":"Une expérience immersive sonore et visuelle."
       },
       "card":{
-         "icon":"/src/assets/imgs/icones/iconClock.svg",
+         "icon":"/icons/home/IconClock.svg",
          "date":"13 JUIN",
          "hour":"DÈS 19H00",
          "localisation":"MARSEILLE",
@@ -135,13 +141,13 @@
    },
    "localisationEvent":{
       "eyebrow":"Le lieu",
-      "eyebrow_icon":"../../assets/imgs/icones/IconLocalisation.svg",
+      "eyebrow_icon":"/icons/home/IconLocalisation.svg",
       "eyebrow_color":"",
       "venue": {
          "namePart1": "La",
          "namePart2": "Plateforme",
          "cityTagline": "Marseille, Hub Créatif",
-         "color":"#51A2FF"
+         "color":"#FF8C42"
       },
       "address": {
          "street": "12 Rue d'Uzes",
@@ -157,12 +163,12 @@
          {
             "name": "Salle des Sucres",
             "description": "Futur sanctuaire des conférences et de la remise des prix de Mars.A.I. Un espace majestueux alliant patrimoine et technologie.",
-            "color":"#51A2FF"
+            "color":"#FF8C42"
          },
          {
             "name": "Salle PLAZA",
             "description": "L'épicentre du festival : accueil, animations, workshops et restauration. Le point de rencontre de tous les participants.",
-            "color": "#C27AFF"
+            "color": "#FF8C42"
          }
       ],
       "maps_link":"https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d8044.241161952438!2d5.362378323117001!3d43.314391970182314!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x12c9c13ddc0211b9%3A0xd1642ae4b32c4bc4!2s%C3%89cole%20La%20Plateforme_%20Marseille%20-%20Entr%C3%A9e%20Sud!5e1!3m2!1sfr!2sfr!4v1769784840463!5m2!1sfr!2sfr"
@@ -172,19 +178,19 @@
          "title_main": "Chiffres",
          "title_main_color": "",
          "title_accent": "Projetés",
-         "title_accent_color": "#F6339A",
+         "title_accent_color": "#FF8C42",
          "tagline": "Échelle mondiale, impact local."
       },
       "stats": [
          {
             "value": "+120",
             "label": "Pays représentés",
-            "label_color": "#AD46FF"
+            "label_color": "#FFB020"
          },
          {
             "value": "+600",
             "label": "Films soumis",
-            "label_color": "#F6339A"
+            "label_color": "#FF8C42"
          }
       ]
    },

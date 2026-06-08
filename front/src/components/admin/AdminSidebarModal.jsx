@@ -1,7 +1,8 @@
 import { useNavigate } from "react-router-dom";
 import { ADMIN_NAV } from "./adminNav.js";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { decodeToken } from "../../utils/decodeToken.js";
+import { typeCaption } from "../../utils/typography.js";
 
 export default function AdminSidebarModal({
   open,
@@ -9,11 +10,7 @@ export default function AdminSidebarModal({
   active = "leaderboard",
 }) {
   const navigate = useNavigate();
-  const [currentUser, setCurrentUser] = useState(null);
-
-  useEffect(() => {
-    setCurrentUser(decodeToken());
-  }, []);
+  const [currentUser] = useState(() => decodeToken());
 
   if (!open) return null;
 
@@ -83,7 +80,7 @@ export default function AdminSidebarModal({
         {/* Profil */}
         <div className="flex flex-col items-center px-5 pb-5 pt-4">
           <div className="relative">
-            <div className="grid h-20 w-20 place-items-center rounded-full bg-[#F6339A]/15 text-3xl ring-2 ring-[#B84DFF]/60">
+            <div className="grid h-20 w-20 place-items-center rounded-full bg-[#FF8C42]/15 text-3xl ring-2 ring-[#FFB020]/60">
               👤
             </div>
             <span className="absolute bottom-1 right-1 h-3.5 w-3.5 rounded-full bg-[#1AFF7A] ring-2 ring-black" />
@@ -92,7 +89,7 @@ export default function AdminSidebarModal({
           <div className="mt-3 text-sm font-semibold text-white/90">
             {currentUser ? `${currentUser.name || ""} ${currentUser.last_name || ""}` : "..."}
           </div>
-          <div className="mt-1 text-[11px] tracking-widest text-white/45">
+          <div className={`mt-1 tracking-widest text-white/45 ${typeCaption}`}>
             {currentUser?.role?.toUpperCase() || ""}
           </div>
         </div>

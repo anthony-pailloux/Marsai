@@ -1,6 +1,7 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { decodeToken } from "../../utils/decodeToken.js";
+import { typeAdminTitle } from "../../utils/typography.js";
 
 
 /*=====================================================================================================================
@@ -8,11 +9,7 @@ import { decodeToken } from "../../utils/decodeToken.js";
 ======================================================================================================================*/
 export default function AdminHero() {
   const { t } = useTranslation("adminHero");
-  const [currentUser, setCurrentUser] = useState(null);
-
-  useEffect(() => {
-    setCurrentUser(decodeToken());
-  }, []);
+  const [currentUser] = useState(() => decodeToken());
 
   const name = currentUser?.name ?? "";
 
@@ -29,7 +26,7 @@ export default function AdminHero() {
 
       <div className="relative flex flex-col md:flex-row h-full items-center justify-between gap-8 px-10 py-10 md:px-14 md:py-12">
         <div>
-          <h1 className="text-[36px] font-extrabold leading-tight tracking-tight text-white md:text-[42px]">
+          <h1 className={`leading-tight text-white ${typeAdminTitle}`}>
             {t("greeting")}{" "}
             <span className="text-[#3B82F6]">{name}</span>
           </h1>

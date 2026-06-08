@@ -7,6 +7,8 @@ export const isSharedKey = (key) =>
     exactSharedKeys.has(key) ||
     key.endsWith("_color") ||
     key.endsWith("_link") ||
+    key.endsWith("_href") ||
+    key.endsWith("_logo") ||
     key.endsWith("_icon") ||
     key.endsWith("_image") ||
     key.endsWith("_media");

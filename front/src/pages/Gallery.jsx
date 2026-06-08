@@ -6,7 +6,8 @@ import CountdownHero from "../components/Gallery/CountdownHero.jsx";
 import { isSectionVisible, isVisible } from "../utils/isVisible.js";
 import useCmsContent from "../hooks/useCmsContent.js";
 
-const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:3000";
+import { fetchJson, getApiBaseUrl } from "../utils/apiBase.js";
+
 const PAGE_SIZE = 20;
 
 export default function Gallery() {
@@ -19,7 +20,7 @@ export default function Gallery() {
   const grid = "grid";
 
   // cherche les données en bdd
-  const { content, message } = useCmsContent(pageG, locale);
+  const { content } = useCmsContent(pageG, locale);
 
   const [query, setQuery] = useState("");
   const [page, setPage] = useState(1);
@@ -36,15 +37,11 @@ export default function Gallery() {
         setLoading(true);
         setErr("");
 
-        const res = await fetch(`${API_BASE}/api/videos`);
-        const data = await res.json();
-
-        if (!res.ok) throw new Error(data?.error || t("states.errorGeneric"));
-
+        const data = await fetchJson("/videos");
         const list = Array.isArray(data) ? data : data?.videos || [];
         if (alive) setItems(list);
       } catch (e) {
-        if (alive) setErr(e?.message || t("states.errorGeneric"));
+        if (alive) setErr(e?.message || "Erreur");
       } finally {
         if (alive) setLoading(false);
       }
@@ -54,7 +51,7 @@ export default function Gallery() {
     return () => {
       alive = false;
     };
-  }, [t]);
+  }, []);
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -151,7 +148,7 @@ export default function Gallery() {
                   <>
                     <div className="grid grid-cols-1 justify-items-center gap-x-12 gap-y-14 sm:grid-cols-2 lg:grid-cols-3">
                       {pageItems.map((v) => (
-                        <VideoCard key={v.id} video={v} apiBase={API_BASE} />
+                        <VideoCard key={v.id} video={v} apiBase={getApiBaseUrl()} />
                       ))}
                     </div>
 
@@ -183,7 +180,7 @@ export default function Gallery() {
                                 onClick={() => setPage(p)}
                                 className={
                                   activeP
-                                    ? "h-9 w-9 rounded-lg bg-[#6D28D9] text-sm font-semibold text-white"
+                                    ? "h-9 w-9 rounded-lg bg-[#D97706] text-sm font-semibold text-white"
                                     : "h-9 w-9 rounded-lg text-sm font-semibold text-neutral-700 hover:bg-neutral-100 dark:text-white/70 dark:hover:bg-white/5"
                                 }
                               >

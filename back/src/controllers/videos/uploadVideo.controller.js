@@ -1,217 +1,45 @@
-import path from "path";
-import fs from "fs";
 import stillsModel from "../../models/stills.model.js";
 import videosModel from "../../models/videos.model.js";
 import subtitlesModel from "../../models/subtitles.model.js";
 import { pool } from "../../db/index.js";
+import { normalizeTags, upsertTags } from "../../models/tags.model.js";
+import { insertVideoTags } from "../../models/videoTags.model.js";
 import { uploadToYouTube } from "../../services/youtube.service.js";
 import {
-  uploadVideoFromDisk,
-  uploadCoverFromDisk,
-  uploadStillFromDisk,
-  uploadSubtitleFromDisk,
-} from "../../services/scalewayS3.service.js";
+  safeUnlink,
+  uploadMediaToS3,
+  validateUploadFiles,
+} from "./uploadVideo.helpers.js";
 
-// Déduit un code langue depuis le nom du fichier
-function normalizeLangFromFilename(filename) {
-  const lower = String(filename || "").toLowerCase();
-  const m = lower.match(/[\W_.-](fr|en|es|it|de|pt|ar|nl|ru|zh|ja|ko)[\W_.-]/);
-  return m ? m[1] : null;
-}
-
-// Vérifie si le fichier est un .srt
-function isSrtFile(file) {
-  const ext = path.extname(file?.originalname || "").toLowerCase();
-  return ext === ".srt";
-}
-
-// Normalise les tags et retire doublons
-function normalizeTags(tags = []) {
-  return [
-    ...new Set(
-      tags
-        .map((t) =>
-          String(t || "")
-            .trim()
-            .toLowerCase(),
-        )
-        .filter((t) => t.length > 0),
-    ),
-  ];
-}
-
-// Crée les tags manquants et retourne leurs ids
-async function upsertTags(cleanTags, conn) {
-  if (!cleanTags.length) return [];
-
-  const values = cleanTags.map(() => "(?)").join(", ");
-  await conn.query(
-    `INSERT IGNORE INTO tags (name) VALUES ${values}`,
-    cleanTags,
-  );
-
-  const placeholders = cleanTags.map(() => "?").join(", ");
-  const [rows] = await conn.query(
-    `SELECT id, name FROM tags WHERE name IN (${placeholders})`,
-    cleanTags,
-  );
-
-  return rows;
-}
-
-// Helper safe delete
-async function safeUnlink(filePath) {
-  try {
-    if (filePath) await fs.promises.unlink(filePath);
-  } catch {
-    // ignore
-  }
-}
-
-// Upload complet et écriture DB dans une transaction
 async function uploadVideoController(req, res) {
   const conn = await pool.getConnection();
 
-  // On garde une liste de fichiers locaux à supprimer en fin de traitement
-  // (selon ce qu’on veut conserver pour YouTube)
-  const filesToDeleteLater = [];
-
   try {
-    const videoFile = req.files?.video?.[0];
-    const coverFile = req.files?.cover?.[0];
-    const stillFiles = req.files?.stills || [];
-    const subtitleFiles = req.files?.subtitles || [];
-
-    if (!videoFile)
-      return res.status(400).json({ error: "Fichier vidéo manquant (video)." });
-    if (!coverFile)
-      return res.status(400).json({ error: "Image cover manquante (cover)." });
-    if (stillFiles.length === 0)
-      return res
-        .status(400)
-        .json({ error: "Au moins 1 still requis (stills)." });
-    if (subtitleFiles.length === 0)
-      return res
-        .status(400)
-        .json({ error: "Au moins 1 sous-titre requis (subtitles)." });
-
-    const nonSrt = subtitleFiles.find((f) => !isSrtFile(f));
-    if (nonSrt) {
-      return res.status(400).json({
-        error: "SRT_TYPE_NOT_ALLOWED",
-        details: "Seuls les fichiers .srt sont autorisés pour subtitles.",
-        file: nonSrt.originalname,
-      });
+    const fileCheck = validateUploadFiles(req.files);
+    if (!fileCheck.ok) {
+      return res.status(fileCheck.status).json(fileCheck.body);
     }
 
-    /**
-     * =========================
-     * 1) Upload S3: VIDEO
-     * =========================
-     */
-    let s3Video = null;
-    try {
-      s3Video = await uploadVideoFromDisk({
-        localPath: videoFile.path,
-        filename: videoFile.filename,
-        mimetype: videoFile.mimetype,
-      });
-      // vidéo : plus besoin local (YouTube lit depuis S3 désormais)
-      filesToDeleteLater.push(videoFile.path);
-    } catch (err) {
-      return res.status(500).json({
-        error: "S3_VIDEO_UPLOAD_FAILED",
-        details: err.message,
-      });
+    const { videoFile, coverFile, stillFiles, subtitleFiles } = fileCheck;
+
+    const s3Result = await uploadMediaToS3({
+      videoFile,
+      coverFile,
+      stillFiles,
+      subtitleFiles,
+    });
+    if (!s3Result.ok) {
+      return res.status(s3Result.status).json(s3Result.body);
     }
 
-    /**
-     * =========================
-     * 2) Upload S3: COVER
-     * =========================
-     * ⚠️ On garde le fichier local cover jusqu’à fin YouTube (thumbnail)
-     */
-    let s3Cover = null;
-    try {
-      s3Cover = await uploadCoverFromDisk({
-        localPath: coverFile.path,
-        filename: coverFile.filename,
-        mimetype: coverFile.mimetype,
-      });
-      // suppression cover après YouTube
-      filesToDeleteLater.push(coverFile.path);
-    } catch (err) {
-      return res.status(500).json({
-        error: "S3_COVER_UPLOAD_FAILED",
-        details: err.message,
-      });
-    }
+    const {
+      s3Video,
+      s3Cover,
+      stillsPayloadForDb,
+      subtitlesPayloadForDb,
+      filesToDeleteLater,
+    } = s3Result;
 
-    /**
-     * =========================
-     * 3) Upload S3: STILLS
-     * =========================
-     * ✅ On peut supprimer local tout de suite après upload S3 (pas utilisé par YouTube)
-     */
-    const stillsPayloadForDb = [];
-    try {
-      for (const sf of stillFiles) {
-        const s3Still = await uploadStillFromDisk({
-          localPath: sf.path,
-          filename: sf.filename,
-          mimetype: sf.mimetype,
-        });
-
-        // On prépare un objet compatible avec ton stillsModel.insertStills
-        // (il semble s'attendre à f.filename)
-        stillsPayloadForDb.push({
-          ...sf,
-          filename: s3Still.key, // on remplace filename par la clé S3
-        });
-
-        filesToDeleteLater.push(sf.path);
-      }
-    } catch (err) {
-      return res.status(500).json({
-        error: "S3_STILLS_UPLOAD_FAILED",
-        details: err.message,
-      });
-    }
-
-    /**
-     * =========================
-     * 4) Upload S3: SUBTITLES
-     * =========================
-     * ⚠️ On garde les fichiers locaux jusqu’à fin YouTube (captions)
-     */
-    const subtitlesPayloadForDb = [];
-    try {
-      for (const sub of subtitleFiles) {
-        const s3Sub = await uploadSubtitleFromDisk({
-          localPath: sub.path,
-          filename: sub.filename,
-          mimetype: sub.mimetype,
-        });
-
-        subtitlesPayloadForDb.push({
-          file_name: s3Sub.key, // DB : clé S3
-          language: normalizeLangFromFilename(sub.originalname) || null,
-        });
-
-        filesToDeleteLater.push(sub.path);
-      }
-    } catch (err) {
-      return res.status(500).json({
-        error: "S3_SUBTITLES_UPLOAD_FAILED",
-        details: err.message,
-      });
-    }
-
-    /**
-     * =========================
-     * 5) Lecture body / validations (identique)
-     * =========================
-     */
     const {
       youtube_video_id,
       title,
@@ -331,44 +159,30 @@ async function uploadVideoController(req, res) {
       return s === "" ? null : s;
     };
 
-    /**
-     * =========================
-     * 6) Payload DB (clé S3 partout)
-     * =========================
-     */
     const payload = {
       youtube_video_id: toNullIfEmpty(youtube_video_id),
-
-      // clés S3
       video_file_name: s3Video.key,
       cover: s3Cover.key,
-
       title: String(title).trim(),
       title_en: String(title_en).trim(),
-
       synopsis: String(synopsis).trim(),
       synopsis_en: String(synopsis_en).trim(),
       language: String(language).trim(),
       country: String(country).trim(),
       duration: durationNum,
-
       tech_resume: String(tech_resume).trim(),
       ai_tech: String(ai_tech).trim(),
       creative_resume: String(creative_resume).trim(),
-
       email: String(email).trim(),
       director_name: String(director_name).trim(),
       director_lastname: String(director_lastname).trim(),
       director_gender: directorGenderDb,
       birthday: String(birthday).trim(),
-
       mobile_number: toNullIfEmpty(mobile_number),
       home_number: toNullIfEmpty(home_number),
-
       address: String(address).trim(),
       director_country: String(director_country).trim(),
       discovery_source: String(discovery_source).trim(),
-
       upload_status: "Pending",
     };
 
@@ -376,24 +190,13 @@ async function uploadVideoController(req, res) {
 
     const videoId = await videosModel.createVideo(payload, conn);
 
-    /**
-     * =========================
-     * 7) YouTube (fonctionne: videoFile = clé S3)
-     *    Pour cover/subtitles: youtube.service lit LOCAL.
-     *    Donc on lui donne les filenames locaux (comme avant).
-     * =========================
-     */
     let youtubeVideoId = null;
     try {
       youtubeVideoId = await uploadToYouTube({
-        videoFile: payload.video_file_name, // clé S3 => ok (youtube.service S3 stream)
+        videoFile: payload.video_file_name,
         title: payload.title,
         description: payload.synopsis,
-
-        // cover local filename (youtube.service va lire uploads/covers/<filename>)
         coverFile: coverFile.filename,
-
-        // subtitles local filename
         subtitlesFile: subtitleFiles[0]?.filename || null,
       });
 
@@ -401,8 +204,8 @@ async function uploadVideoController(req, res) {
         youtubeVideoId,
         videoId,
       ]);
-    } catch (err) {
-      // comme ton code initial: pas bloquant
+    } catch {
+      // pas bloquant
     }
 
     await conn.query(
@@ -450,33 +253,15 @@ async function uploadVideoController(req, res) {
 
     if (cleanTags.length > 0) {
       const tagRows = await upsertTags(cleanTags, conn);
-
-      if (tagRows.length > 0) {
-        const values = tagRows.map(() => "(?, ?)").join(", ");
-        const params = tagRows.flatMap((t) => [videoId, t.id]);
-
-        await conn.query(
-          `INSERT IGNORE INTO video_tag (video_id, tag_id) VALUES ${values}`,
-          params,
-        );
-      }
+      await insertVideoTags(videoId, tagRows, conn);
     }
 
-    // ✅ on insère les stills avec filename remplacé par clé S3
     await stillsModel.insertStills(videoId, stillsPayloadForDb, conn);
-
-    // ✅ on insère les subtitles avec file_name = clé S3
     await subtitlesModel.insertSubtitles(videoId, subtitlesPayloadForDb, conn);
 
     await conn.commit();
 
-    /**
-     * =========================
-     * 8) Clean up fichiers locaux
-     * =========================
-     */
     for (const p of filesToDeleteLater) {
-      // cover/subtitles doivent rester jusqu'à fin YouTube => on les supprime ici seulement
       await safeUnlink(p);
     }
 

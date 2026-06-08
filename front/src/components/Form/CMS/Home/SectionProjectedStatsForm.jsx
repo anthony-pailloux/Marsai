@@ -1,8 +1,4 @@
 import { useTranslation } from "react-i18next";
-import { useForm } from "../../../../hooks/useForm";
-import { useEffect, useState } from "react";
-import useCmsContent from "../../../../hooks/useCmsContent";
-import buildInitialValuesFromCms from "../../../../utils/buildInitialValuesFromCms";
 import CmsBlock from "../Titles/CmsBlock";
 import CmsFormHeader from "../Titles/CmsFormHeader";
 import CmsTitleBlock from "../Titles/CmsTitleBlock";
@@ -13,41 +9,28 @@ import CmsSubtitleBlock from "../Titles/CmsSubtitleBlock";
 import CmsInputColor from "../Fields/CmsImputColor";
 import CmsFieldsRow from "../Titles/CmsFieldsRow";
 import BtnSubmitForm from "../../../Buttons/BtnSubmitForm";
-import saveCmsSection from "../../../../utils/saveCmsSection";
+import useCmsSectionForm from "../../../../hooks/useCmsSectionForm.js";
 
 function SectionProjectedStatsForm({ forcedLocale }) {
+  const { t } = useTranslation("home");
 
-    const { t, i18n } = useTranslation("home");
-    const locale = forcedLocale ?? (i18n.language.startsWith("fr") ? "fr" : "en");
+  const PAGE = "home";
+  const SECTION = "projectedStats";
+  const FIELDS = [
+  "section_visibility",
+  "heading_title_main",
+  "heading_title_accent",
+  "heading_title_accent_color",
+  "heading_tagline",
+  "stat1_value",
+  "stat1_label",
+  "stat1_label_color",
+  "stat2_value",
+  "stat2_label",
+  "stat2_label_color",
+  ];
 
-    // Page et section
-    const page = "home";
-    const section = "projectedStats";
-    // console.log("Page:", page, "Section:", section);
-
-    // champs des differents éléments dans la section
-    const fields = [
-
-        "section_visibility",
-        "heading_title_main",
-        "heading_title_accent",
-        "heading_title_accent_color",
-        "heading_tagline",
-        "stat1_value",
-        "stat1_label",
-        "stat1_label_color",
-        "stat2_value",
-        "stat2_label",
-        "stat2_label_color"
-
-    ];
-    // console.log(fields);
-
-    const orderIndexByKey = Object.fromEntries(fields.map((k, i) => [k, i]));
-
-    const { values, setValues, handleChange } = useForm({
-
-        section_visibility:"",
+  const DEFAULT_VALUES = {section_visibility:"",
         section_visibility_is_active: 1,
 
         heading_title_main: "",
@@ -68,70 +51,25 @@ function SectionProjectedStatsForm({ forcedLocale }) {
         stat2_value: "",
         stat2_label: "",
         stat2_label_color: "",
-        stat2_value_is_active: 1
+        stat2_value_is_active: 1};
 
-    })
-    const [message, setMessage] = useState("");
-    const [loading, setLoading] = useState(false);
-    const { content, loading: cmsLoading } = useCmsContent(page, locale);
-    const [initialValues, setInitialValues] = useState({});
-    const [hasHydrated, setHasHydrated] = useState(false);
-    
-    useEffect(() => {
+  const {
+    page,
+    section,
+    locale,
+    values,
+    handleChange,
+    submitLoading,
+    handleSubmit,
+  } = useCmsSectionForm({
+    page: PAGE,
+    section: SECTION,
+    fields: FIELDS,
+    defaultValues: DEFAULT_VALUES,
+    forcedLocale,
+    successMessage: "Section Localisation de l'événement mise à jour",
+  });
 
-        if (cmsLoading) {
-            return;
-        }
-
-        if (hasHydrated) return;
-
-        const cmsSection = content?.[page]?.[section];
-
-        if (!cmsSection) return;
-
-        // construit les valeurs initiales depuis le CMS
-        const built = buildInitialValuesFromCms(fields, cmsSection, {
-            fileFields: [],
-        });
-
-        setValues(built);
-
-        setInitialValues(built);
-
-        setHasHydrated(true);
-
-    }, [cmsLoading, content, page, section, hasHydrated, setValues, locale])
-
-    // reinitialise quand locale change // Remplie le formulaire avec les données de la BDD
-    // fait que les données dans les champs sont chargé par raport à la langue
-    useEffect(()=>{
-        setHasHydrated(false);
-    }, [locale]);
-
-    async function handleSubmit(event) {
-        // console.log("Fonction handleSubmit OK");
-        
-        event.preventDefault();
-        setLoading(true);
-
-        try {
-
-            // console.log("try dans handleSubmit OK");
-
-            await saveCmsSection({ page, section, locale, fields, values });
-
-            setMessage("Section Localisation de l'événement mise à jour");
-
-        } catch (error) {
-
-            console.error("erreur:", error);
-            setMessage("Erreur lors de la mise à jour");
-
-        } finally {
-            setLoading(false);
-        }
-
-    }
 
     return(
         <section>
@@ -222,7 +160,7 @@ function SectionProjectedStatsForm({ forcedLocale }) {
                 </div>
 
                 <div className="w-full flex justify-center">
-                    <BtnSubmitForm loading={loading} className="flex w-[200px] h-[53px] items-center justify-center gap-[13px] px-[21px] py-[10px] rounded-[5px] border border-[#DBE3E6] bg-white dark:border-[rgba(0,0,0,0.11)] dark:bg-[#333]">
+                    <BtnSubmitForm loading={submitLoading} className="flex w-[200px] h-[53px] items-center justify-center gap-[13px] px-[21px] py-[10px] rounded-[5px] border border-[#DBE3E6] bg-white dark:border-[rgba(0,0,0,0.11)] dark:bg-[#333]">
                         Mettre à jour
                     </BtnSubmitForm>
                 </div>

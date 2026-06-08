@@ -1,22 +1,22 @@
 import { useEffect, useState } from "react";
+import { typeCardTitle, typeEyebrow, typeSectionBody, typeSectionCaption, typeSectionTitle } from '../../utils/typography.js';
 import { Link } from "react-router";
+import { fetchPublicAwards } from "../../services/Awards/AwardsApi";
 import { fetchVideos } from "../../services/Videos/VideosListApi";
 import { useTranslation } from "react-i18next";
-// import GetAllContentApi from "../../services/CMS/GetAllContentApi";
-// import { buildCmsMap } from "../../utils/buildCmsMap";
 import { isSectionVisible, isVisible } from "../../utils/isVisible";
 import useCmsContent from "../../hooks/useCmsContent";
+import { resolveCmsAssetWithFallback } from "../../utils/cmsAssets.js";
 import { toMediaUrl } from "../../utils/mediaUrl";
+import { getApiBaseUrl } from "../../utils/apiBase.js";
+import { HOME_CARD, HOME_EYEBROW, HOME_EYEBROW_ICON, HOME_PILL_LINK } from "./homeCardStyles.js";
 
-import arrowSrc from "../../assets/imgs/icones/arrowRightWhite.svg";
 
-const API_BASE = import.meta.env.VITE_API_URL;
 
 function SectionAward() {
   const [videos, setVideos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [errorMsg, setErrorMsg] = useState("");
-  const [Message, setMessage] = useState("");
 
   const { t, i18n } = useTranslation("home");
   const isFr = i18n.language?.startsWith("fr");
@@ -28,43 +28,52 @@ function SectionAward() {
 
   const { content, loading: cmsLoading } = useCmsContent(page, locale);
 
+  const eyebrowIconSrc = resolveCmsAssetWithFallback(
+    content?.[page]?.[section]?.eyebrow_icon,
+    t("award.eyebrow_icon", { defaultValue: "/icons/home/IconStars.svg" })
+  );
+
   useEffect(() => {
-    let isMounted = true;
+    const controller = new AbortController();
 
     async function load() {
-      // console.log("function");
-      
+      setLoading(true);
+      setErrorMsg("");
+
       try {
+        let showcase = [];
 
-        // console.log("try dans HomevideoList useEffect ok");
+        try {
+          const awards = await fetchPublicAwards({ signal: controller.signal });
+          for (const award of awards) {
+            for (const video of award.videos || []) {
+              showcase.push({ ...video, award_title: award.title, award_img: award.img });
+              if (showcase.length >= 3) break;
+            }
+            if (showcase.length >= 3) break;
+          }
+        } catch (err) {
+          if (controller.signal.aborted) return;
+          console.warn("Awards indisponibles, fallback videos:", err?.message);
+        }
 
-        setLoading(true);
-        setErrorMsg("");
+        if (showcase.length === 0) {
+          const data = await fetchVideos({ signal: controller.signal });
+          const list = Array.isArray(data) ? data : (data?.videos ?? []);
+          showcase = list.slice(0, 3);
+        }
 
-        const data = await fetchVideos();
-
-        const list = Array.isArray(data) ? data : (data?.videos ?? []);
-
-        const first = list.slice(0, 3);
-
-        if (isMounted) setVideos(first);
-
+        if (!controller.signal.aborted) setVideos(showcase);
       } catch (err) {
-
-        if (isMounted) setErrorMsg(err?.message || "Erreur inconnue");
-
+        if (controller.signal.aborted) return;
+        setErrorMsg(err?.message || "Erreur inconnue");
       } finally {
-
-        if (isMounted) setLoading(false);
-
+        if (!controller.signal.aborted) setLoading(false);
       }
     }
 
     load();
-    return () => {
-      isMounted = false;
-    };
-
+    return () => controller.abort();
   }, []);
 
   if (cmsLoading) return null;
@@ -72,19 +81,19 @@ function SectionAward() {
   return (
     <>
       {isSectionVisible(content, page, section) && (
-        <section className="flex flex-col items-center justify-center gap-6.25 md:gap-20 p-6.25 md:px-25 self-stretch">
+        <section className="flex flex-col items-center gap-6 md:gap-8 px-5 md:px-18.75 self-stretch w-full max-w-7xl mx-auto">
 
-          <div className="flex flex-col md:flex-row justify-between items-end self-stretch shrink-0 gap-5 p-5">
-            <div>
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-end self-stretch gap-4 md:gap-5">
+            <div className="max-w-xl">
               {isVisible(content, page, section, "eyebrow") && (
-                <div className="flex items-center gap-3">
-                  <div className="w-8 h-px shrink-0 bg-[#2B7FFF]" />
-                  <p className="text-[#2B7FFF] text-[12px] font-bold leading-4 tracking-[4.8px] uppercase">
-                    {content?.[page]?.[section]?.eyebrow}
-                  </p>
+                <div className={`${HOME_EYEBROW} mb-3 ${typeEyebrow} text-black dark:text-white`}>
+                  {eyebrowIconSrc ? (
+                    <img src={eyebrowIconSrc} alt="" className={HOME_EYEBROW_ICON} />
+                  ) : null}
+                  <span>{content?.[page]?.[section]?.eyebrow}</span>
                 </div>
               )}
-              <h2 className="text-[#000000] text-[48px] md:text-[96px] font-bold leading-12 md:leading-24 tracking-[-2.4px] md:tracking-[-4.8px] uppercase dark:text-[#FFFFFF]">
+              <h2 className={`${typeSectionTitle} text-black dark:text-white`}>
                 {isVisible(content, page, section, "title1") && (
                   <span className="block">
                     {content?.[page]?.[section]?.title1}
@@ -97,45 +106,40 @@ function SectionAward() {
                 )}
               </h2>
               {isVisible(content, page, section, "description") && (
-                <p className="text-[#000000] text-[20px] leading-[32.5px] text-left dark:text-[#FFFFFF]">
+                <p className={`mt-3 ${typeSectionBody} text-left text-black dark:text-white`}>
                   {content?.[page]?.[section]?.description}
                 </p>
               )}
             </div>
 
-            
             {isVisible(content, page, section, "ctaSeeMore") && (
               <Link
                 to={content?.[page]?.[section]?.ctaSeeMore_link || "/gallery"}
-                className="flex justify-center items-center bg-[rgba(194,122,255,0.52)] rounded-[20px] px-5 gap-2.5"
+                className={`${HOME_PILL_LINK} ${typeEyebrow} text-black dark:text-white`}
               >
-                <span className="flex text-[#FFFFFF] text-center text-[14px] font-bold leading-5 tracking-[1.4px] uppercase">
-                  {content?.[page]?.[section]?.ctaSeeMore}
-                </span>
-                <div className="flex justify-center items-center w-5 h-5">
-                  <img src={arrowSrc} alt="" className="" />
-                </div>
+                <span>{content?.[page]?.[section]?.ctaSeeMore}</span>
+                <img src="/icons/home/arrowRight.svg" alt="" className={HOME_EYEBROW_ICON} />
               </Link>
             )}
           </div>
 
-          <div className="grid w-full grid-cols-1 gap-y-8 md:grid-cols-3 md:gap-8">
+          <div className="grid w-full grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 lg:gap-5">
 
             {loading && (
-              <div>
+              <div className="col-span-full">
                 <span className="loading loading-spinner loading-md"></span>
                 <p>{t("award.loading")}</p>
               </div>
             )}
 
             {!loading && errorMsg && (
-              <div className="col-span-3 alert alert-error">
+              <div className="col-span-full alert alert-error">
                 <span>{t("award.error")} {errorMsg}</span>
               </div>
             )}
 
             {!loading && !errorMsg && videos.length === 0 && (
-              <div className="col-span-3 alert">
+              <div className="col-span-full alert">
                 <span>{t("award.notFound")}</span>
               </div>
             )}
@@ -150,35 +154,38 @@ function SectionAward() {
                   "Unknown director";
 
                 const coverUrl = video?.cover
-                  ? toMediaUrl(video.cover, "covers", API_BASE)
+                  ? toMediaUrl(video.cover, "covers", getApiBaseUrl())
                   : "";
 
                 return (
-
-                  <div
+                  <article
                     key={video.id}
-                    className="w-full overflow-hidden rounded-[40px] border border-[rgba(0,0,0,0.1)] bg-[rgba(0,0,0,0.05)] dark:border-white/10 dark:bg-white/5"
+                    className={`${HOME_CARD} overflow-hidden`}
                   >
-                    
                     <Link
                       to={`/gallery/${video.id}`}
                       aria-label={t("award.ariaViewFilm", { title })}
+                      className="group block"
                     >
-                      <div className="w-full aspect-video overflow-hidden rounded-t-[40px]">  
-                        <img src={coverUrl} alt={title} loading="lazy" className="h-full w-full object-cover"/>
+                      <div className="h-[130px] w-full overflow-hidden sm:h-[135px] md:h-[140px]">
+                        <img
+                          src={coverUrl}
+                          alt={title}
+                          loading="lazy"
+                          className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.03]"
+                        />
                       </div>
                     </Link>
-                    
 
-                    <div className="flex h-43.75 flex-col items-start gap-2 pt-10 px-10 pb-0 self-stretch">
-                      <h3 className="text-[#000000] dark:text-[#FFFFFF] text-[30px] font-bold leading-9 tracking-[-1.5px] uppercase text-left">
+                    <div className="flex flex-col items-start gap-1 p-4 md:p-5">
+                      <h3 className={`line-clamp-2 ${typeCardTitle} text-left text-black dark:text-white`}>
                         {title}
                       </h3>
-                      <p className="text-[#000000] dark:text-white/80 text-[10px] font-bold leading-3.75 tracking-[3px] uppercase">
+                      <p className={`text-black/70 dark:text-white/70 ${typeSectionCaption}`}>
                         {director}
                       </p>
                     </div>
-                  </div>
+                  </article>
                 );
               })}
           </div>

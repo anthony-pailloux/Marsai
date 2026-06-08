@@ -1,4 +1,4 @@
-import { Link } from "react-router";
+﻿import { Link } from "react-router";
 
 import closeMenuIcon from "../../assets/imgs/icones/X.svg";
 import { useTranslation } from "react-i18next";
@@ -6,10 +6,12 @@ import useCmsContent from "../../hooks/useCmsContent";
 
 import englishFlag from "../../assets/imgs/icones/englishFlag.png";
 import frenchFlag from "../../assets/imgs/icones/franceFlag.png";
-import { resolveCmsAsset } from "../../utils/cmsAssets";
+import { resolveNavbarLogoVariant } from "../../utils/cmsAssets";
 import { isVisible } from "../../utils/isVisible";
+import usePrefersDark from "../../hooks/usePrefersDark";
+import { typeNav } from "../../utils/typography.js";
 
-function NavMobile({onClose, onToggleLang, OnIsFr}) {
+function NavMobile({ onClose }) {
 
     const { t, i18n } = useTranslation("header");
 
@@ -17,6 +19,7 @@ function NavMobile({onClose, onToggleLang, OnIsFr}) {
     const section = "header"
 
     const locale = i18n.language?.startsWith("fr") ? "fr" : "en";
+    const prefersDark = usePrefersDark();
 
     const isFr = i18n.language?.startsWith("fr");
 
@@ -34,11 +37,14 @@ function NavMobile({onClose, onToggleLang, OnIsFr}) {
     };
 
     // cherche les données en bdd
-    const { content, loading, message } = useCmsContent(page, locale);
+    const { content, loading } = useCmsContent(page, locale);
 
     if (loading) return null;
 
-    const logoSrc = resolveCmsAsset(content?.[page]?.[section]?.logo);
+    const logoSrc = resolveNavbarLogoVariant(content?.[page]?.[section]?.logo, {
+        isOnHero: false,
+        prefersDark,
+    });
 
     const firstLabel = content?.[page]?.[section]?.first;
     const firstLink  = content?.[page]?.[section]?.first_link;
@@ -48,9 +54,6 @@ function NavMobile({onClose, onToggleLang, OnIsFr}) {
 
     const thirdLabel = content?.[page]?.[section]?.third;
     const thirdLink = content?.[page]?.[section]?.third_link;
-
-    const btnLabel = content?.[page]?.[section]?.btn;
-    const btnLink = content?.[page]?.[section]?.btn_link;
 
     const handleLinkClick = () => {
         onClose?.();
@@ -63,8 +66,8 @@ function NavMobile({onClose, onToggleLang, OnIsFr}) {
             <div className="flex items-center justify-between self-stretch p-2 w-full">
                 
                 <Link to="/">
-                    <div className="h-full max-w-25 min-w-5">
-                        <img src={logoSrc} alt="Logo" className="w-full" draggable={false}/>
+                    <div className="w-44 shrink-0">
+                        <img src={logoSrc} alt="Logo" className="w-full h-auto" draggable={false}/>
                     </div>
                 </Link>
                 <button
@@ -82,7 +85,7 @@ function NavMobile({onClose, onToggleLang, OnIsFr}) {
 
                 <div className="w-full">
 
-                    <ul className="flex flex-col items-start justify-center self-stretch p-3 gap-10 w-full text-[16px] font-bold leading-4 tracking-[3px] uppercase">
+                    <ul className={`flex flex-col items-start justify-center self-stretch gap-10 w-full p-3 ${typeNav}`}>
                         <li><Link to="/" onClick={onClose}>{content?.[section]?.home || t("home")}</Link></li>
                         {isVisible(content, section, "first") && firstLabel && firstLink && (
                             <li>
@@ -110,19 +113,12 @@ function NavMobile({onClose, onToggleLang, OnIsFr}) {
                 </div>
 
                 <div className="flex items-center justify-center gap-5 w-full">
-                    
-                    {isVisible(content, section, "btn") && btnLabel && btnLink && (
-                        <Link to={btnLink} onClick={handleLinkClick} className="flex items-center justify-center gap-3 px-10 py-3 rounded-[20px] bg-[linear-gradient(90deg,#2B7FFF_0%,#9810FA_100%)] text-white text-center text-[16px] font-bold leading-4 uppercase">
-                            {btnLabel}
-                        </Link>
-                    )}
-
                     {isVisible(content, section, "icon_country") && (
 
                         <button
                             type="button"
                             onClick={toggleLang}
-                            className="h-12 cursor-pointer flex items-center justify-center rounded-lg dark:bg-white/10 dark:p-0.5"
+                            className="h-10 w-12 shrink-0 cursor-pointer flex items-center justify-center bg-transparent border-0 p-0"
                             aria-label={isFr ? "Switch to English" : "Passer en français"}
                             title={isFr ? "English" : "Français"}
                         >

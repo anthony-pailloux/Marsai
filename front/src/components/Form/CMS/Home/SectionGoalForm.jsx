@@ -1,55 +1,33 @@
-import CmsInput from "../Fields/CmsInput"
+﻿import CmsInput from "../Fields/CmsInput"
 import iconPaintDark from "../../../../assets/imgs/icones/IconPaintDark.svg";
 import iconPaint from "../../../../assets/imgs/icones/IconPaint.svg";
 import { useTranslation } from "react-i18next";
-import { useForm } from "../../../../hooks/useForm";
-import { useEffect, useState } from "react";
-import { updateContentApi, updateImageApi } from "../../../../services/CMS/UpdateContentApi";
 import CmsTextarea from "../Fields/CmsTextarea";
 import CmsHideToggle from "../Fields/CmsHideToggle";
 import CmsInputImage from "../Fields/CmsInputImage";
-import useCmsContent from "../../../../hooks/useCmsContent";
-import buildInitialValuesFromCms from "../../../../utils/buildInitialValuesFromCms";
-import saveCmsSection from "../../../../utils/saveCmsSection";
+import useCmsSectionForm from "../../../../hooks/useCmsSectionForm.js";
 
 function SectionGoalForm({ forcedLocale }) {
+  const { t } = useTranslation("home");
 
-    const { t, i18n } = useTranslation("home");
-    const locale = forcedLocale ?? (i18n.language.startsWith("fr") ? "fr" : "en");
+  const PAGE = "home";
+  const SECTION = "goal";
+  const FIELDS = [
+  "section_visibility",
+  "title_main",
+  "title_accent",
+  "card1_title",
+  "card1_description",
+  "card1_icon",
+  "card2_title",
+  "card2_description",
+  "card2_icon",
+  "card3_title",
+  "card3_description",
+  "card3_icon",
+  ];
 
-    // Page et section
-    const page = "home";
-    const section = "goal";
-    // console.log("Page:", page, "Section:", section);
-
-    // champs des differents éléments dans la section
-    const fields = [
-
-        "section_visibility",
-        
-        "title_main",
-        "title_accent",
-
-        "card1_title",
-        "card1_description",
-        "card1_icon",
-
-        "card2_title",
-        "card2_description",
-        "card2_icon",
-
-        "card3_title",
-        "card3_description",
-        "card3_icon",
-
-    ];
-    // console.log(fields);
-
-    const orderIndexByKey = Object.fromEntries(fields.map((k, i) => [k, i]));
-
-    const { values, setValues, handleChange } = useForm({
-
-        section_visibility:"",
+  const DEFAULT_VALUES = {section_visibility:"",
         section_visibility_is_active: 1,
         
         title_main:"",
@@ -71,63 +49,26 @@ function SectionGoalForm({ forcedLocale }) {
         card3_title:"",
         card3_description:"",
         card3_icon:"",
-        card3_title_is_active: 1
+        card3_title_is_active: 1};
 
-    })
-    const [message, setMessage] = useState("");
-    const [loading, setLoading] = useState(false);
-    const { content, loading: cmsLoading } = useCmsContent(page, locale);
-    const [initialValues, setInitialValues] = useState({});
-    const [hasHydrated, setHasHydrated] = useState(false);
+  const {
+    page,
+    section,
+    locale,
+    values,
+    handleChange,
+    submitLoading,
+    handleSubmit,
+  } = useCmsSectionForm({
+    page: PAGE,
+    section: SECTION,
+    fields: FIELDS,
+    defaultValues: DEFAULT_VALUES,
+    forcedLocale,
+    fileFields: ["card1_icon", "card2_icon", "card3_icon"],
+    successMessage: "Section Goal mise Ã  jour",
+  });
 
-    useEffect(()=>{
-        if (cmsLoading) {
-            return;
-        }
-
-        if (hasHydrated) return;
-
-        const cmsSection = content?.[page]?.[section];
-
-        if (!cmsSection) return;
-
-        // construit les valeurs initiales depuis le CMS
-        const built = buildInitialValuesFromCms(fields, cmsSection, {
-            fileFields: ["media", "protocol_icon", "ctaParticipate_signe", "ctaLearnMore_signe"],
-        });
-
-        setValues(built);
-
-        setInitialValues(built);
-
-        setHasHydrated(true);
-
-    }, [cmsLoading, content, page, section, hasHydrated, setValues, locale])
-
-    async function handleSubmit(event) {
-        // console.log("Fonction handleSubmit OK");
-        
-        event.preventDefault();
-        setLoading(true);
-
-        try {
-
-            // console.log("try dans handleSubmit OK");
-
-            await saveCmsSection({ page, section, locale, fields, values });
-
-            setMessage("Section Concept mise à jour");
-
-        } catch (error) {
-
-            console.error("erreur:", error);
-            setMessage("Erreur lors de la mise à jour");
-
-        } finally {
-            setLoading(false);
-        }
-
-    }
 
     return(
         <section>
@@ -152,7 +93,7 @@ function SectionGoalForm({ forcedLocale }) {
                         <CmsHideToggle name="title_main" value={values.title_main_is_active} values={values} onChange={handleChange} page={page} section={section} locale={locale} />}
                     />
 
-                    <CmsInput name="title_accent" label="Titre accent (coloré)" value={values.title_accent} onChange={handleChange} placeholder={t("goal.title_accent")} rightSlot={
+                    <CmsInput name="title_accent" label="Titre accent (colorÃ©)" value={values.title_accent} onChange={handleChange} placeholder={t("goal.title_accent")} rightSlot={
                         <CmsHideToggle name="title_accent" value={values.title_accent_is_active} values={values} onChange={handleChange} page={page} section={section} locale={locale} />}
                     />
                 </div>
@@ -203,8 +144,8 @@ function SectionGoalForm({ forcedLocale }) {
                 </div>
 
                 <div className="w-full flex justify-center">
-                    <button type="submit" className="flex w-[200px] h-[53px] items-center justify-center gap-[13px] px-[21px] py-[10px] rounded-[5px] border border-[#DBE3E6] bg-white dark:border-[rgba(0,0,0,0.11)] dark:bg-[#333]">
-                        Mettre à jour
+                    <button type="submit" disabled={submitLoading} className="flex w-[200px] h-[53px] items-center justify-center gap-[13px] px-[21px] py-[10px] rounded-[5px] border border-[#DBE3E6] bg-white dark:border-[rgba(0,0,0,0.11)] dark:bg-[#333]">
+                        Mettre Ã  jour
                     </button>
                 </div>
 
@@ -214,3 +155,4 @@ function SectionGoalForm({ forcedLocale }) {
 }
 
 export default SectionGoalForm
+

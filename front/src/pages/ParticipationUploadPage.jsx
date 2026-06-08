@@ -5,6 +5,7 @@ import {
   VideoUploadForm,
   TeamCompositionForm,
 } from "../components/Form/Participation/ui";
+import { typeBodySm, typePageHero } from "../utils/typography.js";
 
 export default function ParticipationUploadPage() {
   const { t } = useTranslation("participation");
@@ -74,12 +75,12 @@ export default function ParticipationUploadPage() {
   return (
     <div className="min-h-screen px-4 py-10 pt-[100px]">
       <div className="mx-auto w-full max-w-5xl">
-        <h1 className="mb-10 text-center text-3xl font-semibold dark:text-white">
+        <h1 className={`mb-10 text-center dark:text-white ${typePageHero}`}>
           {t("page.title")}
         </h1>
 
         {/* Indicateur step */}
-        <div className="mb-8 flex items-center justify-center gap-3 text-sm">
+        <div className={`mb-8 flex items-center justify-center gap-3 ${typeBodySm}`}>
           <span
             className={
               step === 1 ? "font-semibold text-white" : "text-neutral-400"
@@ -128,7 +129,7 @@ export default function ParticipationUploadPage() {
                 <button
                   type="button"
                   onClick={() => setStep(1)}
-                  className="rounded-xl border border-purple-400 px-10 py-3 font-semibold text-purple-500"
+                  className="rounded-xl border border-orange-400 px-10 py-3 font-semibold text-orange-500"
                 >
                   {t("page.prev")}
                 </button>
@@ -140,8 +141,8 @@ export default function ParticipationUploadPage() {
                   className={[
                     "rounded-xl px-12 py-3 font-semibold text-white transition",
                     canGoStep3
-                      ? "bg-purple-600 hover:bg-purple-700"
-                      : "cursor-not-allowed bg-purple-300 opacity-60",
+                      ? "bg-orange-600 hover:bg-orange-700"
+                      : "cursor-not-allowed bg-orange-300 opacity-60",
                   ].join(" ")}
                   title={
                     canGoStep3 ? t("page.next") : t("page.nextDisabledHint")
@@ -167,8 +168,8 @@ export default function ParticipationUploadPage() {
                 className={[
                   "rounded-xl px-12 py-3 font-semibold text-white transition",
                   canSend
-                    ? "bg-purple-600 hover:bg-purple-700"
-                    : "cursor-not-allowed bg-purple-300 opacity-60",
+                    ? "bg-orange-600 hover:bg-orange-700"
+                    : "cursor-not-allowed bg-orange-300 opacity-60",
                 ].join(" ")}
                 title={
                   canSend ? t("page.sendHint") : t("page.sendDisabledHint")

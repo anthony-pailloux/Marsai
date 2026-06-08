@@ -1,9 +1,20 @@
 import { Link } from "react-router"
+import { typeBodySm, typeCta, typeEyebrow, typeSectionTitle } from '../../utils/typography.js';
 import { useTranslation } from "react-i18next";
-
 import useCmsContent from "../../hooks/useCmsContent";
 import { isSectionVisible, isVisible } from "../../utils/isVisible";
-import { resolveCmsAsset } from "../../utils/cmsAssets";
+import { resolveCmsAssetWithFallback } from "../../utils/cmsAssets";
+import {
+    HOME_CARD,
+    HOME_CARD_BODY,
+    HOME_CARD_DESC,
+    HOME_CARD_ICON,
+    HOME_CARD_ICON_IMG,
+    HOME_CARD_TITLE,
+    HOME_EYEBROW,
+    HOME_EYEBROW_ICON,
+    HOME_PILL_LINK,
+} from "./homeCardStyles.js";
 
 function SectionEvent() {
 
@@ -21,85 +32,102 @@ function SectionEvent() {
 
     const cards = [1, 2, 3];
 
-    const { content, loading, message } = useCmsContent(page, locale);
+    const { content } = useCmsContent(page, locale);
 
-    const ctaAgendaIconSrc = resolveCmsAsset(content?.[page]?.[section]?.ctaAgenda_icon);
+    const ctaAgendaIconSrc = resolveCmsAssetWithFallback(content?.[page]?.[section]?.ctaAgenda_icon, t("events.ctaAgenda_icon"));
 
     function getCardIconSrc(n) {
-       return resolveCmsAsset(content?.[page]?.[section]?.[`card${n}_icon`]); 
+       return resolveCmsAssetWithFallback(content?.[page]?.[section]?.[`card${n}_icon`], t(`events.cards.card${n}.icon`));
     }
+
+    const visibleListItems = listFields.filter(({ key }) => isVisible(content, page, section, key));
 
     return(
         <>
             {isSectionVisible(content, page, section) && (
-                <section className="flex flex-col items-center gap-5 md:gap-24 md:py-32 p-5 md:px-24.75 self-stretch">
+                <section className="grid w-full grid-cols-1 md:grid-cols-6 gap-6 lg:gap-8 px-5 md:px-18.75 self-stretch max-w-7xl mx-auto">
 
-                    <div className="flex flex-col gap-5 md:gap-16.5 items-start w-full">
+                    <div className="flex flex-col items-start gap-4 md:gap-5 md:col-span-3">
+                        <div className={`${HOME_EYEBROW} ${typeEyebrow} text-black dark:text-white`}>
+                            {ctaAgendaIconSrc ? (
+                                <img src={ctaAgendaIconSrc} alt="" className={HOME_EYEBROW_ICON} />
+                            ) : null}
+                            <span>{t("events.eyebrow")}</span>
+                        </div>
 
-                        <h2 className="text-[#000000] dark:text-[#FFFFFF] text-[48px] md:text-[72px] leading-[43.2px] md:leading-[64.8px] font-bold tracking-[-2.4px] md:tracking-[-3.6px] uppercase text-left">
-                            
+                        <h2 className={`${typeSectionTitle} text-left text-black dark:text-white`}>
                             {isVisible(content, page, section, "title_main") && (
-                                <span>{content?.[page]?.[section]?.title_main}</span>
+                                <span className="block">{content?.[page]?.[section]?.title_main}</span>
                             )}
-
                             {isVisible(content, page, section, "title_accent") && (
-                                <span className="block text-[#AD46FF] mt-3">
+                                <span className="block mt-1.5 md:mt-2 text-brand">
                                     {content?.[page]?.[section]?.title_accent}
                                 </span>
                             )}
-
                         </h2>
+                    </div>
 
-                        <div className="text-[#000000] dark:text-[#FFFFFF] text-[20px] leading-[32.5px] text-left">
-                            <ol className="list-decimal gap-5 px-5 md:p-5">
-                                {listFields
-                                    .filter(({ key }) => isVisible(content, page, section, key))
-                                    .map(({ key }) => (
-                                        <li key={key}>
+                    <div className={`${HOME_CARD} md:col-span-3 flex flex-col gap-2 p-5 md:p-6`}>
+                        {visibleListItems.length > 0 && (
+                            <ul className="flex flex-col gap-2">
+                                {visibleListItems.map(({ key }, index) => (
+                                    <li
+                                        key={key}
+                                        className="flex items-center gap-3 rounded-xl border border-black/10 bg-black/[0.03] px-3.5 py-2 dark:border-white/10 dark:bg-white/[0.03]"
+                                    >
+                                        <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-brand/20 text-xs font-bold text-brand">
+                                            {index + 1}
+                                        </span>
+                                        <p className={`leading-snug text-black dark:text-white ${typeBodySm}`}>
                                             {content?.[page]?.[section]?.[key]}
-                                        </li>
-                                    ))
-                                }
-                            </ol>
-                        </div>
-                        <Link to={content?.[page]?.[section]?.ctaAgenda_link} className="flex h-10.5 px-6.25 py-3.25 gap-2 justify-center items-center rounded-[100px] border-[rgba(15,15,15,0.1)] bg-[rgba(0,0,0,0.05)] dark:border-white/15 dark:bg-white/15">
-                            <div>
+                                        </p>
+                                    </li>
+                                ))}
+                            </ul>
+                        )}
+
+                        {isVisible(content, page, section, "ctaAgenda") && (
+                            <Link
+                                to={content?.[page]?.[section]?.ctaAgenda_link || "/events"}
+                                className={`${HOME_PILL_LINK} w-full justify-center ${typeEyebrow} text-black dark:text-white`}
+                            >
                                 {ctaAgendaIconSrc ? (
-                                    <img src={ctaAgendaIconSrc} alt={content?.[page]?.[section]?.ctaAgenda ?? ""} />
+                                    <img src={ctaAgendaIconSrc} alt="" className={HOME_EYEBROW_ICON} />
                                 ) : null}
-                            </div>
-                            <span className="text-[#000000] dark:text-[#FFFFFF] text-center text-[12px] font-bold leading-4 tracking-[1.2px] uppercase">
-                                {content?.[page]?.[section]?.ctaAgenda}
-                            </span>
-                        </Link>
+                                <span className={`text-black dark:text-white ${typeCta}`}>
+                                    {content?.[page]?.[section]?.ctaAgenda}
+                                </span>
+                            </Link>
+                        )}
                     </div>
 
-                    
-                    <div className="flex flex-col md:flex-row gap-8 self-stretch text-left py-5 w-full justify-center">
-                        {cards
-                        .filter((n) => isVisible(content, page, section, `card${n}_title`))
-                        .map((n) => {
-                            
-                            const cardsIconSrc = getCardIconSrc(n);
+                    {cards
+                    .filter((n) => isVisible(content, page, section, `card${n}_title`))
+                    .map((n) => {
+                        const cardsIconSrc = getCardIconSrc(n);
+                        const cardLink = content?.[page]?.[section]?.[`card${n}_link`] || t(`events.cards.card${n}.link`, { defaultValue: "/events" });
 
-                            return (
-                                <div key={n} className="max-w-87.5 max-h-65 self-stretch row-start-1 row-span-1 col-start-1 col-span-1 justify-self-stretch rounded-[40px] border border-black/10 bg-[rgba(217,217,217,0.1)] p-10 flex flex-col gap-7.5 hover:border-[#F1F1F1]/60 hover:bg-[#F1F1F1]/60 hover:text-black w-full">
-                                    <div className="h-10 w-10">
-                                        {cardsIconSrc ? (
-                                            <img src={cardsIconSrc} alt={content?.[section]?.[`card${n}_title`]} />
-                                        ) : null}
-                                    </div>
-                                    <h3 className="text-[30px] font-bold leading-9 tracking-[-1.5px] uppercase">
-                                        {content?.[page]?.[section]?.[`card${n}_title`]}
-                                    </h3>
-                                    <p className="text-[14px] font-normal leading-[22.75px]">
-                                        {content?.[page]?.[section]?.[`card${n}_description`]}
-                                    </p>
+                        return (
+                            <Link
+                                key={n}
+                                to={cardLink}
+                                className={`${HOME_CARD_BODY} md:col-span-2 text-left transition-colors hover:bg-black/[0.08] dark:hover:bg-white/[0.08]`}
+                            >
+                                <div className={HOME_CARD_ICON}>
+                                    {cardsIconSrc ? (
+                                        <img src={cardsIconSrc} alt="" className={HOME_CARD_ICON_IMG} />
+                                    ) : null}
                                 </div>
-                            )
-                        })}
-                    </div>
-                    
+                                <h3 className={HOME_CARD_TITLE}>
+                                    {content?.[page]?.[section]?.[`card${n}_title`]}
+                                </h3>
+                                <p className={HOME_CARD_DESC}>
+                                    {content?.[page]?.[section]?.[`card${n}_description`]}
+                                </p>
+                            </Link>
+                        )
+                    })}
+
                 </section>
             )}
         </>

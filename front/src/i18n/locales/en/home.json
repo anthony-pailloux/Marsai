@@ -1,45 +1,51 @@
 {
    "hero": {
+      "media":"/imgs/backgroundSections/HomeSectionHero.mp4",
       "title_main": "MARS",
       "title_accent":"AI",
       "protocol": "the 2026 temporal protocol",
-      "protocol_icon":"../src/assets/imgs/icones/iconStars.svg",
+      "protocol_icon":"/icons/home/IconStars.svg",
       "tagline_before": "Imagine",
       "tagline_highlight": "Futures",
       "tagline_after": "worth imagining",
       "desc1": "the 60-second short film festival",
       "desc2": "2 days of immersion in the heart of Marseille.",
       "ctaParticipate": "participate",
-      "ctaParticipate_signe": "../src/assets/imgs/icones/arrowRight.svg",
+      "ctaParticipate_signe": "/icons/home/arrowRight.svg",
       "ctaParticipate_link": "/participation",
       "ctaLearnMore": "Learn more",
-      "ctaLearnMore_signe":"+",
+      "ctaLearnMore_signe":"/icons/home/plus.svg",
       "ctaLearnMore_link":"/learnMore"
    },
    "concept":{
       "card1":{
          "title": "1 minute",
          "description": "Ultra-short format for maximum impact.",
-         "title_color":"#C27AFF"
+         "title_color":"#FF8C42",
+         "icon":"/icons/home/IconClock.svg"
       },
       "card2": {
          "title": "Free",
          "description": "Conferences and workshops accessible.",
-         "title_color":"#00D492"
+         "title_color":"#FF8C42",
+         "icon":"/icons/home/ticket.svg"
       },
       "card3": {
         "title": "For everyone",
         "description": "Professionals, students, and the curious.",
-         "title_color":"#FB64B6"
+         "title_color":"#FF8C42",
+         "icon":"/icons/home/IconPeople.svg"
       },
       "card4": {
         "title": "Expertise",
         "description": "World leaders in generative AI.",
-         "title_color":"#2B7FFF"
+         "title_color":"#FF8C42",
+         "icon":"/icons/home/IconAward.svg"
       }      
    },
    "award": {
       "eyebrow": "The MARS.AI Project",
+      "eyebrow_icon": "/icons/home/IconStars.svg",
       "title1": "Films in",
       "title2": "Competition",
       "description": "Discover a selection of pioneering works exploring new frontiers of AI-assisted imagination.",
@@ -57,25 +63,26 @@
          "card1":{
             "title":"People at the centre",
             "description":"Put people at the heart of creation so as not to lose the emotion.",
-            "icon":"/src/assets/imgs/icones/IconTarget.svg"
+            "icon":"/icons/home/IconTarget.svg"
          },
          "card2":{
             "title":"Creative challenge",
             "description":"Challenge creativity with an ultra-short 60-second format.",
-            "icon":"/src/assets/imgs/icones/IconLightning.svg"
+            "icon":"/icons/home/IconLightning.svg"
          },
          "card3":{
             "title":"Desirable futures",
             "description":"Exploring desirable futures through emerging technologies.",
-            "icon":"/src/assets/imgs/icones/IconRocket.svg"
+            "icon":"/icons/home/IconRocket.svg"
          }
       }
    },
   "events": {
+      "eyebrow": "Conferences",
       "title_main": "Two days of",
       "title_main_color": "",
       "title_accent": "Free conferences",
-      "title_accent_color": "#AD46FF",
+      "title_accent_color": "#FF8C42",
       "list": {
          "item1": "Engaging debates on ethics and the future",
          "item2": "Thought-provoking exchanges between artists and tech",
@@ -83,24 +90,24 @@
       },
       "ctaAgenda": "Full agenda",
       "ctaAgenda_link": "/events",
-      "ctaAgenda_icon": "../../assets/imgs/icones/IconCalendar.svg",
+      "ctaAgenda_icon": "/icons/home/IconCalendar.svg",
       "cards": {
          "card1": {
-            "icon": "../../assets/imgs/icones/IconPlay.svg",
+            "icon": "/icons/home/IconPlay.svg",
             "title": "Screenings",
             "title_color": "",
             "description": "Big-screen screenings with the filmmakers present.",
             "link": "/events"
          },
          "card2": {
-            "icon": "../../assets/imgs/icones/IconPeople.svg",
+            "icon": "/icons/home/IconPeople.svg",
             "title": "Workshops",
             "title_color": "",
             "description": "Hands-on sessions to master AI tools.",
             "link": "/events"
          },
          "card3": {
-            "icon": "../../assets/imgs/icones/IconAward.svg",
+            "icon": "/icons/home/IconAward.svg",
             "title": "Awards",
             "title_color": "",
             "description": "A closing ceremony celebrating bold creativity.",
@@ -110,17 +117,17 @@
    },
   "closingEvent": {
       "eyebrow": "Closing Night",
-      "eyebrow_text_color": "#C27AFF",
-      "eyebrow_bg_color": "rgba(173, 70, 255, 0.2)",
+      "eyebrow_text_color": "#FFC857",
+      "eyebrow_bg_color": "rgba(255, 176, 32, 0.2)",
       "title_main": "MARS.A.I",
       "title_accent": "NIGHT",
-      "title_accent_color": "#F6339A",
+      "title_accent_color": "#FF8C42",
       "description": {
          "ligne1": "An electro party blending AI and desirable futures.",
          "ligne2": "An immersive sound and visual experience."
       },
       "card": {
-         "icon":"/src/assets/imgs/icones/iconClock.svg",
+         "icon":"/icons/home/IconClock.svg",
          "date": "JUNE 13",
          "hour": "FROM 7:00 PM",
          "localisation": "MARSEILLE",
@@ -130,13 +137,13 @@
    },
    "localisationEvent":{
       "eyebrow":"The venue",
-      "eyebrow_icon": "../../assets/imgs/icones/IconLocalisation.svg",
+      "eyebrow_icon": "/icons/home/IconLocalisation.svg",
       "eyebrow_color": "",
       "venue": {
          "namePart1": "La",
          "namePart2": "Plateforme",
          "cityTagline": "Marseille, Hub Créatif",
-         "color": "#51A2FF"
+         "color": "#FF8C42"
       },
       "address": {
          "street": "12 Rue d'Uzes",
@@ -152,12 +159,12 @@
          {
             "name": "Salle des Sucres",
             "description": "A future sanctuary for talks and the Mars.A.I awards ceremony. A majestic space blending heritage and technology.",
-            "color":"#51A2FF"
+            "color":"#FF8C42"
          },
          {
             "name": "Salle PLAZA",
             "description": "The festival’s epicenter: welcome desk, activities, workshops, and food. The meeting point for all participants.",
-            "color": "#C27AFF"
+            "color": "#FF8C42"
          }
       ],
       "maps_link":"https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d8044.241161952438!2d5.362378323117001!3d43.314391970182314!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x12c9c13ddc0211b9%3A0xd1642ae4b32c4bc4!2s%C3%89cole%20La%20Plateforme_%20Marseille%20-%20Entr%C3%A9e%20Sud!5e1!3m2!1sfr!2sfr!4v1769784840463!5m2!1sfr!2sfr"
@@ -167,19 +174,19 @@
          "title_main": "Projected",
          "title_main_color": "",
          "title_accent": "Figures",
-         "title_accent_color": "#F6339A",
+         "title_accent_color": "#FF8C42",
          "tagline": "Global scale, local impact."
       },
       "stats": [
          {
             "value": "+120",
             "label": "Countries represented",
-            "color": "#AD46FF"
+            "color": "#FFB020"
          },
          {
             "value": "+600",
             "label": "Submitted films",
-            "color": "#F6339A"
+            "color": "#FF8C42"
          }
       ]
    },

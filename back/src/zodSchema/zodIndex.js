@@ -3,7 +3,7 @@
 **********************************************/
 
 //Validation des données user.
-export { emailSchema, createUserSchema, createUserSnakeSchema, createUserJurySchema, roleSchema, passwordSchema} from "./userValidationSchema.js";
+export { emailSchema, createUserSchema, createUserSnakeSchema, createUserJurySchema, roleSchema, passwordSchema, passwordResetTokenSchema } from "./userValidationSchema.js";
 
 //Validation des ajouts dans admin_video.
 export { createAdminVideoSchema } from "./adminVideoValidationSchema.js";
@@ -23,9 +23,6 @@ export { createFaqSchema } from "./faqValidationSchema.js";
 export { createJurySchema } from "./juryCreationValidation.js";
 //validation des données des images des jurés.
 export { juryImageSchema, fileJuryImageSchema, optionalFileJuryImageSchema } from "./imageValidationSchema.js";
-
-//Validation des ajouts dans memo_selector.
-export { createMemoSelectorSchema } from "./memoSelectorValidationSchema.js";
 
 //Validation des données du partenaire commercial.
 export { createPartnerSchema } from "./partnerValidationSchema.js";
