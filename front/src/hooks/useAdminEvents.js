@@ -2,17 +2,15 @@ import { useEffect, useMemo, useState } from "react";
 import {
   clamp,
   DEFAULT_EVENT_FORM,
-  getDayKeyFromDate,
   getDayTabsFromEvents,
   normalizeAdminEvent,
 } from "../pages/Admin/AdminEvents.utils.js";
+import { getAdminEvents } from "../services/Events/AdminEventApi.js";
 import {
-  getAdminEvents,
-  createEvent,
-  updateEvent,
-  deleteEvent,
-  togglePublish,
-} from "../services/Events/AdminEventApi.js";
+  removeAdminEvent,
+  saveAdminEvent,
+  toggleAdminEventPublish,
+} from "../pages/Admin/adminEventsCrud.js";
 
 export default function useAdminEvents() {
   const [day, setDay] = useState(null);
@@ -127,68 +125,18 @@ export default function useAdminEvents() {
   async function onSave(e) {
     e.preventDefault();
 
-    const startAtRaw =
-      form.startAt && String(form.startAt).trim() ? form.startAt.trim() : null;
-
-    const capacity = Number(form.capacity) || 0;
-
-    const dateForApi = startAtRaw
-      ? new Date(startAtRaw).toISOString().slice(0, 19).replace("T", " ")
-      : new Date().toISOString().slice(0, 19).replace("T", " ");
-
-    const duration = Number(form.length);
-    const apiPayload = {
-      title: form.title,
-      description: form.description || null,
-      date: dateForApi,
-      length: duration > 0 ? duration : 90,
-      stock: capacity,
-      illustration: "",
-      location: form.location || null,
-    };
-
     try {
-      if (editing) {
-        const updatePayload = {
-          ...apiPayload,
-          date: editing.date || dateForApi,
-          length: duration > 0 ? duration : (editing.length ?? 90),
-          stock: editing.stock ?? capacity,
-        };
+      const result = await saveAdminEvent({ form, editing });
 
-        const updated = await updateEvent(editing.id, updatePayload);
-        const updatedDay = getDayKeyFromDate(updated.date);
-
+      if (result.type === "update") {
         setEvents((prev) =>
           prev.map((x) =>
-            x.id === editing.id
-              ? {
-                  ...x,
-                  ...updated,
-                  day: updatedDay,
-                  capacity,
-                  startAt: updated.date,
-                }
-              : x,
+            x.id === editing.id ? { ...x, ...result.event.patch } : x,
           ),
         );
       } else {
-        const created = await createEvent(apiPayload);
-        const createdDay = getDayKeyFromDate(created.date);
-
-        setEvents((prev) => [
-          {
-            ...created,
-            day: createdDay,
-            type: form.type,
-            capacity,
-            startAt: created.date,
-            published: false,
-          },
-          ...prev,
-        ]);
-
-        if (createdDay) setDay(createdDay);
+        setEvents((prev) => [result.event, ...prev]);
+        if (result.day) setDay(result.day);
       }
 
       setModalOpen(false);
@@ -203,7 +151,7 @@ export default function useAdminEvents() {
     if (!ok) return;
 
     try {
-      await deleteEvent(ev.id);
+      await removeAdminEvent(ev.id);
       setEvents((prev) => prev.filter((x) => x.id !== ev.id));
     } catch (err) {
       console.error("Erreur delete:", err);
@@ -213,7 +161,7 @@ export default function useAdminEvents() {
 
   async function onTogglePublish(ev) {
     try {
-      const res = await togglePublish(ev.id, !ev.published);
+      const res = await toggleAdminEventPublish(ev.id, !ev.published);
       setEvents((prev) =>
         prev.map((x) =>
           x.id === ev.id ? { ...x, published: res.published } : x,
