@@ -1,10 +1,10 @@
 /**
- * Données de démo MarsAI — covers, vidéos, jury, awards, events, etc.
+ * Données de démo MarsAI — films, jury, awards, events, etc. (MySQL uniquement).
  *
- * Usage (depuis /back) :
- *   npm run seed:demo
+ * Usage (depuis /back) : npm run seed:demo
+ *
+ * Les images démo doivent déjà être dans back/uploads/ (covers, jury, awards, medias).
  */
-import { spawnSync } from "node:child_process";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import mysql from "mysql2/promise";
@@ -23,14 +23,6 @@ const dbConfig = {
   password: process.env.DB_PASSWORD || "",
   database: process.env.DB_NAME || "projet_marsai",
 };
-
-function runAssetGenerator() {
-  const script = path.join(rootDir, "scripts", "generate_demo_assets.py");
-  const result = spawnSync("python", [script], { stdio: "inherit", cwd: rootDir });
-  if (result.status !== 0) {
-    throw new Error("Échec génération des assets (generate_demo_assets.py)");
-  }
-}
 
 const SHOWCASE_FILM_5 = {
   title: "Et si c'était ça, demain ?",
@@ -431,8 +423,7 @@ async function seed(conn) {
 }
 
 async function main() {
-  console.log("Génération des assets visuels…");
-  runAssetGenerator();
+  console.log("Seed démo MarsAI (base de données)…");
 
   const conn = await mysql.createConnection(dbConfig);
   try {
