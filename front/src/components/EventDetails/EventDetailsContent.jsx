@@ -6,7 +6,7 @@ import BookingModal from "../BookingModal.jsx";
 
 import { getApiBaseUrl } from "../../utils/apiBase.js";
 import { typeAdminSection, typeBody, typeBodySm, typeCaption, typeSectionTitle } from "../../utils/typography.js";
-import { HOME_CARD_BODY } from "../Home/homeCardStyles.js";
+import { HOME_CARD_BODY, HOME_TIME_PILL } from "../Home/homeCardStyles.js";
 
 function resolveIllustration(src) {
   if (!src) return "";
@@ -84,7 +84,7 @@ export default function EventDetailsContent() {
             </div>
           )}
           <div className="flex flex-wrap items-center gap-3 text-sm">
-            <span className="inline-flex h-8 items-center justify-center rounded-full bg-sky-400 px-4 text-xs font-semibold text-black">
+            <span className={HOME_TIME_PILL}>
               {event.date
                 ? new Date(event.date).toLocaleTimeString("fr-FR", {
                     hour: "2-digit",

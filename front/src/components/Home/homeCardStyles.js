@@ -19,6 +19,10 @@ export const HOME_PILL_LINK =
 export const HOME_EYEBROW_ICON =
   "h-5 w-5 shrink-0 object-contain home-brand-icon";
 
+/** Badge horaire (programme, ateliers) */
+export const HOME_TIME_PILL =
+  "inline-flex h-8 items-center justify-center rounded-full bg-brand/20 px-4 text-xs font-semibold text-brand";
+
 export const HOME_CARD_BODY = `${HOME_CARD} p-8 md:p-10 flex flex-col gap-4`;
 
 export const HOME_CARD_COMPACT = `${HOME_CARD} p-5 md:p-6 flex flex-col gap-3`;

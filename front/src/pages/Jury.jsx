@@ -97,7 +97,7 @@ export default function Jury() {
                 </span>
               )}
               {isVisible(content, page, hero, "title_accent") && (
-                <span className="block text-blue-600 dark:text-blue-400">
+                <span className="block text-brand">
                   {content?.[page]?.[hero]?.title_accent || t("titleLine2")}
                 </span>
               )}
@@ -136,7 +136,7 @@ export default function Jury() {
                 />
 
                 <div className="absolute inset-x-0 bottom-0 p-8">
-                  <div className={`text-orange-400 ${typeEyebrow}`}>
+                  <div className={`text-brand ${typeEyebrow}`}>
                     {president.role_label || t("president.defaultRole")}
                   </div>
                   <div className={`mt-3 text-white ${typeCardTitle}`}>
@@ -151,7 +151,7 @@ export default function Jury() {
             <div>
               <h2 className={typeSectionSubtitle}>
                 {t("president.sectionTitle")}{" "}
-                <span className="text-blue-600 dark:text-blue-400">
+                <span className="text-brand">
                   {t("president.sectionTitleAccent")}
                 </span>
               </h2>
@@ -219,7 +219,7 @@ export default function Jury() {
                 <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/30 to-transparent" />
 
                 <div className="absolute bottom-0 w-full p-7">
-                  <div className={`text-cyan-400 ${typeEyebrow}`}>
+                  <div className={`text-brand ${typeEyebrow}`}>
                     {m.role_label || ""}
                   </div>
 

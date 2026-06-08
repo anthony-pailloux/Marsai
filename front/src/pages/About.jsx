@@ -14,6 +14,8 @@ import {
   HOME_CARD_BODY,
   HOME_CARD_COMPACT,
   HOME_EYEBROW,
+  HOME_EYEBROW_ICON,
+  HOME_PILL_LINK,
 } from "../components/Home/homeCardStyles.js";
 
 export default function About() {
@@ -32,9 +34,9 @@ export default function About() {
           </div>
 
           <div className="relative p-8 sm:p-12">
-            <div className={`${HOME_EYEBROW} ${typeEyebrow}`}>
-              <span className="inline-block h-2 w-2 rounded-full bg-orange-500" />
-              {t("hero.badge")}
+            <div className={`${HOME_EYEBROW} ${typeEyebrow} text-black dark:text-white`}>
+              <img src="/icons/home/IconStars.svg" alt="" className={HOME_EYEBROW_ICON} />
+              <span>{t("hero.badge")}</span>
             </div>
 
             <h1 className={`mt-6 ${typePageHero}`}>
@@ -72,7 +74,7 @@ export default function About() {
 
               <Link
                 to="/participation"
-                className={`inline-flex items-center gap-2 rounded-full border border-black/10 bg-black/5 px-6 py-3 backdrop-blur hover:bg-black/10 dark:border-white/10 dark:bg-white/5 dark:hover:bg-white/10 ${typeCta}`}
+                className={`${HOME_PILL_LINK} px-6 py-3 ${typeCta} text-black dark:text-white`}
               >
                 <span className="grid h-7 w-7 place-items-center rounded-full bg-black/5 dark:bg-white/10">
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
@@ -122,7 +124,7 @@ export default function About() {
         {/* VISION */}
         <section className={`mt-14 ${HOME_CARD_BODY}`}>
           <div className="flex items-center gap-3">
-            <div className="grid h-11 w-11 place-items-center rounded-2xl bg-amber-500/10 text-amber-600 dark:text-amber-300">
+            <div className="grid h-11 w-11 place-items-center rounded-2xl bg-brand/10 text-brand">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
                 <path
                   d="M12 3l9 4.5-9 4.5-9-4.5L12 3z"

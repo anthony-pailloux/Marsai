@@ -1,4 +1,4 @@
-﻿import { useTranslation } from "react-i18next";
+import { useTranslation } from "react-i18next";
 import { typeEyebrow, typeSectionCaption, typeSectionTitle, typeStat } from '../../utils/typography.js';
 import useCmsContent from "../../hooks/useCmsContent";
 import { isSectionVisible, isVisible } from "../../utils/isVisible";
@@ -18,7 +18,7 @@ function SectionProjected() {
 
     const stats = [ 1, 2 ];
 
-    // cherche les données en bdd
+    // cherche les donn�es en bdd
     const { content, loading, message } = useCmsContent(page, locale);
 
     return(
@@ -28,7 +28,7 @@ function SectionProjected() {
                     <div className="flex w-full md:max-w-xs shrink-0 flex-col items-start gap-3 text-left">
                         <h2 className={`${typeSectionTitle} w-full`}>
                             {content?.[page]?.[section]?.heading_title_main  || t("projectedStats.heading.title_main")}
-                            <span className="block" style={{ color: content?.[page]?.[section]?.heading_title_accent_color || "#FF8C42" }}>
+                            <span className="block text-brand">
                                 {content?.[page]?.[section]?.heading_title_accent || t("projectedStats.heading.title_accent")}
                             </span>
                         </h2>
@@ -41,8 +41,6 @@ function SectionProjected() {
                         {stats.map((n) => {
                             const value = content?.[page]?.[section]?.[`stat${n}_value`];
                             const label = content?.[page]?.[section]?.[`stat${n}_label`];
-                            const color = content?.[page]?.[section]?.[`stat${n}_label_color`];
-
                             return (
                                 <div key={n} >
                                     {isVisible(content, page, section, `stat${n}_value`) && (
@@ -50,7 +48,7 @@ function SectionProjected() {
                                             <p className={`text-center ${typeStat}`}>
                                                 {value}
                                             </p>
-                                            <p className={`text-center ${typeSectionCaption}`} style={{ color: color || "#FFB020" }}>
+                                            <p className={`text-center text-brand ${typeSectionCaption}`}>
                                                 {label}
                                             </p>
                                         </div>

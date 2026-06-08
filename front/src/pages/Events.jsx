@@ -18,12 +18,17 @@ import {
   typeStat,
 } from "../utils/typography.js";
 import {
+  HOME_CARD,
   HOME_CARD_BODY,
   HOME_CARD_COMPACT,
   HOME_CARD_DASHED,
+  HOME_CARD_ICON,
+  HOME_CARD_ICON_IMG,
   HOME_EYEBROW,
+  HOME_EYEBROW_ICON,
   HOME_LIST_ITEM,
-  HOME_CARD,
+  HOME_PILL_LINK,
+  HOME_TIME_PILL,
 } from "../components/Home/homeCardStyles.js";
 
 const agendaIcon = "/icons/home/IconCalendar.svg";
@@ -78,8 +83,8 @@ function Events() {
       <div className="mx-auto px-6 py-12 space-y-16">
         {/* INFOS PRATIQUES */}
         <section id="infos-pratiques" className="flex flex-col items-start space-y-6">
-          <div className={`${HOME_EYEBROW} gap-3 ${typeEyebrow}`}>
-            <img src={agendaIcon} alt="" className="h-6 w-6" />
+          <div className={`${HOME_EYEBROW} ${typeEyebrow} text-black dark:text-white`}>
+            <img src={agendaIcon} alt="" className={HOME_EYEBROW_ICON} />
             <span>{t("title")}</span>
           </div>
 
@@ -93,11 +98,11 @@ function Events() {
           </div>
 
           <article className={`mt-6 flex w-full gap-5 ${HOME_CARD_COMPACT} backdrop-blur`}>
-            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-[16px] bg-[#51A2FF]">
-              <img src={baliseIcon} alt="" className="h-6 w-6" />
+            <div className={HOME_CARD_ICON}>
+              <img src={baliseIcon} alt="" className={HOME_CARD_ICON_IMG} />
             </div>
             <div className="space-y-2 justify-center w-full ">
-              <h3 className={`text-blue-600 dark:text-blue-300 ${typeEyebrow}`}>
+              <h3 className={`text-brand ${typeEyebrow}`}>
                 {t("platformTitle")}
               </h3>
               <p className="text-sm text-black/80 dark:text-white/80">
@@ -114,8 +119,8 @@ function Events() {
         {/* PROGRAMME DES CONFÉRENCES */}
         <section id="programme" className="flex flex-col items-start space-y-6">
           <div className="flex flex-wrap items-center gap-3">
-            <div className={`${HOME_EYEBROW} gap-3 ${typeEyebrow}`}>
-              <img src={horlogeIcon} alt="" className="h-6 w-6" />
+            <div className={`${HOME_EYEBROW} ${typeEyebrow} text-black dark:text-white`}>
+              <img src={horlogeIcon} alt="" className={HOME_EYEBROW_ICON} />
               <span>{t("programmeTitle")}</span>
             </div>
             {programDays.length > 0 && (
@@ -148,9 +153,7 @@ function Events() {
                     key={item.id}
                     className={`flex items-start gap-4 ${HOME_LIST_ITEM}`}
                   >
-                    <span
-                      className={`mt-1 inline-flex h-8 items-center justify-center rounded-full px-4 text-xs font-semibold text-black ${item.color || "bg-sky-400"}`}
-                    >
+                    <span className={`mt-1 ${HOME_TIME_PILL}`}>
                       {item.time}
                     </span>
                     {item.day && (
@@ -180,15 +183,15 @@ function Events() {
 
         {/* ACCÈS */}
         <section id="acces" className="flex flex-col items-start space-y-6">
-          <div className={`${HOME_EYEBROW} gap-3 ${typeEyebrow}`}>
-            <img src={arrowIcon} alt="" className="h-6 w-6" />
+          <div className={`${HOME_EYEBROW} ${typeEyebrow} text-black dark:text-white`}>
+            <img src={arrowIcon} alt="" className={HOME_EYEBROW_ICON} />
             <span>{t("accessTitle")}</span>
           </div>
 
           <div className="grid w-full gap-4 md:grid-cols-3">
             <article className={HOME_CARD_COMPACT}>
-              <img src={wagonIcon} alt="" className="h-6 w-6" />
-              <h3 className={`text-sky-600 dark:text-sky-300 ${typeEyebrow}`}>
+              <img src={wagonIcon} alt="" className={HOME_EYEBROW_ICON} />
+              <h3 className={`text-brand ${typeEyebrow}`}>
                 {t("transportTitle")}
               </h3>
               <p className="mt-3 text-sm text-black/80 dark:text-white/80">
@@ -200,8 +203,8 @@ function Events() {
             </article>
 
             <article className={HOME_CARD_COMPACT}>
-              <img src={carsIcon} alt="" className="h-6 w-6" />
-              <h3 className={`text-emerald-600 dark:text-emerald-300 ${typeEyebrow}`}>
+              <img src={carsIcon} alt="" className={HOME_EYEBROW_ICON} />
+              <h3 className={`text-brand ${typeEyebrow}`}>
                 {t("carTitle")}
               </h3>
               <p className="mt-3 text-sm text-black/80 dark:text-white/80">
@@ -213,8 +216,8 @@ function Events() {
             </article>
 
             <article className={HOME_CARD_COMPACT}>
-              <img src={baliseIcon} alt="" className="h-6 w-6" />
-              <h3 className={`text-amber-500 dark:text-amber-300 ${typeEyebrow}`}>
+              <img src={baliseIcon} alt="" className={HOME_EYEBROW_ICON} />
+              <h3 className={`text-brand ${typeEyebrow}`}>
                 {t("addressTitle")}
               </h3>
               <p className="mt-3 text-sm text-black/80 dark:text-white/80">
@@ -239,8 +242,8 @@ function Events() {
 
         {/* ATELIERS PRATIQUES */}
         <section id="ateliers" className="flex flex-col items-start space-y-6 pb-4">
-          <div className={`${HOME_EYEBROW} gap-3 ${typeEyebrow}`}>
-            <img src={starIcon} alt="" className="h-6 w-6" />
+          <div className={`${HOME_EYEBROW} ${typeEyebrow} text-black dark:text-white`}>
+            <img src={starIcon} alt="" className={HOME_EYEBROW_ICON} />
             <span>{t("workshopsTitle")}</span>
           </div>
 
@@ -250,7 +253,7 @@ function Events() {
                 {t("workshopsHeading")}{" "}
                 <span className="text-[#FF8C42]">{t("workshopsHeadingAccent")}</span>
               </h3>
-              <img src={peopleIcon} alt="" className="h-9 w-9" />
+              <img src={peopleIcon} alt="" className={HOME_EYEBROW_ICON} />
             </div>
 
             <p className={`mt-4 text-black/80 dark:text-white/80 ${typeSectionBody}`}>
@@ -265,7 +268,7 @@ function Events() {
                       className={`flex flex-col justify-between gap-3 ${HOME_LIST_ITEM}`}
                     >
                       <div className="flex items-center justify-between gap-3 flex-wrap">
-                        <span className="inline-flex h-8 items-center justify-center rounded-full bg-sky-400 px-4 text-xs font-semibold text-black">
+                        <span className={HOME_TIME_PILL}>
                           {w.date
                             ? new Date(w.date).toLocaleTimeString("fr-FR", {
                                 hour: "2-digit",
@@ -300,7 +303,7 @@ function Events() {
                       <div className="mt-2 flex flex-wrap items-center gap-2">
                         <Link
                           to={`/events/${w.id}`}
-                          className="inline-flex items-center justify-center rounded-full border border-black/10 px-4 py-2 text-xs font-semibold text-black dark:border-white/10 dark:text-white hover:bg-black/5 dark:hover:bg-white/5"
+                          className={`${HOME_PILL_LINK} ${typeEyebrow} text-black dark:text-white`}
                         >
                           {t("seeDetail")}
                         </Link>

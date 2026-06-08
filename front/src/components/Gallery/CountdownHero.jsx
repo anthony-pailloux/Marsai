@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import useCmsContent from "../../hooks/useCmsContent";
 import { typeEyebrow } from "../../utils/typography.js";
+import { HOME_EYEBROW, HOME_EYEBROW_ICON } from "../Home/homeCardStyles.js";
 
 function pad2(n) {
     return String(n).padStart(2, "0");
@@ -112,9 +113,9 @@ function CountdownHero() {
                         </p>
 
                         {/* Badge */}
-                        <div className="mt-2 inline-flex w-fit items-center gap-2 rounded-full border border-neutral-200 bg-white/70 px-4 py-2 text-xs font-semibold uppercase tracking-wide text-neutral-700 backdrop-blur dark:border-white/10 dark:bg-white/5 dark:text-white/70">
-                            <span className="inline-block h-2 w-2 rounded-full bg-orange-500" />
-                            {label}
+                        <div className={`mt-2 ${HOME_EYEBROW} ${typeEyebrow} text-black dark:text-white`}>
+                            <img src="/icons/home/IconClock.svg" alt="" className={HOME_EYEBROW_ICON} />
+                            <span>{label}</span>
                         </div>
 
                         {/* Countdown */}

@@ -1,7 +1,8 @@
 // src/pages/LearnMore.jsx
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router";
-import { typeBody, typePageHero, typeSectionSubtitle } from "../utils/typography.js";
+import { typeBody, typeEyebrow, typePageHero, typeSectionSubtitle } from "../utils/typography.js";
+import { HOME_EYEBROW } from "../components/Home/homeCardStyles.js";
 
 function InfoCard({ title, children, icon }) {
   return (
@@ -36,7 +37,7 @@ function InfoCard({ title, children, icon }) {
 
 function Pill({ children }) {
   return (
-    <span className="inline-flex items-center rounded-full border border-black/10 bg-black/[0.03] px-3 py-1 text-xs font-bold tracking-wide text-black/70 dark:border-white/10 dark:bg-white/5 dark:text-white/70">
+    <span className={`${HOME_EYEBROW} ${typeEyebrow} text-black dark:text-white`}>
       {children}
     </span>
   );

@@ -31,16 +31,11 @@ function SectionClosingEvent() {
 
                         {/* Eyebrowbox */}
                         {isVisible(content, page, section, "eyebrow") && (
-                            <div
-                                className="flex h-5.75 items-center justify-center rounded-sm px-3 py-1"
-                                style={{ backgroundColor: content?.[page]?.[section]?.eyebrow_bg_color || "rgba(255, 176, 32, 0.2)" }}
-                            >
-                                <p
-                                    className={typeSectionCaption}
-                                    style={{ color: content?.[page]?.[section]?.eyebrow_text_color || "#FFC857" }}
-                                >
-                                    {content?.[page]?.[section]?.eyebrow}
-                                </p>
+                            <div className={`${HOME_EYEBROW} ${typeEyebrow} text-black dark:text-white`}>
+                                {cardIconSrc ? (
+                                    <img src={cardIconSrc} alt="" className={HOME_EYEBROW_ICON} />
+                                ) : null}
+                                <span>{content?.[page]?.[section]?.eyebrow}</span>
                             </div>
                         )}
 

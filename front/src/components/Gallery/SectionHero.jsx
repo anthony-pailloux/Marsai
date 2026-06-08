@@ -18,7 +18,7 @@ function SectionHero() {
         <section className="mb-8 flex flex-col gap-5">
             <h2 className={typePageHero}>
                 {isVisible(content, page, section, "title_main") && (
-                    <span className="block text-blue-600">
+                    <span className="block text-black dark:text-white">
                         {content?.[page]?.[section]?.title_main || t("title.line1")}
                     </span>
                 )}
