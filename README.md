@@ -51,7 +51,15 @@ cp front/.env.example front/.env
    - **back** : `PORT`, `DB_*`, `JWT_SECRET`, `FRONT_ORIGIN`
    - **front** : `VITE_API_URL`, `VITE_RECAPTCHA_SITE_KEY` (si upload)
 
-6. Lancer les deux serveurs :
+6. (Optionnel) Créer les comptes de test locaux :
+
+```bash
+cd back && npm run seed:users
+```
+
+Identifiants : voir `docs/comptes-test.md`
+
+7. Lancer les deux serveurs :
 
 ```bash
 # Terminal 1
@@ -65,6 +73,9 @@ Application : http://localhost:5173 — API : http://localhost:3000
 
 📚 Documentation complémentaire
 
+- **Patterns de code (débutant)** : `docs/guide-patterns-code.md`
+- **Git en équipe** : `docs/guide_GIT_workflow.md`
+- **Comptes de test** : `docs/comptes-test.md`
 - Routes et rôles : `docs/info_routes_role.md`
 - Scaleway S3 : `docs/S3_SETUP.md`
 - reCAPTCHA : `docs/racaptcha.md`
@@ -90,3 +101,10 @@ Application : http://localhost:5173 — API : http://localhost:3000
 - Ne pas modifier directement la base en production
 - Ne jamais exposer les variables sensibles
 - Toujours créer une branche pour les nouvelles fonctionnalités
+
+🧪 Tests rapides (avant push)
+
+```bash
+cd back && npm run test:film-validation && npm run test:shared-validation
+cd ../front && npm run build
+```
