@@ -1,7 +1,14 @@
 import { useTranslation } from "react-i18next";
 import { typeBadge, typeEyebrow } from "../../../../utils/typography.js";
 
-export default function ModalShell({ open, title, children, onClose, closeAriaLabel }) {
+export default function ModalShell({
+  open,
+  title,
+  children,
+  onClose,
+  closeAriaLabel,
+  wide = false,
+}) {
   const { t } = useTranslation("participation");
   if (!open) return null;
 
@@ -13,7 +20,11 @@ export default function ModalShell({ open, title, children, onClose, closeAriaLa
         onClick={onClose}
         aria-label={closeAriaLabel || t("countryPicker.closeAria")}
       />
-      <div className="absolute left-1/2 top-1/2 w-[min(92vw,560px)] -translate-x-1/2 -translate-y-1/2 overflow-hidden rounded-3xl bg-white shadow-xl ring-1 ring-black/10">
+      <div
+        className={`absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 overflow-hidden rounded-3xl bg-white shadow-xl ring-1 ring-black/10 ${
+          wide ? "w-[min(92vw,860px)]" : "w-[min(92vw,560px)]"
+        }`}
+      >
         <div className="flex items-center justify-between gap-3 border-b border-neutral-200 px-6 py-4">
           <div className={`text-neutral-900 ${typeEyebrow}`}>{title}</div>
           <button
