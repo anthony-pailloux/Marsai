@@ -86,9 +86,11 @@ function Header() {
     const thirdLabel = content?.[page]?.[section]?.third;
     const thirdLink = content?.[page]?.[section]?.third_link;
 
+    const onHero = isHome && !scrolled;
+
     return(
         <>
-            <header className={`flex md:grid md:grid-cols-[1fr_auto_1fr] items-center justify-between w-full p-2 my-2.5 md:m-0 md:px-10 md:py-5 lg:py-7.5 rounded-full border border-[rgba(255,255,255,0.10)] shadow-[0_25px_50px_-12px_rgba(0,0,0,0.40)] z-50 md:rounded-none md:bg-transparent md:shadow-none md:border-0 md:border-b md:border-[rgba(0,0,0,0.20)] ${isHome && !scrolled ? "text-white" : "text-[#3B82F6] md:bg-white dark:md:bg-black/70"} ${isHome ? "fixed md:top-0 md:left-0" : "static"} dark:border-[#FFFFFF]/20 dark:text-white`}>
+            <header className={`flex md:grid md:grid-cols-[1fr_auto_1fr] items-center justify-between w-full p-2 my-2.5 md:m-0 md:px-10 md:py-5 lg:py-7.5 rounded-full md:rounded-none shadow-[0_25px_50px_-12px_rgba(0,0,0,0.40)] md:shadow-none z-50 ${isHome ? "fixed md:top-0 md:left-0" : "static"} ${onHero ? "bg-black/20 backdrop-blur-sm text-white border border-white/10 md:border-0 md:border-b md:border-white/10" : "text-[#3B82F6] md:bg-white dark:md:bg-black/70 dark:text-white border border-[rgba(255,255,255,0.10)] md:border-0 md:border-b md:border-[rgba(0,0,0,0.20)] dark:border-[#FFFFFF]/20"}`}>
                 
                 {/* LEFT : LOGO */}
                 <div className="md:justify-self-start">
