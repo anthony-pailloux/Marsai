@@ -12,6 +12,7 @@ Projet réalisé par : Loriana, Vanessa, Edouard, Anthony, Mickael.
 marsai/
 ├── front/        → Application React (Vite)
 ├── back/         → API Node.js / Express
+├── shared/       → Schémas Zod partagés (validation participation film)
 ├── db/           → Script SQL + migrations
 ├── docs/         → Guides (routes, S3, reCAPTCHA, YouTube…)
 └── README.md
@@ -28,9 +29,12 @@ marsai/
 1. Cloner le repository et installer les dépendances :
 
 ```bash
-cd front && npm install
+cd shared && npm install
+cd ../front && npm install
 cd ../back && npm install
 ```
+
+> **Important** : `shared/` contient les schémas Zod utilisés par le front et le back (upload participation). Sans `npm install` dans `shared/`, la validation film échouera au démarrage.
 
 2. Créer la base `projet_marsai` et importer `db/projet_marsai.sql`.
 
