@@ -6,7 +6,7 @@ async function getCmsByPageSection(page, section, locale) {
     const query = `
         SELECT id, page, section, content_key, locale, type, value, order_index, is_active
         FROM cms
-        WHERE content_key = ? AND section = ? AND locale = ? AND is_active = 1
+        WHERE page = ? AND section = ? AND locale = ?
         ORDER BY order_index ASC, id ASC
     `;
     console.log(query);

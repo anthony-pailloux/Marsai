@@ -154,12 +154,21 @@ Checklist minimale :
 # Depuis back/
 npm run test:film-validation
 npm run test:shared-validation
+npm run smoke:test          # login, rôles, events, CMS (API)
 
 # Depuis front/
 npm run build
 ```
 
-Smoke test manuel recommandé : login, participation (3 étapes), admin events, CMS Concept/Hero.
+`smoke:test` nécessite l’API sur `localhost:3000` et les comptes seed (`npm run seed:users`).
+
+Smoke test **manuel** (UI) recommandé en plus :
+
+- [ ] Home : sections, hero, dark mode
+- [ ] Login : 3 rôles + redirections
+- [ ] Participation : 3 étapes (réalisateur → équipe → upload)
+- [ ] Admin events : créer / éditer / publier
+- [ ] CMS admin : sauvegarder Concept + Hero
 
 ---
 
