@@ -1,133 +1,14 @@
 import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Field, TextInput, Select } from "./Field";
-import { typeAdminSection, typeBadge } from "../../../../utils/typography.js";
-
-/* URL drapeau */
-function flagUrl(code, size = 24) {
-  const c = String(code || "").toLowerCase();
-  return `https://flagcdn.com/${size}x${Math.round(size * 0.75)}/${c}.png`;
-}
-
-/* restcountries: idd = { root:"+33", suffixes:["1"] } => +331 */
-function buildDialCode(idd) {
-  if (!idd?.root) return "";
-  const suffix =
-    Array.isArray(idd?.suffixes) && idd.suffixes.length ? idd.suffixes[0] : "";
-  return `${idd.root}${suffix}`;
-}
-
-function CountryPickerModal({ open, onClose, countries, onPick }) {
-  const { t } = useTranslation("participation");
-  const [q, setQ] = useState("");
-
-  function closeModal() {
-    setQ("");
-    onClose();
-  }
-
-  const filtered = useMemo(() => {
-    const s = q.trim().toLowerCase();
-    if (!s) return countries;
-    return countries.filter((c) => {
-      return (
-        c.name.toLowerCase().includes(s) ||
-        c.dial.toLowerCase().includes(s) ||
-        c.code.toLowerCase().includes(s)
-      );
-    });
-  }, [countries, q]);
-
-  if (!open) return null;
-
-  return (
-    <div className="fixed inset-0 z-[99999]">
-      <button
-        type="button"
-        className="absolute inset-0 bg-black/60"
-        onClick={closeModal}
-        aria-label={t("countryPicker.closeAria")}
-      />
-
-      <div className="absolute left-1/2 top-1/2 w-[min(92vw,520px)] -translate-x-1/2 -translate-y-1/2 overflow-hidden rounded-3xl bg-white shadow-xl ring-1 ring-black/10">
-        <div className="flex items-center gap-3 border-b border-neutral-200 px-5 py-4">
-          <div className="text-sm font-extrabold uppercase tracking-[0.12em] text-neutral-900">
-            {t("countryPicker.title")}
-          </div>
-          <button
-            type="button"
-            onClick={closeModal}
-            className={`ml-auto rounded-xl bg-neutral-900 px-4 py-2 text-white ${typeBadge}`}
-          >
-            {t("countryPicker.close")}
-          </button>
-        </div>
-
-        <div className="p-5">
-          <input
-            value={q}
-            onChange={(e) => setQ(e.target.value)}
-            placeholder={t("countryPicker.searchPlaceholder")}
-            className="w-full rounded-2xl bg-neutral-100 px-5 py-3 text-sm outline-none ring-1 ring-black/5 focus:ring-2 focus:ring-blue-500/30"
-          />
-
-          <div className="mt-4 max-h-[55vh] overflow-auto rounded-2xl ring-1 ring-black/5">
-            {filtered.map((c) => (
-              <button
-                key={`${c.code}-${c.dial}`}
-                type="button"
-                onClick={() => onPick(c)}
-                className="flex w-full items-center gap-3 border-b border-neutral-100 px-4 py-3 text-left hover:bg-neutral-50"
-              >
-                <img
-                  src={flagUrl(c.code, 24)}
-                  alt=""
-                  className="h-4 w-6 rounded-[2px] object-cover"
-                  loading="lazy"
-                  draggable="false"
-                />
-                <span className="flex-1 text-sm font-semibold text-neutral-900">
-                  {c.name}
-                </span>
-                <span className="text-sm font-bold text-neutral-700">
-                  {c.dial}
-                </span>
-              </button>
-            ))}
-            {!filtered.length ? (
-              <div className="px-4 py-6 text-center text-sm text-neutral-500">
-                {t("countryPicker.noResults")}
-              </div>
-            ) : null}
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function calcAge(birthdayISO) {
-  if (!birthdayISO) return null;
-  const d = new Date(birthdayISO);
-  if (Number.isNaN(d.getTime())) return null;
-
-  const now = new Date();
-  let age = now.getFullYear() - d.getFullYear();
-  const m = now.getMonth() - d.getMonth();
-  if (m < 0 || (m === 0 && now.getDate() < d.getDate())) age--;
-  return age;
-}
-
-// Petit parse pour récupérer dial + local depuis une string type "+33 6 12 34..."
-function splitMobile(mobileStr) {
-  const s = String(mobileStr || "").trim();
-  if (!s) return { dial: "", local: "" };
-
-  const m = s.match(/^(\+\d+)\s*(.*)$/);
-  if (m) return { dial: m[1], local: (m[2] || "").trim() };
-
-  return { dial: "", local: s };
-}
+import CountryPickerModal from "./CountryPickerModal.jsx";
+import { buildDialCode, flagUrl } from "./countryUtils.js";
+import {
+  calcAge,
+  canSubmitDirectorForm,
+  splitMobile,
+} from "./directorFormValidation.js";
+import { typeAdminSection } from "../../../../utils/typography.js";
 
 export default function DirectorForm({ onNext }) {
   const { t, i18n } = useTranslation("participation");
@@ -304,21 +185,10 @@ export default function DirectorForm({ onNext }) {
     setForm((f) => ({ ...f, [name]: value }));
   }
 
-  const canSubmit = useMemo(() => {
-    return (
-      form.name.trim() &&
-      form.last_name.trim() &&
-      form.email.trim() &&
-      (form.gender === "Mr" || form.gender === "Mrs") &&
-      form.production_role.trim() &&
-      form.birthday.trim() &&
-      !ageError &&
-      form.director_country.trim() &&
-      form.address.trim() &&
-      form.discovery_source.trim() &&
-      form.mobile_number.trim()
-    );
-  }, [form, ageError]);
+  const canSubmit = useMemo(
+    () => canSubmitDirectorForm(form, ageError),
+    [form, ageError],
+  );
 
   function submit(e) {
     e.preventDefault();
