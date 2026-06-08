@@ -1,379 +1,16 @@
-import { useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import NewsletterCkEditor from "../../components/newsletter/NewsletterCkEditor.jsx";
-import { getAuthHeaders } from "../../utils/authHeaders.js";
-
-import { getApiUrl, getApiBaseUrl } from "../../utils/apiBase.js";
+import NewsletterBlocksEditor from "../../components/admin/NewsletterBlocksEditor.jsx";
+import useNewsletterEditor from "../../hooks/useNewsletterEditor.js";
 import { typeAdminTitle } from "../../utils/typography.js";
-
-// Les blocs qu’on autorise dans l’éditeur
-const blockTemplates = [
-  { type: "image", label: "Image" },
-  { type: "divider", label: "Divider" },
-];
-
-// Transforme /uploads/... en URL complète
-function fullUrl(path) {
-  if (!path) return "";
-  if (path.startsWith("http")) return path;
-  return `${getApiBaseUrl()}${path}`;
-}
-
-// Format pour l’input datetime-local
-function toDatetimeLocal(value) {
-  if (!value) return "";
-  const d = new Date(value);
-  const pad = (n) => String(n).padStart(2, "0");
-  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(
-    d.getHours(),
-  )}:${pad(d.getMinutes())}`;
-}
-
-// Sécurise le texte injecté dans le preview HTML
-function esc(s = "") {
-  return String(s)
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;");
-}
 
 export default function AdminNewsletterEditor() {
   const { id } = useParams();
   const navigate = useNavigate();
 
-  // Form
-  const [subject, setSubject] = useState("");
-  const [title, setTitle] = useState("");
-  const [background, setBackground] = useState("#ffffff");
-  const [contentHtml, setContentHtml] = useState("");
-  const [blocks, setBlocks] = useState([]);
+  const editor = useNewsletterEditor(id);
 
-  // Envoi / programmation
-  const [testTo, setTestTo] = useState("");
-  const [scheduledAt, setScheduledAt] = useState("");
-  const [sendingAll, setSendingAll] = useState(false);
-  const [scheduling, setScheduling] = useState(false);
-
-  // UI states manquants dans ton code original
-  const [loading, setLoading] = useState(true);
-  const [saving, setSaving] = useState(false);
-  const [msg, setMsg] = useState("");
-  const [error, setError] = useState("");
-
-  // Charge la newsletter depuis l’API et remplit le form
-  async function load() {
-    setLoading(true);
-    setError("");
-
-    try {
-      const res = await fetch(`${getApiUrl()}/admin/newsletters/${id}`, {
-        headers: getAuthHeaders({ Accept: "application/json" }),
-      });
-
-      const data = await res.json().catch(() => null);
-      if (!res.ok) throw new Error(data?.error || "Erreur chargement");
-
-      setSubject(data?.subject || "");
-      setTitle(data?.title || "");
-      setBackground(data?.background_color || "#ffffff");
-      setScheduledAt(
-        data?.scheduled_at ? toDatetimeLocal(data.scheduled_at) : "",
-      );
-      setContentHtml(data?.content_html || "");
-
-      // ✅ Parse safe de content_json
-      let parsed = data?.content_json;
-      if (typeof parsed === "string") {
-        try {
-          parsed = JSON.parse(parsed);
-        } catch {
-          parsed = { blocks: [] };
-        }
-      }
-      if (!parsed || typeof parsed !== "object") parsed = { blocks: [] };
-
-      // on garde uniquement image/divider si jamais des vieux blocs existent
-      const onlyAllowed = (parsed?.blocks || []).filter(
-        (b) => b?.type === "image" || b?.type === "divider",
-      );
-      setBlocks(onlyAllowed);
-    } catch (e) {
-      setError(e?.message || "Erreur");
-    } finally {
-      setLoading(false);
-    }
-  }
-
-  // Dès que l’id change, on recharge
-  useEffect(() => {
-    if (!id) return;
-    load();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id]);
-
-  function addBlock(type) {
-    const b =
-      type === "image"
-        ? { type: "image", url: "", alt: "" }
-        : { type: "divider" };
-
-    setBlocks((prev) => [...prev, b]);
-    setMsg("");
-  }
-
-  function updateBlock(i, patch) {
-    setBlocks((prev) =>
-      prev.map((b, idx) => (idx === i ? { ...b, ...patch } : b)),
-    );
-    setMsg("");
-  }
-
-  function removeBlock(i) {
-    setBlocks((prev) => prev.filter((_, idx) => idx !== i));
-    setMsg("");
-  }
-
-  function moveBlock(i, dir) {
-    setBlocks((prev) => {
-      const next = [...prev];
-      const j = i + dir;
-      if (j < 0 || j >= next.length) return prev;
-      [next[i], next[j]] = [next[j], next[i]];
-      return next;
-    });
-    setMsg("");
-  }
-
-  // Upload l’image puis met l’URL dans le bon bloc
-  async function uploadImage(file, blockIndex) {
-    const form = new FormData();
-    form.append("image", file);
-
-    const res = await fetch(`${getApiUrl()}/admin/newsletters/upload-image`, {
-      method: "POST",
-      headers: getAuthHeaders(),
-      body: form,
-    });
-
-    const data = await res.json().catch(() => null);
-    if (!res.ok) throw new Error(data?.error || "Erreur upload");
-
-    updateBlock(blockIndex, { url: fullUrl(data?.file?.url) });
-  }
-
-  // Sauvegarde en brouillon
-  async function save() {
-    if (!subject.trim()) {
-      setError("Le subject est requis.");
-      return;
-    }
-
-    setSaving(true);
-    setError("");
-    setMsg("");
-
-    try {
-      const res = await fetch(`${getApiUrl()}/admin/newsletters/${id}`, {
-        method: "PUT",
-        headers: getAuthHeaders({
-          "Content-Type": "application/json",
-          Accept: "application/json",
-        }),
-        body: JSON.stringify({
-          subject,
-          title,
-          background_color: background,
-          content_json: { blocks },
-          content_html: contentHtml,
-          status: "draft",
-          scheduled_at: null,
-        }),
-      });
-
-      const data = await res.json().catch(() => null);
-      if (!res.ok) throw new Error(data?.error || "Erreur sauvegarde");
-
-      setMsg("Sauvegardé");
-    } catch (e) {
-      setError(e?.message || "Erreur");
-    } finally {
-      setSaving(false);
-    }
-  }
-
-  async function sendTest() {
-    if (!testTo.trim()) {
-      setError("Ajoute un email pour l’envoi test.");
-      return;
-    }
-
-    setError("");
-    setMsg("");
-
-    try {
-      const res = await fetch(
-        `${getApiUrl()}/admin/newsletters/${id}/send-test`,
-        {
-          method: "POST",
-          headers: getAuthHeaders({
-            "Content-Type": "application/json",
-            Accept: "application/json",
-          }),
-          body: JSON.stringify({ to: testTo }),
-        },
-      );
-
-      const data = await res.json().catch(() => null);
-      if (!res.ok) throw new Error(data?.error || "Erreur envoi test");
-
-      setMsg("Test envoyé (check Mailtrap)");
-    } catch (e) {
-      setError(e?.message || "Erreur");
-    }
-  }
-
-  async function scheduleNewsletter() {
-    if (!scheduledAt) {
-      setError("Choisis une date/heure pour programmer.");
-      return;
-    }
-
-    setScheduling(true);
-    setError("");
-    setMsg("");
-
-    try {
-      const iso = new Date(scheduledAt).toISOString();
-
-      const res = await fetch(
-        `${getApiUrl()}/admin/newsletters/${id}/schedule`,
-        {
-          method: "POST",
-          headers: getAuthHeaders({
-            "Content-Type": "application/json",
-            Accept: "application/json",
-          }),
-          body: JSON.stringify({ scheduled_at: iso }),
-        },
-      );
-
-      const data = await res.json().catch(() => null);
-      if (!res.ok) throw new Error(data?.error || "Erreur programmation");
-
-      setMsg("Programmée");
-      await load();
-    } catch (e) {
-      setError(e?.message || "Erreur");
-    } finally {
-      setScheduling(false);
-    }
-  }
-
-  async function cancelSchedule() {
-    setScheduling(true);
-    setError("");
-    setMsg("");
-
-    try {
-      const res = await fetch(
-        `${getApiUrl()}/admin/newsletters/${id}/cancel-schedule`,
-        {
-          method: "POST",
-          headers: getAuthHeaders({ Accept: "application/json" }),
-        },
-      );
-
-      const data = await res.json().catch(() => null);
-      if (!res.ok) throw new Error(data?.error || "Erreur annulation");
-
-      setMsg("Programmation annulée");
-      setScheduledAt("");
-      await load();
-    } catch (e) {
-      setError(e?.message || "Erreur");
-    } finally {
-      setScheduling(false);
-    }
-  }
-
-  async function sendNowToAll() {
-    setSendingAll(true);
-    setError("");
-    setMsg("");
-
-    try {
-      const res = await fetch(
-        `${getApiUrl()}/admin/newsletters/${id}/send-now`,
-        {
-          method: "POST",
-          headers: getAuthHeaders({ Accept: "application/json" }),
-        },
-      );
-
-      const data = await res.json().catch(() => null);
-      if (!res.ok) throw new Error(data?.error || "Erreur envoi");
-
-      setMsg("Envoi terminé (check Mailtrap)");
-      await load();
-    } catch (e) {
-      setError(e?.message || "Erreur");
-    } finally {
-      setSendingAll(false);
-    }
-  }
-
-  // PREVIEW LIVE (sans API)
-  const previewDoc = useMemo(() => {
-    const blocksHtml = blocks
-      .map((b) => {
-        if (b.type === "divider") {
-          return `<hr style="border:none;border-top:1px solid rgba(0,0,0,.12);margin:16px 0" />`;
-        }
-        if (b.type === "image" && b.url) {
-          return `<img alt="${esc(b.alt || "")}" src="${esc(
-            b.url,
-          )}" style="width:100%;border-radius:12px;margin:12px 0" />`;
-        }
-        return "";
-      })
-      .join("");
-
-    const unsubscribeUrl =
-      "http://localhost:5173/newsletter/unsubscribe?token=TEST";
-
-    return `<!doctype html>
-<html lang="fr">
-<head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>${esc(subject || "Newsletter")}</title>
-</head>
-<body style="margin:0;background:${esc(background)};font-family:Arial,sans-serif;">
-  <div style="max-width:650px;margin:0 auto;padding:28px;">
-    <div style="background:#fff;border-radius:18px;padding:22px;">
-      ${
-        title?.trim()
-          ? `<h1 style="margin:0 0 16px;font-size:28px">${esc(title)}</h1>`
-          : ""
-      }
-
-      ${contentHtml || ""}
-
-      ${blocksHtml}
-
-      <hr style="border:none;border-top:1px solid rgba(0,0,0,.12);margin:22px 0" />
-      <p style="font-size:12px;opacity:.75;margin:0">
-        Unsubscribe:
-        <a href="${esc(unsubscribeUrl)}">click here</a>
-      </p>
-    </div>
-  </div>
-</body>
-</html>`;
-  }, [subject, title, background, contentHtml, blocks]);
-
-  if (loading) {
+  if (editor.loading) {
     return (
       <div className="mx-auto w-full px-6 pb-14 pt-10">
         <main className="min-w-0 flex-1">
@@ -398,14 +35,13 @@ export default function AdminNewsletterEditor() {
         </div>
 
         <div className="mt-8 grid grid-cols-1 gap-6 xl:grid-cols-[520px_1fr]">
-          {/* Left */}
           <div className="rounded-2xl border border-black/10 p-6 dark:border-white/10">
             <label className="text-xs font-semibold tracking-widest uppercase opacity-70">
               Subject
             </label>
             <input
-              value={subject}
-              onChange={(e) => setSubject(e.target.value)}
+              value={editor.subject}
+              onChange={(e) => editor.setSubject(e.target.value)}
               className="mt-2 h-11 w-full rounded-xl border border-black/10 bg-white px-4 text-sm dark:border-white/10 dark:bg-black"
             />
 
@@ -413,8 +49,8 @@ export default function AdminNewsletterEditor() {
               Titre (optionnel)
             </label>
             <input
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
+              value={editor.title}
+              onChange={(e) => editor.setTitle(e.target.value)}
               className="mt-2 h-11 w-full rounded-xl border border-black/10 bg-white px-4 text-sm dark:border-white/10 dark:bg-black"
             />
 
@@ -423,13 +59,13 @@ export default function AdminNewsletterEditor() {
                 <div className="text-xs font-semibold tracking-widest uppercase opacity-70">
                   Background
                 </div>
-                <div className="mt-1 text-xs opacity-60">{background}</div>
+                <div className="mt-1 text-xs opacity-60">{editor.background}</div>
               </div>
 
               <input
                 type="color"
-                value={background}
-                onChange={(e) => setBackground(e.target.value)}
+                value={editor.background}
+                onChange={(e) => editor.setBackground(e.target.value)}
                 className="h-10 w-16 rounded-lg border border-black/10 bg-transparent dark:border-white/10"
               />
             </div>
@@ -440,164 +76,53 @@ export default function AdminNewsletterEditor() {
               </div>
               <div className="mt-3">
                 <NewsletterCkEditor
-                  value={contentHtml}
-                  onChange={setContentHtml}
+                  value={editor.contentHtml}
+                  onChange={editor.setContentHtml}
                 />
               </div>
             </div>
 
-            <div className="mt-6">
-              <div className="text-xs font-semibold tracking-widest uppercase opacity-70">
-                Ajouter
-              </div>
-              <div className="mt-3 flex flex-wrap gap-2">
-                {blockTemplates.map((t) => (
-                  <button
-                    key={t.type}
-                    type="button"
-                    onClick={() => addBlock(t.type)}
-                    className="h-10 rounded-xl border border-black/10 px-3 text-sm font-semibold hover:bg-black/[0.03] dark:border-white/10 dark:hover:bg-white/[0.06]"
-                  >
-                    + {t.label}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            <div className="mt-6 space-y-4">
-              {blocks.map((b, i) => (
-                <div
-                  key={i}
-                  className="rounded-2xl border border-black/10 p-4 dark:border-white/10"
-                >
-                  <div className="flex items-center justify-between">
-                    <div className="text-xs font-bold uppercase tracking-widest opacity-60">
-                      {b.type}
-                    </div>
-
-                    <div className="flex gap-2">
-                      <button
-                        type="button"
-                        onClick={() => moveBlock(i, -1)}
-                        className="h-9 rounded-xl border border-black/10 px-3 text-xs font-semibold dark:border-white/10"
-                      >
-                        ↑
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => moveBlock(i, 1)}
-                        className="h-9 rounded-xl border border-black/10 px-3 text-xs font-semibold dark:border-white/10"
-                      >
-                        ↓
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => removeBlock(i)}
-                        className="h-9 rounded-xl border border-red-500/20 px-3 text-xs font-semibold text-red-700 hover:bg-red-500/10 dark:text-red-400"
-                      >
-                        Suppr
-                      </button>
-                    </div>
-                  </div>
-
-                  {b.type === "divider" ? (
-                    <div className="mt-4 opacity-60">— Divider —</div>
-                  ) : null}
-
-                  {b.type === "image" ? (
-                    <div className="mt-4 space-y-3">
-                      <input
-                        value={b.url || ""}
-                        onChange={(e) =>
-                          updateBlock(i, { url: e.target.value })
-                        }
-                        className="h-11 w-full rounded-xl border border-black/10 bg-white px-4 text-sm dark:border-white/10 dark:bg-black"
-                        placeholder="URL de l'image (optionnel)"
-                      />
-
-                      <input
-                        value={b.alt || ""}
-                        onChange={(e) =>
-                          updateBlock(i, { alt: e.target.value })
-                        }
-                        className="h-11 w-full rounded-xl border border-black/10 bg-white px-4 text-sm dark:border-white/10 dark:bg-black"
-                        placeholder="Alt"
-                      />
-
-                      <div className="flex items-center justify-between">
-                        <input
-                          type="file"
-                          accept="image/png,image/jpeg,image/webp"
-                          onChange={async (e) => {
-                            const file = e.target.files?.[0];
-                            if (!file) return;
-
-                            try {
-                              await uploadImage(file, i);
-                              setMsg("Image uploadée");
-                            } catch (err) {
-                              setError(err?.message || "Erreur upload");
-                            } finally {
-                              e.target.value = "";
-                            }
-                          }}
-                          className="text-xs"
-                        />
-
-                        {b.url ? (
-                          <a
-                            href={b.url}
-                            target="_blank"
-                            rel="noreferrer"
-                            className="text-xs font-semibold underline opacity-70"
-                          >
-                            Ouvrir
-                          </a>
-                        ) : null}
-                      </div>
-                    </div>
-                  ) : null}
-                </div>
-              ))}
-
-              {blocks.length === 0 ? (
-                <div className="rounded-2xl border border-dashed border-black/20 p-6 text-sm opacity-60 dark:border-white/20">
-                  Aucun bloc (optionnel). Tu peux ajouter une image ou un
-                  divider.
-                </div>
-              ) : null}
-            </div>
+            <NewsletterBlocksEditor
+              blocks={editor.blocks}
+              onAddBlock={editor.addBlock}
+              onUpdateBlock={editor.updateBlock}
+              onRemoveBlock={editor.removeBlock}
+              onMoveBlock={editor.moveBlock}
+              onUploadImage={editor.uploadImage}
+              onUploadSuccess={editor.setMsg}
+              onUploadError={editor.setError}
+            />
 
             <div className="mt-6 flex flex-col gap-3">
-              {error ? (
+              {editor.error ? (
                 <p className="text-sm text-red-700 dark:text-red-400">
-                  {error}
+                  {editor.error}
                 </p>
               ) : null}
-              {msg ? (
+              {editor.msg ? (
                 <p className="text-sm text-green-700 dark:text-green-400">
-                  {msg}
+                  {editor.msg}
                 </p>
               ) : null}
 
               <div className="flex flex-wrap items-center gap-3">
                 <button
-                  onClick={save}
-                  disabled={saving}
+                  onClick={editor.save}
+                  disabled={editor.saving}
                   className="h-11 rounded-xl bg-black px-5 text-sm font-bold text-white disabled:opacity-60 dark:bg-white dark:text-black"
                 >
-                  {saving ? "..." : "Sauvegarder"}
+                  {editor.saving ? "..." : "Sauvegarder"}
                 </button>
 
                 <div className="flex items-center gap-2">
                   <input
-                    value={testTo}
-                    onChange={(e) => setTestTo(e.target.value)}
+                    value={editor.testTo}
+                    onChange={(e) => editor.setTestTo(e.target.value)}
                     placeholder="Email test…"
                     className="h-11 w-[260px] rounded-xl border border-black/10 bg-white px-4 text-sm dark:border-white/10 dark:bg-black"
                   />
                   <button
-                    onClick={sendTest}
+                    onClick={editor.sendTest}
                     className="h-11 rounded-xl border border-black/10 px-4 text-sm font-semibold hover:bg-black/[0.03] dark:border-white/10 dark:hover:bg-white/[0.06]"
                   >
                     Envoyer test
@@ -614,24 +139,24 @@ export default function AdminNewsletterEditor() {
                   <div className="flex flex-col gap-2 md:flex-row md:items-center">
                     <input
                       type="datetime-local"
-                      value={scheduledAt}
-                      onChange={(e) => setScheduledAt(e.target.value)}
+                      value={editor.scheduledAt}
+                      onChange={(e) => editor.setScheduledAt(e.target.value)}
                       className="h-11 w-full md:w-[260px] rounded-xl border border-black/10 bg-white px-4 text-sm dark:border-white/10 dark:bg-black"
                     />
 
                     <button
                       type="button"
-                      onClick={scheduleNewsletter}
-                      disabled={scheduling}
+                      onClick={editor.scheduleNewsletter}
+                      disabled={editor.scheduling}
                       className="h-11 rounded-xl bg-black px-4 text-sm font-bold text-white disabled:opacity-60 dark:bg-white dark:text-black"
                     >
-                      {scheduling ? "..." : "Programmer"}
+                      {editor.scheduling ? "..." : "Programmer"}
                     </button>
 
                     <button
                       type="button"
-                      onClick={cancelSchedule}
-                      disabled={scheduling}
+                      onClick={editor.cancelSchedule}
+                      disabled={editor.scheduling}
                       className="h-11 rounded-xl border border-black/10 px-4 text-sm font-semibold disabled:opacity-60 dark:border-white/10"
                     >
                       Annuler programmation
@@ -641,11 +166,11 @@ export default function AdminNewsletterEditor() {
                   <div className="flex">
                     <button
                       type="button"
-                      onClick={sendNowToAll}
-                      disabled={sendingAll}
+                      onClick={editor.sendNowToAll}
+                      disabled={editor.sendingAll}
                       className="h-11 rounded-xl border border-red-500/20 px-4 text-sm font-bold text-red-700 hover:bg-red-500/10 disabled:opacity-60 dark:text-red-400"
                     >
-                      {sendingAll ? "..." : "Envoyer à tous maintenant"}
+                      {editor.sendingAll ? "..." : "Envoyer à tous maintenant"}
                     </button>
                   </div>
                 </div>
@@ -653,7 +178,6 @@ export default function AdminNewsletterEditor() {
             </div>
           </div>
 
-          {/* Right: preview LIVE */}
           <div className="overflow-hidden rounded-2xl border border-black/10 dark:border-white/10">
             <div className="flex items-center justify-between border-b border-black/10 px-5 py-4 dark:border-white/10">
               <div className="text-sm font-semibold">Preview (live)</div>
@@ -661,7 +185,7 @@ export default function AdminNewsletterEditor() {
 
             <iframe
               title="preview"
-              srcDoc={previewDoc}
+              srcDoc={editor.previewDoc}
               className="h-[820px] w-full bg-white"
               sandbox=""
             />
