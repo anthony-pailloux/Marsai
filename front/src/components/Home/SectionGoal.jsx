@@ -34,7 +34,7 @@ function SectionGoal() {
     return(
         <>
             {isSectionVisible(content, page, section) && (
-                <section className="flex flex-col items-center justify-center md:gap-5 px-5 md:px-18.75 md:py-5 self-stretch dark:text-white text-left w-full max-w-7xl mx-auto">
+                <section className="flex flex-col items-center justify-center md:gap-5 px-5 md:px-18.75 self-stretch dark:text-white text-left w-full max-w-7xl mx-auto">
 
                     <h2 className={`${typeSectionTitle} w-full py-5`}>
                         {isVisible(content, page, section, "title_main") && (

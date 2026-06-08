@@ -14,7 +14,7 @@ function SectionClosingEvent() {
     const page = "home";
     const section = "closingEvent";
 
-    // cherche les donnÈes en bdd
+    // cherche les donnùes en bdd
     const { content, loading, message } = useCmsContent(page, locale);
 
     const cardIconSrc = resolveCmsAsset(content?.[page]?.[section]?.card_icon);
@@ -24,8 +24,8 @@ function SectionClosingEvent() {
     return(
         <>
             {isSectionVisible(content, page, section) && (
-                <section className="flex flex-col md:flex-row md:items-center md:justify-center gap-8 md:gap-14 lg:gap-16 px-5 md:px-25 self-stretch text-black dark:text-white w-full max-w-7xl mx-auto">
-                    
+                <section className="flex flex-col md:flex-row md:items-center md:justify-between gap-8 md:gap-14 lg:gap-16 px-5 md:px-18.75 self-stretch text-black dark:text-white w-full max-w-7xl mx-auto">
+
                     {/* Div left */}
                     <div className="flex flex-col items-start justify-center gap-5 md:gap-6 w-full md:max-w-xl">
 
@@ -92,7 +92,7 @@ function SectionClosingEvent() {
                                 )}
 
                                 {isVisible(content, page, section, "card_localisation") && (
-                                    <span> ï {content?.[page]?.[section]?.card_localisation || t("closingEvent.card.localisation")}</span>
+                                    <span> ù {content?.[page]?.[section]?.card_localisation || t("closingEvent.card.localisation")}</span>
                                 )}
 
                             </p>

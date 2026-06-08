@@ -47,7 +47,7 @@ function SectionPartner() {
     return(
         <>
             { isSectionVisible(content, page, section) && (
-                <section className="flex flex-col items-center gap-10 md:gap-14 p-5 md:px-18.75 md:py-12 self-stretch w-full max-w-7xl mx-auto">
+                <section className="flex flex-col items-center gap-10 md:gap-14 px-5 md:px-18.75 self-stretch w-full max-w-7xl mx-auto">
 
                     <header className="flex flex-col items-center gap-4 w-full shrink-0">
 

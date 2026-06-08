@@ -23,7 +23,7 @@ function SectionLocalisation() {
     return(
         <>
             {isSectionVisible(content, page, section) && (
-                <section className="flex flex-col items-start gap-8 md:gap-10 p-5 md:py-12 md:px-18.75 w-full max-w-7xl mx-auto text-black dark:text-white">
+                <section className="flex flex-col items-start gap-8 md:gap-10 px-5 md:px-18.75 w-full max-w-7xl mx-auto text-black dark:text-white">
 
                     {isVisible(content, page, section, "eyebrow") && (
                         <div className={`${HOME_EYEBROW} ${typeEyebrow} text-black dark:text-white`}>

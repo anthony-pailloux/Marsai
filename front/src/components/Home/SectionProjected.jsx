@@ -24,7 +24,7 @@ function SectionProjected() {
     return(
         <>
             {isSectionVisible(content, page, section) && (
-                <section className="flex flex-col md:flex-row md:items-center md:justify-center gap-8 md:gap-12 lg:gap-16 px-5 md:px-25 self-stretch w-full max-w-7xl mx-auto">
+                <section className="flex flex-col md:flex-row md:items-center md:justify-between gap-8 md:gap-12 lg:gap-16 px-5 md:px-18.75 self-stretch w-full max-w-7xl mx-auto">
                     <div className="flex w-full md:max-w-xs shrink-0 flex-col items-start gap-3 text-left">
                         <h2 className={`${typeSectionTitle} w-full`}>
                             {content?.[page]?.[section]?.heading_title_main  || t("projectedStats.heading.title_main")}

@@ -81,7 +81,7 @@ function SectionAward() {
   return (
     <>
       {isSectionVisible(content, page, section) && (
-        <section className="flex flex-col items-center gap-6 md:gap-8 px-5 md:px-18.75 py-6 md:py-8 self-stretch w-full max-w-7xl mx-auto">
+        <section className="flex flex-col items-center gap-6 md:gap-8 px-5 md:px-18.75 self-stretch w-full max-w-7xl mx-auto">
 
           <div className="flex flex-col md:flex-row justify-between items-start md:items-end self-stretch gap-4 md:gap-5">
             <div className="max-w-xl">

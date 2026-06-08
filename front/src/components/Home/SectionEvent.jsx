@@ -45,89 +45,88 @@ function SectionEvent() {
     return(
         <>
             {isSectionVisible(content, page, section) && (
-                <section className="flex flex-col items-center gap-8 md:gap-10 px-5 md:px-18.75 md:py-6 self-stretch w-full max-w-7xl mx-auto">
+                <section className="grid w-full grid-cols-1 md:grid-cols-6 gap-6 lg:gap-8 px-5 md:px-18.75 self-stretch max-w-7xl mx-auto">
 
-                    <div className="grid w-full grid-cols-1 items-center gap-6 lg:grid-cols-2 lg:gap-8">
+                    <div className="flex flex-col items-start gap-4 md:gap-5 md:col-span-3">
+                        <div className={`${HOME_EYEBROW} ${typeEyebrow} text-black dark:text-white`}>
+                            {ctaAgendaIconSrc ? (
+                                <img src={ctaAgendaIconSrc} alt="" className={HOME_EYEBROW_ICON} />
+                            ) : null}
+                            <span>{t("events.eyebrow")}</span>
+                        </div>
 
-                        <div className="flex flex-col items-start gap-4 md:gap-5">
-                            <div className={`${HOME_EYEBROW} ${typeEyebrow} text-black dark:text-white`}>
+                        <h2 className={`${typeSectionTitle} text-left text-black dark:text-white`}>
+                            {isVisible(content, page, section, "title_main") && (
+                                <span className="block">{content?.[page]?.[section]?.title_main}</span>
+                            )}
+                            {isVisible(content, page, section, "title_accent") && (
+                                <span className="block mt-1.5 md:mt-2 text-brand">
+                                    {content?.[page]?.[section]?.title_accent}
+                                </span>
+                            )}
+                        </h2>
+                    </div>
+
+                    <div className={`${HOME_CARD} md:col-span-3 flex flex-col gap-2 p-5 md:p-6`}>
+                        {visibleListItems.length > 0 && (
+                            <ul className="flex flex-col gap-2">
+                                {visibleListItems.map(({ key }, index) => (
+                                    <li
+                                        key={key}
+                                        className="flex items-center gap-3 rounded-xl border border-black/10 bg-black/[0.03] px-3.5 py-2 dark:border-white/10 dark:bg-white/[0.03]"
+                                    >
+                                        <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-brand/20 text-xs font-bold text-brand">
+                                            {index + 1}
+                                        </span>
+                                        <p className={`leading-snug text-black dark:text-white ${typeBodySm}`}>
+                                            {content?.[page]?.[section]?.[key]}
+                                        </p>
+                                    </li>
+                                ))}
+                            </ul>
+                        )}
+
+                        {isVisible(content, page, section, "ctaAgenda") && (
+                            <Link
+                                to={content?.[page]?.[section]?.ctaAgenda_link || "/events"}
+                                className={`${HOME_PILL_LINK} w-full justify-center ${typeEyebrow} text-black dark:text-white`}
+                            >
                                 {ctaAgendaIconSrc ? (
                                     <img src={ctaAgendaIconSrc} alt="" className={HOME_EYEBROW_ICON} />
                                 ) : null}
-                                <span>{t("events.eyebrow")}</span>
-                            </div>
+                                <span className={`text-black dark:text-white ${typeCta}`}>
+                                    {content?.[page]?.[section]?.ctaAgenda}
+                                </span>
+                            </Link>
+                        )}
+                    </div>
 
-                            <h2 className={`${typeSectionTitle} text-left text-black dark:text-white`}>
-                                {isVisible(content, page, section, "title_main") && (
-                                    <span className="block">{content?.[page]?.[section]?.title_main}</span>
-                                )}
-                                {isVisible(content, page, section, "title_accent") && (
-                                    <span className="block mt-1.5 md:mt-2 text-brand">
-                                        {content?.[page]?.[section]?.title_accent}
-                                    </span>
-                                )}
-                            </h2>
-                        </div>
+                    {cards
+                    .filter((n) => isVisible(content, page, section, `card${n}_title`))
+                    .map((n) => {
+                        const cardsIconSrc = getCardIconSrc(n);
+                        const cardLink = content?.[page]?.[section]?.[`card${n}_link`] || t(`events.cards.card${n}.link`, { defaultValue: "/events" });
 
-                        <div className={`${HOME_CARD} flex flex-col gap-4 p-5 md:p-6`}>
-                            {visibleListItems.length > 0 && (
-                                <ul className="flex flex-col gap-2">
-                                    {visibleListItems.map(({ key }, index) => (
-                                        <li
-                                            key={key}
-                                            className="flex items-center gap-3 rounded-xl border border-black/10 bg-black/[0.03] px-3.5 py-2 dark:border-white/10 dark:bg-white/[0.03]"
-                                        >
-                                            <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-brand/20 text-xs font-bold text-brand">
-                                                {index + 1}
-                                            </span>
-                                            <p className={`leading-snug text-black dark:text-white ${typeBodySm}`}>
-                                                {content?.[page]?.[section]?.[key]}
-                                            </p>
-                                        </li>
-                                    ))}
-                                </ul>
-                            )}
-
-                            {isVisible(content, page, section, "ctaAgenda") && (
-                                <Link
-                                    to={content?.[page]?.[section]?.ctaAgenda_link || "/events"}
-                                    className={`${HOME_PILL_LINK} ${typeEyebrow} text-black dark:text-white`}
-                                >
-                                    {ctaAgendaIconSrc ? (
-                                        <img src={ctaAgendaIconSrc} alt="" className={HOME_EYEBROW_ICON} />
+                        return (
+                            <Link
+                                key={n}
+                                to={cardLink}
+                                className={`${HOME_CARD_BODY} md:col-span-2 text-left transition-colors hover:bg-black/[0.08] dark:hover:bg-white/[0.08]`}
+                            >
+                                <div className={HOME_CARD_ICON}>
+                                    {cardsIconSrc ? (
+                                        <img src={cardsIconSrc} alt="" className={HOME_CARD_ICON_IMG} />
                                     ) : null}
-                                    <span className={`text-black dark:text-white ${typeCta}`}>
-                                        {content?.[page]?.[section]?.ctaAgenda}
-                                    </span>
-                                </Link>
-                            )}
-                        </div>
-                    </div>
-
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 self-stretch text-left w-full">
-                        {cards
-                        .filter((n) => isVisible(content, page, section, `card${n}_title`))
-                        .map((n) => {
-                            const cardsIconSrc = getCardIconSrc(n);
-                            const cardLink = content?.[page]?.[section]?.[`card${n}_link`] || t(`events.cards.card${n}.link`, { defaultValue: "/events" });
-
-                            return (
-                                <Link key={n} to={cardLink} className={`${HOME_CARD_BODY} transition-colors hover:bg-black/[0.08] dark:hover:bg-white/[0.08]`}>
-                                    <div className={HOME_CARD_ICON}>
-                                        {cardsIconSrc ? (
-                                            <img src={cardsIconSrc} alt="" className={HOME_CARD_ICON_IMG} />
-                                        ) : null}
-                                    </div>
-                                    <h3 className={HOME_CARD_TITLE}>
-                                        {content?.[page]?.[section]?.[`card${n}_title`]}
-                                    </h3>
-                                    <p className={HOME_CARD_DESC}>
-                                        {content?.[page]?.[section]?.[`card${n}_description`]}
-                                    </p>
-                                </Link>
-                            )
-                        })}
-                    </div>
+                                </div>
+                                <h3 className={HOME_CARD_TITLE}>
+                                    {content?.[page]?.[section]?.[`card${n}_title`]}
+                                </h3>
+                                <p className={HOME_CARD_DESC}>
+                                    {content?.[page]?.[section]?.[`card${n}_description`]}
+                                </p>
+                            </Link>
+                        )
+                    })}
 
                 </section>
             )}

@@ -27,7 +27,7 @@ function SectionConcept() {
     return (
         <>
             {isSectionVisible(content, page, section) && (
-                <section className="flex flex-col justify-center items-center gap-5 md:px-20 py-2.5 w-full max-w-7xl mx-auto">
+                <section className="flex flex-col justify-center items-center gap-5 px-5 md:px-18.75 w-full max-w-7xl mx-auto">
 
                     {isVisible(content, page, section, "title_main") && (
                         <h2 className={`${typeSectionTitle} w-full py-5`}>
