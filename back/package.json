@@ -9,7 +9,8 @@
     "test:shared-validation": "node scripts/test-shared-validation.mjs",
     "start": "node src/server.js",
     "dev": "nodemon src/server.js",
-    "seed:demo": "node scripts/seed-demo-data.mjs"
+    "seed:demo": "node scripts/seed-demo-data.mjs",
+    "seed:users": "node scripts/seed-test-users.mjs"
   },
   "keywords": [],
   "author": "",
