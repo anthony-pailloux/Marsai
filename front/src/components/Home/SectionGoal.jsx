@@ -1,4 +1,4 @@
-﻿import { useTranslation } from "react-i18next";
+import { useTranslation } from "react-i18next";
 import { typeSectionTitle } from '../../utils/typography.js';
 import { isSectionVisible, isVisible } from "../../utils/isVisible";
 import { resolveCmsAssetWithFallback } from "../../utils/cmsAssets";
@@ -41,7 +41,7 @@ function SectionGoal() {
                             <span className="block">{content?.[page]?.[section]?.title_main} </span>
                         )}
                         {isVisible(content, page, section, "title_accent") && (
-                            <span className="block text-[#FF8C42]">{content?.[page]?.[section]?.title_accent}</span>
+                            <span className="block text-brand">{content?.[page]?.[section]?.title_accent}</span>
                         )}
                     </h2>
 

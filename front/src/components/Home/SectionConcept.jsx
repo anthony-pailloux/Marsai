@@ -1,4 +1,4 @@
-﻿import { useTranslation } from "react-i18next";
+import { useTranslation } from "react-i18next";
 import { typeSectionTitle } from '../../utils/typography.js';
 import useCmsContent from "../../hooks/useCmsContent.js";
 import { resolveCmsAssetWithFallback } from "../../utils/cmsAssets.js";
@@ -40,7 +40,6 @@ function SectionConcept() {
                         {cards.map((n) => {
                             const title = content?.[page]?.[section]?.[`card${n}_title`] || t(`concept.card${n}.title`);
                             const desc = content?.[page]?.[section]?.[`card${n}_description`] || t(`concept.card${n}.description`);
-                            const titleColor = content?.[page]?.[section]?.[`card${n}_title_color`] || t(`concept.card${n}.title_color`, { defaultValue: "#2B7FFF" });
                             const iconSrc = resolveCmsAssetWithFallback(
                                 content?.[page]?.[section]?.[`card${n}_icon`],
                                 t(`concept.card${n}.icon`)
@@ -55,7 +54,7 @@ function SectionConcept() {
                                                     <img src={iconSrc} alt="" className={HOME_CARD_ICON_IMG} />
                                                 </div>
                                             ) : null}
-                                            <h3 className={HOME_CARD_TITLE} style={{ color: titleColor }}>
+                                            <h3 className={`${HOME_CARD_TITLE} text-brand`}>
                                                 {title}
                                             </h3>
                                             <p className={HOME_CARD_DESC}>

@@ -12,6 +12,8 @@ import {
     HOME_CARD_ICON_IMG,
     HOME_CARD_TITLE,
     HOME_EYEBROW,
+    HOME_EYEBROW_ICON,
+    HOME_PILL_LINK,
 } from "./homeCardStyles.js";
 
 function SectionEvent() {
@@ -38,8 +40,6 @@ function SectionEvent() {
        return resolveCmsAssetWithFallback(content?.[page]?.[section]?.[`card${n}_icon`], t(`events.cards.card${n}.icon`));
     }
 
-    const accentColor = content?.[page]?.[section]?.title_accent_color || "#FFB020";
-
     const visibleListItems = listFields.filter(({ key }) => isVisible(content, page, section, key));
 
     return(
@@ -52,7 +52,7 @@ function SectionEvent() {
                         <div className="flex flex-col items-start gap-4 md:gap-5">
                             <div className={`${HOME_EYEBROW} ${typeEyebrow} text-black dark:text-white`}>
                                 {ctaAgendaIconSrc ? (
-                                    <img src={ctaAgendaIconSrc} alt="" className="h-5 w-5 shrink-0 object-contain" />
+                                    <img src={ctaAgendaIconSrc} alt="" className={HOME_EYEBROW_ICON} />
                                 ) : null}
                                 <span>{t("events.eyebrow")}</span>
                             </div>
@@ -62,7 +62,7 @@ function SectionEvent() {
                                     <span className="block">{content?.[page]?.[section]?.title_main}</span>
                                 )}
                                 {isVisible(content, page, section, "title_accent") && (
-                                    <span className="block mt-1.5 md:mt-2" style={{ color: accentColor }}>
+                                    <span className="block mt-1.5 md:mt-2 text-brand">
                                         {content?.[page]?.[section]?.title_accent}
                                     </span>
                                 )}
@@ -77,13 +77,7 @@ function SectionEvent() {
                                             key={key}
                                             className="flex items-center gap-3 rounded-xl border border-black/10 bg-black/[0.03] px-3.5 py-2 dark:border-white/10 dark:bg-white/[0.03]"
                                         >
-                                            <span
-                                                className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-xs font-bold"
-                                                style={{
-                                                    backgroundColor: `${accentColor}33`,
-                                                    color: accentColor,
-                                                }}
-                                            >
+                                            <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-brand/20 text-xs font-bold text-brand">
                                                 {index + 1}
                                             </span>
                                             <p className={`leading-snug text-black dark:text-white ${typeBodySm}`}>
@@ -97,10 +91,10 @@ function SectionEvent() {
                             {isVisible(content, page, section, "ctaAgenda") && (
                                 <Link
                                     to={content?.[page]?.[section]?.ctaAgenda_link || "/events"}
-                                    className="inline-flex w-fit items-center gap-2 rounded-full border border-black/10 bg-black/5 px-4 py-2 transition-colors hover:bg-black/10 dark:border-white/10 dark:bg-white/5 dark:hover:bg-white/10"
+                                    className={`${HOME_PILL_LINK} ${typeEyebrow} text-black dark:text-white`}
                                 >
                                     {ctaAgendaIconSrc ? (
-                                        <img src={ctaAgendaIconSrc} alt="" className="h-4 w-4 shrink-0 object-contain" />
+                                        <img src={ctaAgendaIconSrc} alt="" className={HOME_EYEBROW_ICON} />
                                     ) : null}
                                     <span className={`text-black dark:text-white ${typeCta}`}>
                                         {content?.[page]?.[section]?.ctaAgenda}

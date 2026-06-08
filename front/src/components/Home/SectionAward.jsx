@@ -1,16 +1,17 @@
-﻿import { useEffect, useState } from "react";
-import { typeCta, typeCardTitle, typeEyebrow, typeSectionBody, typeSectionCaption, typeSectionTitle } from '../../utils/typography.js';
+import { useEffect, useState } from "react";
+import { typeCardTitle, typeEyebrow, typeSectionBody, typeSectionCaption, typeSectionTitle } from '../../utils/typography.js';
 import { Link } from "react-router";
 import { fetchPublicAwards } from "../../services/Awards/AwardsApi";
 import { fetchVideos } from "../../services/Videos/VideosListApi";
 import { useTranslation } from "react-i18next";
 import { isSectionVisible, isVisible } from "../../utils/isVisible";
 import useCmsContent from "../../hooks/useCmsContent";
+import { resolveCmsAssetWithFallback } from "../../utils/cmsAssets.js";
 import { toMediaUrl } from "../../utils/mediaUrl";
 import { getApiBaseUrl } from "../../utils/apiBase.js";
-import { HOME_CARD } from "./homeCardStyles.js";
+import { HOME_CARD, HOME_EYEBROW, HOME_EYEBROW_ICON, HOME_PILL_LINK } from "./homeCardStyles.js";
 
-import arrowSrc from "../../assets/imgs/icones/arrowRightWhite.svg";
+
 
 function SectionAward() {
   const [videos, setVideos] = useState([]);
@@ -26,6 +27,11 @@ function SectionAward() {
   const section = "award";
 
   const { content, loading: cmsLoading } = useCmsContent(page, locale);
+
+  const eyebrowIconSrc = resolveCmsAssetWithFallback(
+    content?.[page]?.[section]?.eyebrow_icon,
+    t("award.eyebrow_icon", { defaultValue: "/icons/home/IconStars.svg" })
+  );
 
   useEffect(() => {
     const controller = new AbortController();
@@ -80,11 +86,11 @@ function SectionAward() {
           <div className="flex flex-col md:flex-row justify-between items-start md:items-end self-stretch gap-4 md:gap-5">
             <div className="max-w-xl">
               {isVisible(content, page, section, "eyebrow") && (
-                <div className="flex items-center gap-3 mb-3">
-                  <div className="w-8 h-px shrink-0 bg-[#2B7FFF]" />
-                  <p className={`text-[#2B7FFF] ${typeEyebrow}`}>
-                    {content?.[page]?.[section]?.eyebrow}
-                  </p>
+                <div className={`${HOME_EYEBROW} mb-3 ${typeEyebrow} text-black dark:text-white`}>
+                  {eyebrowIconSrc ? (
+                    <img src={eyebrowIconSrc} alt="" className={HOME_EYEBROW_ICON} />
+                  ) : null}
+                  <span>{content?.[page]?.[section]?.eyebrow}</span>
                 </div>
               )}
               <h2 className={`${typeSectionTitle} text-black dark:text-white`}>
@@ -109,12 +115,10 @@ function SectionAward() {
             {isVisible(content, page, section, "ctaSeeMore") && (
               <Link
                 to={content?.[page]?.[section]?.ctaSeeMore_link || "/gallery"}
-                className="inline-flex shrink-0 items-center gap-2 rounded-full bg-[rgba(255,200,87,0.52)] px-4 py-2"
+                className={`${HOME_PILL_LINK} ${typeEyebrow} text-black dark:text-white`}
               >
-                <span className={`text-white ${typeCta}`}>
-                  {content?.[page]?.[section]?.ctaSeeMore}
-                </span>
-                <img src={arrowSrc} alt="" className="h-4 w-4" />
+                <span>{content?.[page]?.[section]?.ctaSeeMore}</span>
+                <img src="/icons/home/arrowRight.svg" alt="" className={HOME_EYEBROW_ICON} />
               </Link>
             )}
           </div>

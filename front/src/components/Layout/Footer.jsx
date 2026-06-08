@@ -110,11 +110,11 @@ function Footer() {
           {/* CENTER */}
           <div className="min-w-0 md:col-span-1 lg:col-span-2">
 
-            <div className="grid grid-cols-1 gap-x-8 gap-y-6 sm:grid-cols-2">
+            <div className="flex flex-col items-center gap-y-6 sm:flex-row sm:justify-center sm:gap-x-24 md:gap-x-32 lg:gap-x-40">
 
               {/* NAVIGATION */}
               <div className="min-w-0">
-                <h3 className={`text-amber-500 ${typeFooterHeading}`}>
+                <h3 className={`text-brand ${typeFooterHeading}`}>
                   {content?.[page]?.[section]?.sections_navigation || t("sections.navigation")}
                 </h3>
 
@@ -139,7 +139,7 @@ function Footer() {
             
               {/* LEGAL */}
               <div className="min-w-0">
-                <h3 className={`text-orange-500 ${typeFooterHeading}`}>
+                <h3 className={`text-brand ${typeFooterHeading}`}>
                   {content?.[page]?.[section]?.sections_legal}
                 </h3>
 

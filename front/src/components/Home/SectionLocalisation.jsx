@@ -1,10 +1,10 @@
-﻿import Localisation from "../Maps/Localisation"
+import Localisation from "../Maps/Localisation"
 import { typeEyebrow, typeSectionBody, typeSectionCaption, typeSectionTitle } from '../../utils/typography.js';
 import { useTranslation } from "react-i18next";
 import useCmsContent from "../../hooks/useCmsContent";
 import { isVisible, isSectionVisible } from "../../utils/isVisible";
 import { resolveCmsAsset } from "../../utils/cmsAssets";
-import { HOME_CARD_BODY, HOME_CARD_DESC, HOME_CARD_TITLE } from "./homeCardStyles.js";
+import { HOME_CARD_BODY, HOME_CARD_DESC, HOME_CARD_TITLE, HOME_EYEBROW, HOME_EYEBROW_ICON } from "./homeCardStyles.js";
 
 function SectionLocalisation() {
 
@@ -26,20 +26,18 @@ function SectionLocalisation() {
                 <section className="flex flex-col items-start gap-8 md:gap-10 p-5 md:py-12 md:px-18.75 w-full max-w-7xl mx-auto text-black dark:text-white">
 
                     {isVisible(content, page, section, "eyebrow") && (
-                        <div className="inline-flex h-10 shrink-0 items-center gap-2.5 self-start rounded-full border border-black/10 bg-black/5 px-5 dark:border-white/10 dark:bg-white/5">
+                        <div className={`${HOME_EYEBROW} ${typeEyebrow} text-black dark:text-white`}>
                             {isVisible(content, page, section, "eyebrow_icon") && eyebrowIconSrc && (
-                                <img src={eyebrowIconSrc} alt="" className="h-4 w-4" />
+                                <img src={eyebrowIconSrc} alt="" className={HOME_EYEBROW_ICON} />
                             )}
-                            <p className={typeEyebrow}>
-                                {content?.[page]?.[section]?.eyebrow || t("localisationEvent.eyebrow")}
-                            </p>
+                            <span>{content?.[page]?.[section]?.eyebrow || t("localisationEvent.eyebrow")}</span>
                         </div>
                     )}
 
                     <div className="flex w-full flex-col items-start gap-4 md:gap-6">
                         <h2 className={`${typeSectionTitle} w-full text-left capitalize`}>
                             {content?.[page]?.[section]?.venue_namePart1 || t("localisationEvent.venue.namePart1")}
-                            <span className="block md:inline md:ml-2 text-[#51A2FF]">
+                            <span className="block md:inline md:ml-2 text-brand">
                                 {content?.[page]?.[section]?.venue_namePart2 || t("localisationEvent.venue.namePart2")}
                             </span>
                         </h2>
@@ -47,8 +45,7 @@ function SectionLocalisation() {
                         <div className="flex w-full flex-col gap-2 md:flex-row md:flex-wrap md:items-center md:gap-x-8 md:gap-y-2 text-left">
                             {isVisible(content, page, section, "venue_cityTagline") && (
                                 <p
-                                    className={typeSectionCaption}
-                                    style={{ color: content?.[page]?.[section]?.venue_color || "#51A2FF" }}
+                                    className={`${typeSectionCaption} text-brand`}
                                 >
                                     {content?.[page]?.[section]?.venue_cityTagline || t("localisationEvent.venue.cityTagline")}
                                 </p>
@@ -74,12 +71,10 @@ function SectionLocalisation() {
                         {spaces.map((n) => {
                             const title = content?.[page]?.[section]?.[`space${n}_name`];
                             const description = content?.[page]?.[section]?.[`space${n}_description`];
-                            const titleColor = content?.[page]?.[section]?.[`space${n}_color`];
-
                             return (
                                 isVisible(content, page, section, `space${n}_name`) && (
                                     <div key={n} className={HOME_CARD_BODY}>
-                                        <h3 className={HOME_CARD_TITLE} style={{ color: titleColor }}>
+                                        <h3 className={`${HOME_CARD_TITLE} text-brand`}>
                                             {title}
                                         </h3>
                                         <p className={HOME_CARD_DESC}>

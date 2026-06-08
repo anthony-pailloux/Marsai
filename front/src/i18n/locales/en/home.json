@@ -21,13 +21,13 @@
       "card1":{
          "title": "1 minute",
          "description": "Ultra-short format for maximum impact.",
-         "title_color":"#FFC857",
+         "title_color":"#FF8C42",
          "icon":"/icons/home/IconClock.svg"
       },
       "card2": {
          "title": "Free",
          "description": "Conferences and workshops accessible.",
-         "title_color":"#00D492",
+         "title_color":"#FF8C42",
          "icon":"/icons/home/ticket.svg"
       },
       "card3": {
@@ -39,12 +39,13 @@
       "card4": {
         "title": "Expertise",
         "description": "World leaders in generative AI.",
-         "title_color":"#2B7FFF",
+         "title_color":"#FF8C42",
          "icon":"/icons/home/IconAward.svg"
       }      
    },
    "award": {
       "eyebrow": "The MARS.AI Project",
+      "eyebrow_icon": "/icons/home/IconStars.svg",
       "title1": "Films in",
       "title2": "Competition",
       "description": "Discover a selection of pioneering works exploring new frontiers of AI-assisted imagination.",
@@ -81,7 +82,7 @@
       "title_main": "Two days of",
       "title_main_color": "",
       "title_accent": "Free conferences",
-      "title_accent_color": "#FFB020",
+      "title_accent_color": "#FF8C42",
       "list": {
          "item1": "Engaging debates on ethics and the future",
          "item2": "Thought-provoking exchanges between artists and tech",
@@ -142,7 +143,7 @@
          "namePart1": "La",
          "namePart2": "Plateforme",
          "cityTagline": "Marseille, Hub Créatif",
-         "color": "#51A2FF"
+         "color": "#FF8C42"
       },
       "address": {
          "street": "12 Rue d'Uzes",
@@ -158,12 +159,12 @@
          {
             "name": "Salle des Sucres",
             "description": "A future sanctuary for talks and the Mars.A.I awards ceremony. A majestic space blending heritage and technology.",
-            "color":"#51A2FF"
+            "color":"#FF8C42"
          },
          {
             "name": "Salle PLAZA",
             "description": "The festival’s epicenter: welcome desk, activities, workshops, and food. The meeting point for all participants.",
-            "color": "#FFC857"
+            "color": "#FF8C42"
          }
       ],
       "maps_link":"https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d8044.241161952438!2d5.362378323117001!3d43.314391970182314!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x12c9c13ddc0211b9%3A0xd1642ae4b32c4bc4!2s%C3%89cole%20La%20Plateforme_%20Marseille%20-%20Entr%C3%A9e%20Sud!5e1!3m2!1sfr!2sfr!4v1769784840463!5m2!1sfr!2sfr"

@@ -1,10 +1,10 @@
-ï»¿import { useTranslation } from "react-i18next";
-import { typeCta, typeSectionBody, typeSectionCaption, typeSectionTitle, typeSectionSubtitle } from '../../utils/typography.js';
+import { useTranslation } from "react-i18next";
+import { typeCta, typeEyebrow, typeSectionBody, typeSectionCaption, typeSectionTitle, typeSectionSubtitle } from '../../utils/typography.js';
 import { Link } from "react-router";
 import useCmsContent from "../../hooks/useCmsContent";
 import { resolveCmsAsset } from "../../utils/cmsAssets";
 import { isSectionVisible, isVisible } from "../../utils/isVisible";
-import { HOME_CARD } from "./homeCardStyles.js";
+import { HOME_CARD, HOME_CARD_ICON_IMG, HOME_EYEBROW, HOME_EYEBROW_ICON } from "./homeCardStyles.js";
 
 function SectionClosingEvent() {
 
@@ -14,7 +14,7 @@ function SectionClosingEvent() {
     const page = "home";
     const section = "closingEvent";
 
-    // cherche les donnÃ©es en bdd
+    // cherche les données en bdd
     const { content, loading, message } = useCmsContent(page, locale);
 
     const cardIconSrc = resolveCmsAsset(content?.[page]?.[section]?.card_icon);
@@ -80,7 +80,7 @@ function SectionClosingEvent() {
                         
                         {isVisible(content, page, section, "card_icon") && (
                             <div className="w-10 h-10">
-                                <img src={ cardIconSrc } alt="" />
+                                <img src={cardIconSrc} alt="" className={HOME_CARD_ICON_IMG} />
                             </div>
                         )}
 
@@ -97,7 +97,7 @@ function SectionClosingEvent() {
                                 )}
 
                                 {isVisible(content, page, section, "card_localisation") && (
-                                    <span> â€¢ {content?.[page]?.[section]?.card_localisation || t("closingEvent.card.localisation")}</span>
+                                    <span> • {content?.[page]?.[section]?.card_localisation || t("closingEvent.card.localisation")}</span>
                                 )}
 
                             </p>

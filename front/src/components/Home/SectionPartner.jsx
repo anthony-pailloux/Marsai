@@ -1,10 +1,10 @@
-﻿import { useEffect, useState } from "react";
-import { typeSectionCaption, typeSectionTitle } from '../../utils/typography.js';
+import { useEffect, useState } from "react";
+import { typeEyebrow, typeSectionTitle } from '../../utils/typography.js';
 import { useTranslation } from "react-i18next";
 import GetPartnerApi from "../../services/Partner/GetPartnerApi";
 import useCmsContent from "../../hooks/useCmsContent";
 import { isSectionVisible, isVisible } from "../../utils/isVisible";
-import { HOME_PARTNER_CARD, HOME_PARTNER_IMG } from "./homeCardStyles.js";
+import { HOME_EYEBROW, HOME_PARTNER_CARD, HOME_PARTNER_IMG } from "./homeCardStyles.js";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -52,12 +52,8 @@ function SectionPartner() {
                     <header className="flex flex-col items-center gap-4 w-full shrink-0">
 
                         {isVisible(content, page, section, "eyebrow") && (
-                            <div className="flex flex-col items-center gap-4 shrink-0">
-                                <div className="w-12 h-px shrink-0 bg-black dark:bg-white" />
-                                <p className={`text-center ${typeSectionCaption}`}>
-                                    {content?.[page]?.[section]?.eyebrow}
-                                </p>
-                                <div className="w-12 h-px shrink-0 bg-black dark:bg-white" />
+                            <div className={`${HOME_EYEBROW} self-center ${typeEyebrow} text-black dark:text-white`}>
+                                <span>{content?.[page]?.[section]?.eyebrow}</span>
                             </div>
                         )}
 
