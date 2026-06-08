@@ -1,0 +1,190 @@
+export const PAGE = "layout";
+export const SECTION = "footer";
+
+export const FIELDS = [
+  "brand_logo",
+  "brand_quote",
+  "sections_navigation",
+  "sections_legal",
+  "links_gallery_label",
+  "links_gallery_href",
+  "links_program_label",
+  "links_program_href",
+  "links_jury_label",
+  "links_jury_href",
+  "links_partners_label",
+  "links_partners_href",
+  "links_faq_label",
+  "links_faq_href",
+  "links_contact_label",
+  "links_contact_href",
+  "links_legal_label",
+  "links_legal_href",
+  "bottom_copyright",
+  "bottom_designSystem",
+  "social",
+  "social_facebook_label",
+  "social_facebook_href",
+  "social_facebook_icon",
+  "social_instagram_label",
+  "social_instagram_href",
+  "social_instagram_icon",
+  "social_youtube_label",
+  "social_youtube_href",
+  "social_youtube_icon",
+  "social_x_label",
+  "social_x_href",
+  "social_x_icon",
+  "aria_openSocial",
+];
+
+export const DEFAULT_VALUES = {
+  brand_logo: "",
+  brand_logo_is_active: 1,
+  brand_quote: "",
+  brand_quote_is_active: 1,
+  sections_navigation: "",
+  sections_navigation_is_active: 1,
+  sections_legal: "",
+  sections_legal_is_active: 1,
+  links_gallery_label: "",
+  links_gallery_label_is_active: 1,
+  links_gallery_href: "",
+  links_program_label: "",
+  links_program_label_is_active: 1,
+  links_program_href: "",
+  links_jury_label: "",
+  links_jury_label_is_active: 1,
+  links_jury_href: "",
+  links_partners_label: "",
+  links_partners_label_is_active: 1,
+  links_partners_href: "",
+  links_faq_label: "",
+  links_faq_label_is_active: 1,
+  links_faq_href: "",
+  links_contact_label: "",
+  links_contact_label_is_active: 1,
+  links_contact_href: "",
+  links_legal_label: "",
+  links_legal_label_is_active: 1,
+  links_legal_href: "",
+  bottom_copyright: "",
+  bottom_copyright_is_active: 1,
+  bottom_designSystem: "",
+  bottom_designSystem_is_active: 1,
+  social: "",
+  social_is_active: 1,
+  social_facebook_label: "",
+  social_facebook_label_is_active: 1,
+  social_facebook_href: "",
+  social_facebook_icon: "",
+  social_instagram_label: "",
+  social_instagram_label_is_active: 1,
+  social_instagram_href: "",
+  social_instagram_icon: "",
+  social_youtube_label: "",
+  social_youtube_label_is_active: 1,
+  social_youtube_href: "",
+  social_youtube_icon: "",
+  social_x_label: "",
+  social_x_label_is_active: 1,
+  social_x_href: "",
+  social_x_icon: "",
+  aria_openSocial: "",
+  aria_openSocial_is_active: 1,
+  newsletter_is_active: 1,
+};
+
+export const FILE_FIELDS = [
+  "brand_logo",
+  "social_facebook_icon",
+  "social_instagram_icon",
+  "social_youtube_icon",
+  "social_x_icon",
+];
+
+export const SOCIAL_NETWORKS = [
+  {
+    key: "facebook",
+    title: "Facebook",
+    placeholderHref: "https://www.facebook.com",
+    labelKey: "social.facebook",
+  },
+  {
+    key: "instagram",
+    title: "Instagram",
+    placeholderHref: "https://www.instagram.com",
+    labelKey: "social.instagram",
+  },
+  {
+    key: "youtube",
+    title: "Youtube",
+    placeholderHref: "https://www.youtube.com",
+    labelKey: "social.youtube",
+  },
+  {
+    key: "x",
+    title: "X",
+    placeholderHref: "https://x.com",
+    labelKey: "social.x",
+  },
+];
+
+export const NAV_SECTIONS = [
+  {
+    title: "Gestion de la section Navigation",
+    sectionField: "sections_navigation",
+    sectionPlaceholderKey: "sections.navigation",
+    links: [
+      {
+        rank: "premier",
+        prefix: "gallery",
+        placeholderHref: "/gallery",
+        labelKey: "links.gallery",
+      },
+      {
+        rank: "deuxième",
+        prefix: "program",
+        placeholderHref: "/program",
+        labelKey: "links.program",
+      },
+      {
+        rank: "troisième",
+        prefix: "jury",
+        placeholderHref: "/jury",
+        labelKey: "links.jury",
+      },
+    ],
+  },
+  {
+    title: "Gestion de la section Legal",
+    sectionField: "sections_legal",
+    sectionPlaceholderKey: "sections.legal",
+    links: [
+      {
+        rank: "premier",
+        prefix: "partners",
+        placeholderHref: "/partners",
+        labelKey: "links.partners",
+      },
+      {
+        rank: "deuxième",
+        prefix: "faq",
+        placeholderHref: "/faq",
+        labelKey: "links.faq",
+      },
+      {
+        rank: "troisième",
+        prefix: "contact",
+        placeholderHref: "/contact",
+        labelKey: "links.contact",
+      },
+    ],
+  },
+];
+
+export function hydrateFooterValues(built, cmsSection) {
+  built.social_is_active = Number(cmsSection?.social_is_active ?? 1);
+  built.newsletter_is_active = Number(cmsSection?.newsletter_is_active ?? 1);
+  return built;
+}
