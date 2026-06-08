@@ -1,19 +1,24 @@
 import { useEffect, useMemo, useState } from "react";
-import { getApiUrl } from "../utils/apiBase.js";
-import { getAuthHeaders } from "../utils/authHeaders.js";
 import {
   buildNewsletterPreview,
-  newsletterFullUrl,
   parseNewsletterBlocks,
   toDatetimeLocal,
 } from "../utils/newsletterEditorUtils.js";
+import {
+  cancelScheduleNewsletter,
+  fetchNewsletter,
+  saveNewsletter,
+  scheduleNewsletter,
+  sendNowNewsletter,
+  sendTestNewsletter,
+} from "../services/Admin/newsletterEditorApi.js";
+import useNewsletterBlocks from "./useNewsletterBlocks.js";
 
 export default function useNewsletterEditor(newsletterId) {
   const [subject, setSubject] = useState("");
   const [title, setTitle] = useState("");
   const [background, setBackground] = useState("#ffffff");
   const [contentHtml, setContentHtml] = useState("");
-  const [blocks, setBlocks] = useState([]);
 
   const [testTo, setTestTo] = useState("");
   const [scheduledAt, setScheduledAt] = useState("");
@@ -25,18 +30,26 @@ export default function useNewsletterEditor(newsletterId) {
   const [msg, setMsg] = useState("");
   const [error, setError] = useState("");
 
+  function clearFeedback() {
+    setMsg("");
+  }
+
+  const {
+    blocks,
+    setBlocks,
+    addBlock,
+    updateBlock,
+    removeBlock,
+    moveBlock,
+    uploadImage,
+  } = useNewsletterBlocks(clearFeedback);
+
   async function load() {
     setLoading(true);
     setError("");
 
     try {
-      const res = await fetch(`${getApiUrl()}/admin/newsletters/${newsletterId}`, {
-        headers: getAuthHeaders({ Accept: "application/json" }),
-      });
-
-      const data = await res.json().catch(() => null);
-      if (!res.ok) throw new Error(data?.error || "Erreur chargement");
-
+      const data = await fetchNewsletter(newsletterId);
       setSubject(data?.subject || "");
       setTitle(data?.title || "");
       setBackground(data?.background_color || "#ffffff");
@@ -58,58 +71,6 @@ export default function useNewsletterEditor(newsletterId) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [newsletterId]);
 
-  function clearFeedback() {
-    setMsg("");
-  }
-
-  function addBlock(type) {
-    const block =
-      type === "image"
-        ? { type: "image", url: "", alt: "" }
-        : { type: "divider" };
-    setBlocks((prev) => [...prev, block]);
-    clearFeedback();
-  }
-
-  function updateBlock(index, patch) {
-    setBlocks((prev) =>
-      prev.map((b, i) => (i === index ? { ...b, ...patch } : b)),
-    );
-    clearFeedback();
-  }
-
-  function removeBlock(index) {
-    setBlocks((prev) => prev.filter((_, i) => i !== index));
-    clearFeedback();
-  }
-
-  function moveBlock(index, direction) {
-    setBlocks((prev) => {
-      const next = [...prev];
-      const j = index + direction;
-      if (j < 0 || j >= next.length) return prev;
-      [next[index], next[j]] = [next[j], next[index]];
-      return next;
-    });
-    clearFeedback();
-  }
-
-  async function uploadImage(file, blockIndex) {
-    const form = new FormData();
-    form.append("image", file);
-
-    const res = await fetch(`${getApiUrl()}/admin/newsletters/upload-image`, {
-      method: "POST",
-      headers: getAuthHeaders(),
-      body: form,
-    });
-
-    const data = await res.json().catch(() => null);
-    if (!res.ok) throw new Error(data?.error || "Erreur upload");
-
-    updateBlock(blockIndex, { url: newsletterFullUrl(data?.file?.url) });
-  }
-
   async function save() {
     if (!subject.trim()) {
       setError("Le subject est requis.");
@@ -121,26 +82,15 @@ export default function useNewsletterEditor(newsletterId) {
     setMsg("");
 
     try {
-      const res = await fetch(`${getApiUrl()}/admin/newsletters/${newsletterId}`, {
-        method: "PUT",
-        headers: getAuthHeaders({
-          "Content-Type": "application/json",
-          Accept: "application/json",
-        }),
-        body: JSON.stringify({
-          subject,
-          title,
-          background_color: background,
-          content_json: { blocks },
-          content_html: contentHtml,
-          status: "draft",
-          scheduled_at: null,
-        }),
+      await saveNewsletter(newsletterId, {
+        subject,
+        title,
+        background_color: background,
+        content_json: { blocks },
+        content_html: contentHtml,
+        status: "draft",
+        scheduled_at: null,
       });
-
-      const data = await res.json().catch(() => null);
-      if (!res.ok) throw new Error(data?.error || "Erreur sauvegarde");
-
       setMsg("Sauvegardé");
     } catch (e) {
       setError(e?.message || "Erreur");
@@ -151,7 +101,7 @@ export default function useNewsletterEditor(newsletterId) {
 
   async function sendTest() {
     if (!testTo.trim()) {
-      setError("Ajoute un email pour l’envoi test.");
+      setError("Ajoute un email pour l'envoi test.");
       return;
     }
 
@@ -159,28 +109,14 @@ export default function useNewsletterEditor(newsletterId) {
     setMsg("");
 
     try {
-      const res = await fetch(
-        `${getApiUrl()}/admin/newsletters/${newsletterId}/send-test`,
-        {
-          method: "POST",
-          headers: getAuthHeaders({
-            "Content-Type": "application/json",
-            Accept: "application/json",
-          }),
-          body: JSON.stringify({ to: testTo }),
-        },
-      );
-
-      const data = await res.json().catch(() => null);
-      if (!res.ok) throw new Error(data?.error || "Erreur envoi test");
-
+      await sendTestNewsletter(newsletterId, testTo);
       setMsg("Test envoyé (check Mailtrap)");
     } catch (e) {
       setError(e?.message || "Erreur");
     }
   }
 
-  async function scheduleNewsletter() {
+  async function scheduleNewsletterAction() {
     if (!scheduledAt) {
       setError("Choisis une date/heure pour programmer.");
       return;
@@ -191,21 +127,7 @@ export default function useNewsletterEditor(newsletterId) {
     setMsg("");
 
     try {
-      const res = await fetch(
-        `${getApiUrl()}/admin/newsletters/${newsletterId}/schedule`,
-        {
-          method: "POST",
-          headers: getAuthHeaders({
-            "Content-Type": "application/json",
-            Accept: "application/json",
-          }),
-          body: JSON.stringify({ scheduled_at: new Date(scheduledAt).toISOString() }),
-        },
-      );
-
-      const data = await res.json().catch(() => null);
-      if (!res.ok) throw new Error(data?.error || "Erreur programmation");
-
+      await scheduleNewsletter(newsletterId, scheduledAt);
       setMsg("Programmée");
       await load();
     } catch (e) {
@@ -221,17 +143,7 @@ export default function useNewsletterEditor(newsletterId) {
     setMsg("");
 
     try {
-      const res = await fetch(
-        `${getApiUrl()}/admin/newsletters/${newsletterId}/cancel-schedule`,
-        {
-          method: "POST",
-          headers: getAuthHeaders({ Accept: "application/json" }),
-        },
-      );
-
-      const data = await res.json().catch(() => null);
-      if (!res.ok) throw new Error(data?.error || "Erreur annulation");
-
+      await cancelScheduleNewsletter(newsletterId);
       setMsg("Programmation annulée");
       setScheduledAt("");
       await load();
@@ -248,17 +160,7 @@ export default function useNewsletterEditor(newsletterId) {
     setMsg("");
 
     try {
-      const res = await fetch(
-        `${getApiUrl()}/admin/newsletters/${newsletterId}/send-now`,
-        {
-          method: "POST",
-          headers: getAuthHeaders({ Accept: "application/json" }),
-        },
-      );
-
-      const data = await res.json().catch(() => null);
-      if (!res.ok) throw new Error(data?.error || "Erreur envoi");
-
+      await sendNowNewsletter(newsletterId);
       setMsg("Envoi terminé (check Mailtrap)");
       await load();
     } catch (e) {
@@ -308,7 +210,7 @@ export default function useNewsletterEditor(newsletterId) {
     uploadImage,
     save,
     sendTest,
-    scheduleNewsletter,
+    scheduleNewsletter: scheduleNewsletterAction,
     cancelSchedule,
     sendNowToAll,
     setMsg,

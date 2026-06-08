@@ -1,8 +1,6 @@
 import useAdminMessages from "../../hooks/useAdminMessages.js";
-import {
-  MessageDetailPanel,
-  MessageListItem,
-} from "../../components/admin/AdminMessagesParts.jsx";
+import { MessageListItem } from "../../components/admin/AdminMessagesParts.jsx";
+import MessageDetailPanel from "../../components/admin/MessageDetailPanel.jsx";
 import {
   typeAdminSection,
   typeAdminTitle,

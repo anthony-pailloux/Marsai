@@ -5,43 +5,19 @@ import {
   canProceedToStep3,
   canSubmitUpload,
   readOwnershipFromStorage,
-  validateFilmUpload,
 } from "../components/Form/Participation/ui/videoUploadValidation.js";
-import { toBackendBirthday } from "../../../shared/validation/filmValidationHelpers.js";
-import { getApiUrl } from "../utils/apiBase.js";
-
-const DRAFT_KEY = "videoUploadDraft";
-
-const INITIAL_FILES = {
-  video: null,
-  cover: null,
-  stills: [null, null, null],
-  subtitles: [],
-};
-
-const INITIAL_FORM = {
-  youtube_video_id: "",
-  title: "",
-  title_en: "",
-  synopsis: "",
-  synopsis_en: "",
-  language: "",
-  country: "",
-  duration: "",
-  tech_resume: "",
-  ai_tech: "",
-  creative_resume: "",
-  email: "",
-  director_name: "",
-  director_lastname: "",
-  director_gender: "Mr",
-  birthday: "",
-  mobile_number: "",
-  home_number: "",
-  address: "",
-  director_country: "",
-  discovery_source: "",
-};
+import {
+  INITIAL_UPLOAD_FILES,
+  INITIAL_UPLOAD_FORM,
+  readTagsFromStorage,
+} from "../components/Form/Participation/ui/videoUploadFormConfig.js";
+import {
+  mergeDirectorProfileIntoForm,
+  restoreVideoUploadDraft,
+  saveVideoUploadDraft,
+} from "../components/Form/Participation/ui/videoUploadDraft.js";
+import { submitVideoUpload } from "../components/Form/Participation/ui/videoUploadSubmit.js";
+import useVideoUploadCountries from "./useVideoUploadCountries.js";
 
 export default function useVideoUploadForm({ formRef, onCanProceedChange }) {
   const { t, i18n } = useTranslation("participation");
@@ -50,20 +26,15 @@ export default function useVideoUploadForm({ formRef, onCanProceedChange }) {
   const submitRequestedRef = useRef(false);
   const restoredRef = useRef(false);
 
-  const [files, setFiles] = useState(INITIAL_FILES);
-  const [form, setForm] = useState(INITIAL_FORM);
-  const [tags, setTags] = useState(() => {
-    try {
-      const saved = JSON.parse(localStorage.getItem("video_tags") || "[]");
-      return Array.isArray(saved) ? saved : [];
-    } catch {
-      return [];
-    }
-  });
+  const [files, setFiles] = useState(INITIAL_UPLOAD_FILES);
+  const [form, setForm] = useState(INITIAL_UPLOAD_FORM);
+  const [tags, setTags] = useState(readTagsFromStorage);
 
-  const [countries, setCountries] = useState([]);
-  const [countriesLoading, setCountriesLoading] = useState(true);
-  const [countriesErr, setCountriesErr] = useState("");
+  const {
+    countries,
+    loading: countriesLoading,
+    err: countriesErr,
+  } = useVideoUploadCountries(t, i18n.language);
 
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [successOpen, setSuccessOpen] = useState(false);
@@ -72,76 +43,19 @@ export default function useVideoUploadForm({ formRef, onCanProceedChange }) {
   const [errorMsg, setErrorMsg] = useState("");
 
   useEffect(() => {
-    let alive = true;
-
-    async function loadCountries() {
-      try {
-        setCountriesLoading(true);
-        setCountriesErr("");
-
-        const res = await fetch(
-          "https://restcountries.com/v3.1/all?fields=name",
-        );
-        const data = await res.json();
-
-        const list = Array.isArray(data)
-          ? data
-              .map((c) => c?.name?.common)
-              .filter(Boolean)
-              .sort((a, b) => a.localeCompare(b, i18n.language))
-          : [];
-
-        if (alive) setCountries(list);
-      } catch {
-        if (alive) setCountriesErr(t("upload.fields.country.errorMsg"));
-      } finally {
-        if (alive) setCountriesLoading(false);
-      }
-    }
-
-    loadCountries();
-    return () => {
-      alive = false;
-    };
-  }, [i18n.language, t]);
-
-  useEffect(() => {
-    const savedDraft = localStorage.getItem(DRAFT_KEY);
-    if (savedDraft) {
-      try {
-        const d = JSON.parse(savedDraft);
-        if (d?.form) setForm((f) => ({ ...f, ...d.form }));
-        if (Array.isArray(d?.tags)) setTags(d.tags);
-      } catch { /* ignore */ }
-    }
+    const draft = restoreVideoUploadDraft();
+    if (draft.form) setForm((f) => ({ ...f, ...draft.form }));
+    if (draft.tags) setTags(draft.tags);
     restoredRef.current = true;
   }, []);
 
   useEffect(() => {
     if (!restoredRef.current) return;
-    localStorage.setItem(DRAFT_KEY, JSON.stringify({ form, tags }));
+    saveVideoUploadDraft(form, tags);
   }, [form, tags]);
 
   useEffect(() => {
-    const saved = localStorage.getItem("directorProfile");
-    if (!saved) return;
-
-    try {
-      const p = JSON.parse(saved);
-      setForm((f) => ({
-        ...f,
-        email: p.email || f.email,
-        director_name: p.firstName || f.director_name,
-        director_lastname: p.lastName || f.director_lastname,
-        director_gender: p.gender || f.director_gender,
-        birthday: p.birthday || f.birthday,
-        address: p.address || f.address,
-        director_country: p.director_country || f.director_country,
-        discovery_source: p.discovery_source || f.discovery_source,
-        mobile_number: p.mobile_number || f.mobile_number,
-        home_number: p.home_number || f.home_number,
-      }));
-    } catch { /* ignore */ }
+    setForm((f) => mergeDirectorProfileIntoForm(f));
   }, []);
 
   useEffect(() => {
@@ -217,65 +131,13 @@ export default function useVideoUploadForm({ formRef, onCanProceedChange }) {
     setUploading(true);
 
     try {
-      const safeTags = Array.isArray(tags) ? tags : [];
-
-      let contributors = [];
-      try {
-        const saved = JSON.parse(localStorage.getItem("contributors") || "[]");
-        contributors = Array.isArray(saved) ? saved : [];
-      } catch { /* ignore */ }
-
-      const zodCheck = validateFilmUpload({
+      const data = await submitVideoUpload({
         form,
         files,
-        tags: safeTags,
-        contributors,
+        tags,
+        ownership: ownershipFresh,
+        t,
       });
-
-      if (!zodCheck.ok) throw new Error(zodCheck.message);
-
-      const fd = new FormData();
-
-      Object.entries(form).forEach(([k, v]) => {
-        if (v === "" || v === null || v === undefined) return;
-        fd.append(k, k === "birthday" ? toBackendBirthday(v) : v);
-      });
-
-      localStorage.setItem("video_tags", JSON.stringify(safeTags));
-      fd.append("tags", JSON.stringify(safeTags));
-      fd.append("contributors", JSON.stringify(contributors));
-      fd.append(
-        "ownership_certified",
-        ownershipFresh?.ownershipCertified ? "1" : "0",
-      );
-      fd.append("promo_consent", ownershipFresh?.promoConsent ? "1" : "0");
-      fd.append("terms_accepted", ownershipFresh?.termsAccepted ? "1" : "0");
-      fd.append("age_confirmed", ownershipFresh?.ageConfirmed ? "1" : "0");
-
-      const recaptchaToken = ownershipFresh?.recaptchaToken || "";
-      if (!recaptchaToken) throw new Error("Captcha missing");
-      fd.append("recaptcha_token", recaptchaToken);
-
-      fd.append("video", files.video);
-      fd.append("cover", files.cover);
-      files.stills.forEach((f) => {
-        if (f) fd.append("stills", f);
-      });
-      files.subtitles.forEach((f) => fd.append("subtitles", f));
-
-      const res = await fetch(`${getApiUrl()}/videos`, {
-        method: "POST",
-        body: fd,
-      });
-
-      const data = await res.json().catch(() => null);
-      if (!res.ok) {
-        throw new Error(
-          data?.details ||
-            data?.error ||
-            `${t("upload.uploadError")} (${res.status})`,
-        );
-      }
 
       setSuccessInfo(t("upload.uploadOk", { id: data?.videoId || "—" }));
       setSuccessOpen(true);
