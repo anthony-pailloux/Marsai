@@ -1,6 +1,8 @@
-import { useTranslation } from "react-i18next";
+﻿import { useTranslation } from "react-i18next";
+import { typeEyebrow, typeSectionCaption, typeSectionTitle, typeStat } from '../../utils/typography.js';
 import useCmsContent from "../../hooks/useCmsContent";
 import { isSectionVisible, isVisible } from "../../utils/isVisible";
+import { HOME_CARD } from "./homeCardStyles.js";
 
 function SectionProjected() {
 
@@ -22,20 +24,20 @@ function SectionProjected() {
     return(
         <>
             {isSectionVisible(content, page, section) && (
-                <section className="flex flex-col md:flex-row md:items-center md:justify-between gap-5 px-5 md:px-25 self-stretch w-full">
-                    <div className="flex w-full md:w-75 h-40 flex-col items-start gap-6 text-left">
-                        <h2 className="w-full text-[36px] md:text-[60px] font-bold leading-9 md:leading-15 tracking-[-1.8px] md:tracking-[-3px] uppercase">
+                <section className="flex flex-col md:flex-row md:items-center md:justify-center gap-8 md:gap-12 lg:gap-16 px-5 md:px-25 self-stretch w-full max-w-7xl mx-auto">
+                    <div className="flex w-full md:max-w-xs shrink-0 flex-col items-start gap-3 text-left">
+                        <h2 className={`${typeSectionTitle} w-full`}>
                             {content?.[page]?.[section]?.heading_title_main  || t("projectedStats.heading.title_main")}
-                            <span className={`text-[${content?.[page]?.[section]?.heading_title_accent_color}] block`}>
+                            <span className="block" style={{ color: content?.[page]?.[section]?.heading_title_accent_color || "#FF8C42" }}>
                                 {content?.[page]?.[section]?.heading_title_accent || t("projectedStats.heading.title_accent")}
                             </span>
                         </h2>
-                        <p className="w-full text-[12px] font-normal leading-4 tracking-[1.2px] uppercase">
+                        <p className={`${typeEyebrow} font-normal w-full`}>
                             {content?.[page]?.[section]?.heading_tagline || t("projectedStats.heading.tagline")}
                         </p>
                     </div>
 
-                    <div className="flex flex-col md:flex-row gap-12 px-5 md:px-8.5">
+                    <div className="flex flex-col sm:flex-row gap-6 md:gap-8 shrink-0">
                         {stats.map((n) => {
                             const value = content?.[page]?.[section]?.[`stat${n}_value`];
                             const label = content?.[page]?.[section]?.[`stat${n}_label`];
@@ -44,11 +46,11 @@ function SectionProjected() {
                             return (
                                 <div key={n} >
                                     {isVisible(content, page, section, `stat${n}_value`) && (
-                                        <div className="flex w-73.5 h-48.25 flex-col items-center gap-2 py-12 rounded-[40px] border border-[rgba(0,0,0,0.10)] bg-[rgba(255,255,255,0.05)] shadow-[0_25px_50px_-12px_rgba(0,0,0,0.25)]">
-                                            <p className="text-center text-[72px] font-bold leading-18 tracking-[-3.6px]">
+                                        <div className={`${HOME_CARD} flex w-73.5 flex-col items-center gap-2 px-6 py-8`}>
+                                            <p className={`text-center ${typeStat}`}>
                                                 {value}
                                             </p>
-                                            <p className="text-[#AD46FF] text-center text-[10px] font-bold leading-3.75 tracking-[4px] uppercase" style={{ color: color }}>
+                                            <p className={`text-center ${typeSectionCaption}`} style={{ color: color || "#FFB020" }}>
                                                 {label}
                                             </p>
                                         </div>
