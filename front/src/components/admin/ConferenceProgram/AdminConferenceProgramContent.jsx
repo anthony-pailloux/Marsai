@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { typeAdminSection, typeAdminMeta } from "../../../utils/typography.js";
 import {
   getProgramAdmin,
   createItem,
@@ -131,15 +132,15 @@ export default function AdminConferenceProgramContent() {
 
   return (
     <>
-      <section className="mt-5 rounded-3xl border border-black/10 bg-black/5 p-6 dark:border-[#F6339A]/60 dark:bg-white/5">
-        <h2 className="text-xl font-semibold">{t("title")}</h2>
-        <p className="mt-1 text-sm text-black/60 dark:text-white/60">
+      <section className="mt-5 rounded-3xl border border-black/10 bg-black/5 p-6 dark:border-[#FF8C42]/60 dark:bg-white/5">
+        <h2 className={typeAdminSection}>{t("title")}</h2>
+        <p className={`mt-1 ${typeAdminMeta}`}>
           {t("subtitle")}
         </p>
         <button
           type="button"
           onClick={openCreate}
-          className="mt-4 rounded-2xl bg-gradient-to-r from-sky-500 to-fuchsia-500 px-4 py-2 text-sm font-semibold text-white"
+          className="mt-4 rounded-2xl bg-[#FF8C42] hover:bg-[#E07830] transition-colors px-4 py-2 text-sm font-semibold text-white"
         >
           {t("addSlot")}
         </button>
@@ -183,7 +184,7 @@ export default function AdminConferenceProgramContent() {
       {modalOpen && (
         <div className="fixed inset-0 z-[200] flex items-center justify-center bg-black/50 p-4">
           <div className="w-full max-w-md rounded-2xl border border-black/10 bg-white p-6 dark:bg-black dark:border-white/10">
-            <h3 className="text-lg font-semibold">{editing ? t("modalTitleEdit") : t("modalTitleNew")}</h3>
+            <h3 className={typeAdminSection}>{editing ? t("modalTitleEdit") : t("modalTitleNew")}</h3>
             <form onSubmit={handleSave} className="mt-4 space-y-3">
               <div>
                 <label className="block text-xs text-black/60 dark:text-white/60">{t("labelDay")}</label>
@@ -248,7 +249,7 @@ export default function AdminConferenceProgramContent() {
                 </button>
                 <button
                   type="submit"
-                  className="rounded-xl bg-gradient-to-r from-sky-500 to-fuchsia-500 px-4 py-2 text-sm font-semibold text-white"
+                  className="rounded-xl bg-[#FF8C42] hover:bg-[#E07830] transition-colors px-4 py-2 text-sm font-semibold text-white"
                 >
                   {editing ? t("save") : t("create")}
                 </button>

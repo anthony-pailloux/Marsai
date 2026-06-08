@@ -1,11 +1,13 @@
-const API_URL = import.meta.env.VITE_API_URL;
+import { getAuthHeaders } from "../../utils/authHeaders.js";
+
+import { getApiUrl } from "../../utils/apiBase.js";
 
 async function updateFaq(payload) {
-    const res = await fetch(`${API_URL}/api/faq/${payload.id}`, {
+    const res = await fetch(`${getApiUrl()}/faq/${payload.id}`, {
         method: "PUT",
-		headers: {
+		headers: getAuthHeaders({
 			'Content-Type': 'application/json'
-		},
+		}),
         body: JSON.stringify(payload)
     });
 

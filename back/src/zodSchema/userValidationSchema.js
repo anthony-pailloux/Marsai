@@ -64,6 +64,14 @@ export const roleSchema = z.object({
     role: z.enum(["admin", "superadmin", "selector"]),
 });
 
+export const passwordResetTokenSchema = z.object({
+    token: z
+        .string({ message: "Token must be a string." })
+        .trim()
+        .min(1, "Token is required.")
+        .max(255, "Token must not exceed 255 characters."),
+});
+
 export const createUserSnakeSchema = z.object({
     name: z
       .string({ message: "Name must be a string." })

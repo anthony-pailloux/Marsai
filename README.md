@@ -4,123 +4,85 @@ Plateforme web dédiée au festival MarsAI, permettant la soumission, la gestion
 
 👥 Équipe
 
-Projet réalisé par :
-    Loriana,
-    Vanessa,
-    Edouard,
-    Anthony,
-    Mickael.
+Projet réalisé par : Loriana, Vanessa, Edouard, Anthony, Mickael.
 
 🏗 Architecture du projet
 
-    marsai/
-    │
-    ├── front/        → Application React (Vite)
-    ├── back/         → API Node.js / Express
-    ├── db/           → Script SQL d’initialisation
-    └── README.md
+```
+marsai/
+├── front/        → Application React (Vite)
+├── back/         → API Node.js / Express
+├── db/           → Script SQL + migrations
+├── docs/         → Guides (routes, S3, reCAPTCHA, YouTube…)
+└── README.md
+```
 
 ⚙️ Stack technique
 
-    Frontend
+- **Frontend** : React (Vite), React Router, Tailwind CSS, i18next
+- **Backend** : Node.js, Express, MySQL, JWT, Zod
+- **Intégrations** : Scaleway S3, YouTube OAuth, SMTP, reCAPTCHA
 
-        React (Vite)
-        React Router
-        Tailwind CSS
-        i18next
+📥 Installation locale (Laragon / MAMP)
 
-    Backend
+1. Cloner le repository et installer les dépendances :
 
-        Node.js
-        Express
-        MySQL
-        JWT Authentication
+```bash
+cd front && npm install
+cd ../back && npm install
+```
 
-📥 Installation
+2. Créer la base `projet_marsai` et importer `db/projet_marsai.sql`.
 
-    1️⃣ Cloner le repository
+3. Si la base existait déjà avec l'ancien schéma `assignment`, exécuter aussi `db/migrations/fix_assignment_table.sql`.
 
-        git clone git@github.com:LorianaD/project_marsai-bordeaux-groupe_LVETM.git
+4. Copier les fichiers d'environnement :
 
-        cd project_marsai-bordeaux-groupe_LVETM
+```bash
+cp back/.env.example back/.env
+cp front/.env.example front/.env
+```
 
-    2️⃣ Installer les dépendances
+5. Renseigner au minimum :
+   - **back** : `PORT`, `DB_*`, `JWT_SECRET`, `FRONT_ORIGIN`
+   - **front** : `VITE_API_URL`, `VITE_RECAPTCHA_SITE_KEY` (si upload)
 
-        Ouvrir deux terminaux :
+6. Lancer les deux serveurs :
 
-            Terminal 1 – Frontend
+```bash
+# Terminal 1
+cd back && npm run dev
 
-                cd front
-                npm install
+# Terminal 2
+cd front && npm run dev
+```
 
-            Terminal 2 – Backend
+Application : http://localhost:5173 — API : http://localhost:3000
 
-                cd back
-                npm install
+📚 Documentation complémentaire
 
-    ℹ️ Certaines dépendances peuvent générer des warnings.
-    Cela n’empêche pas l’application de fonctionner.
+- Routes et rôles : `docs/info_routes_role.md`
+- Scaleway S3 : `docs/S3_SETUP.md`
+- reCAPTCHA : `docs/racaptcha.md`
+- YouTube OAuth : `docs/GuideDebutant-CreerUneChaineYouTubeEtRecupererLesInfosOAuth.md`
 
-🗄 Base de données
+🔐 Variables d'environnement
 
-    Démarrer votre serveur local (MAMP, Laragon, XAMPP…).
+| Variable | Dossier | Description |
+|----------|---------|-------------|
+| `PORT` | back | Port API (ex: 3000) |
+| `FRONT_ORIGIN` | back | URL front pour CORS |
+| `JWT_SECRET` | back | Clé JWT |
+| `JWT_EXPIRES_IN` | back | Durée token (défaut: 24h) |
+| `VITE_API_URL` | front | URL de l'API |
+| `VITE_RECAPTCHA_SITE_KEY` | front | Clé publique reCAPTCHA |
+| `SCALEWAY_*` | back | Stockage vidéos (voir docs/S3_SETUP.md) |
+| `MAIL_*` | back | Envoi emails (contact, newsletter) |
 
-        Ouvrir phpMyAdmin.
-
-    Créer une base de données nommée :
-
-        projet_marsai
-
-    Importer le fichier .sql situé dans le dossier db.
-
-🔐 Variables d’environnement
-
-    Créer un fichier .env dans le dossier back/.
-
-    Vous pouvez vous baser sur le fichier .env.example.
-
-        Exemple .env.example
-        # Server
-        PORT=5000
-
-        # Database
-        DB_HOST=localhost
-        DB_USER=root
-        DB_PASSWORD=
-        DB_NAME=projet_marsai
-        DB_PORT=3306
-
-        # JWT
-        JWT_SECRET=your_super_secret_key
-        JWT_REFRESH_SECRET=your_refresh_secret_key
-
-        # Front URL (CORS)
-        CLIENT_URL=http://localhost:5173
-
-    ⚠️ Ne jamais commit le fichier .env.
-
-▶️ Lancer le projet
-
-    Dans les deux dossiers (front et back) :
-
-        npm run dev
-
-    Accéder à l’application :
-
-        http://localhost:5173
-
-    🧪 Environnement de développement
-
-        Node >= 18 recommandé
-
-        MySQL 8+
-
-        npm >= 9
+⚠️ Ne jamais committer les fichiers `.env`.
 
 📦 Bonnes pratiques
 
-    Ne pas modifier directement la base en production.
-
-    Ne jamais exposer les variables sensibles.
-
-    Toujours créer une branche pour les nouvelles fonctionnalités.
+- Ne pas modifier directement la base en production
+- Ne jamais exposer les variables sensibles
+- Toujours créer une branche pour les nouvelles fonctionnalités

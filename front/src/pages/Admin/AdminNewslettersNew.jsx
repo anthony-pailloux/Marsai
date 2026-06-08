@@ -1,8 +1,10 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import NewsletterCkEditor from "../../components/newsletter/NewsletterCkEditor.jsx";
+import { getAuthHeaders } from "../../utils/authHeaders.js";
 
-const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:3000";
+import { getApiUrl } from "../../utils/apiBase.js";
+import { typeAdminTitle } from "../../utils/typography.js";
 
 export default function AdminNewsletterNew() {
   const navigate = useNavigate();
@@ -27,12 +29,12 @@ export default function AdminNewsletterNew() {
     setError("");
 
     try {
-      const res = await fetch(`${API_BASE}/api/admin/newsletters`, {
+      const res = await fetch(`${getApiUrl()}/admin/newsletters`, {
         method: "POST",
-        headers: {
+        headers: getAuthHeaders({
           "Content-Type": "application/json",
           Accept: "application/json",
-        },
+        }),
         body: JSON.stringify({
           subject,
           title,
@@ -62,7 +64,7 @@ export default function AdminNewsletterNew() {
           <main className="min-w-0 flex-1 w-full">
 
             <div className="mt-10 w-full">
-              <h1 className="text-4xl font-black">NOUVELLE NEWSLETTER</h1>
+              <h1 className={typeAdminTitle}>NOUVELLE NEWSLETTER</h1>
               <p className="mt-2 text-sm opacity-70">
                 Crée un brouillon, puis édite le contenu.
               </p>

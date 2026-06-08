@@ -1,10 +1,11 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Field, TextInput, TextArea, Select } from "./Field";
 import TagInput from "./TagInput";
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
+import { getApiUrl } from "../../../../utils/apiBase.js";
+import { typeAdminSection, typeBadge, typeEyebrow } from "../../../../utils/typography.js";
 
 function ModalShell({ open, title, children, onClose, closeAriaLabel }) {
   const { t } = useTranslation("participation");
@@ -20,13 +21,13 @@ function ModalShell({ open, title, children, onClose, closeAriaLabel }) {
       />
       <div className="absolute left-1/2 top-1/2 w-[min(92vw,560px)] -translate-x-1/2 -translate-y-1/2 overflow-hidden rounded-3xl bg-white shadow-xl ring-1 ring-black/10">
         <div className="flex items-center justify-between gap-3 border-b border-neutral-200 px-6 py-4">
-          <div className="text-sm font-extrabold uppercase tracking-[0.12em] text-neutral-900">
+          <div className={`text-neutral-900 ${typeEyebrow}`}>
             {title}
           </div>
           <button
             type="button"
             onClick={onClose}
-            className="rounded-xl bg-neutral-900 px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-white"
+            className={`rounded-xl bg-neutral-900 px-4 py-2 text-white ${typeBadge}`}
           >
             {t("countryPicker.close")}
           </button>
@@ -143,7 +144,7 @@ export default function VideoUploadForm({ formRef, onCanProceedChange }) {
         const d = JSON.parse(savedDraft);
         if (d?.form) setForm((f) => ({ ...f, ...d.form }));
         if (Array.isArray(d?.tags)) setTags(d.tags);
-      } catch {}
+      } catch { /* ignore parse errors */ }
     }
     restoredRef.current = true;
   }, []);
@@ -175,7 +176,7 @@ export default function VideoUploadForm({ formRef, onCanProceedChange }) {
         mobile_number: p.mobile_number || f.mobile_number,
         home_number: p.home_number || f.home_number,
       }));
-    } catch {}
+    } catch { /* ignore parse errors */ }
   }, []);
 
   function update(e) {
@@ -257,7 +258,6 @@ export default function VideoUploadForm({ formRef, onCanProceedChange }) {
     return computeCanProceedStep3() && termsOk && ageOk && robotOk;
   }
 
-  const canSubmit = computeCanSubmit(getFreshOwnership());
 
   //  expose API au parent (step 3)
   useEffect(() => {
@@ -320,7 +320,7 @@ export default function VideoUploadForm({ formRef, onCanProceedChange }) {
       try {
         const saved = JSON.parse(localStorage.getItem("contributors") || "[]");
         contributors = Array.isArray(saved) ? saved : [];
-      } catch {}
+      } catch { /* ignore parse errors */ }
 
       fd.append("contributors", JSON.stringify(contributors));
       fd.append(
@@ -344,7 +344,7 @@ export default function VideoUploadForm({ formRef, onCanProceedChange }) {
 
       files.subtitles.forEach((f) => fd.append("subtitles", f));
 
-      const res = await fetch(`${API_URL}/api/videos`, {
+      const res = await fetch(`${getApiUrl()}/videos`, {
         method: "POST",
         body: fd,
       });
@@ -426,7 +426,7 @@ export default function VideoUploadForm({ formRef, onCanProceedChange }) {
                 setConfirmOpen(false);
                 await doUpload();
               }}
-              className="rounded-xl bg-[#7C3AED] px-5 py-2 text-sm font-semibold text-white disabled:opacity-50"
+              className="rounded-xl bg-[#E07830] px-5 py-2 text-sm font-semibold text-white disabled:opacity-50"
               disabled={uploading}
             >
               {uploading
@@ -467,12 +467,12 @@ export default function VideoUploadForm({ formRef, onCanProceedChange }) {
 
       <form ref={internalFormRef} onSubmit={submit} className="w-full">
         <div className="space-y-12 text-neutral-900 dark:text-white">
-          <h2 className="text-center text-2xl font-semibold">
+          <h2 className={`text-center ${typeAdminSection}`}>
             {t("upload.title")}
           </h2>
 
           <section className="space-y-6">
-            <h3 className="font-semibold text-purple-500">
+            <h3 className={`text-orange-500 ${typeAdminSection}`}>
               {t("upload.sections.identity")}
             </h3>
 
@@ -609,7 +609,7 @@ export default function VideoUploadForm({ formRef, onCanProceedChange }) {
           </section>
 
           <section className="space-y-6">
-            <h3 className="font-semibold text-purple-500">
+            <h3 className={`text-orange-500 ${typeAdminSection}`}>
               {t("upload.sections.ai")}
             </h3>
 
@@ -649,7 +649,7 @@ export default function VideoUploadForm({ formRef, onCanProceedChange }) {
           </section>
 
           <section className="space-y-6">
-            <h3 className="font-semibold text-purple-500">
+            <h3 className={`text-orange-500 ${typeAdminSection}`}>
               {t("upload.sections.files")}
             </h3>
 

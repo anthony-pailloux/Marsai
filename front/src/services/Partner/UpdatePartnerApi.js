@@ -1,4 +1,6 @@
-const API_URL = import.meta.env.VITE_API_URL
+import { getAuthHeaders } from "../../utils/authHeaders.js";
+
+import { getApiUrl } from "../../utils/apiBase.js";
 
 async function updatePartnerApi(id, { name, url, file }) {
 
@@ -11,8 +13,9 @@ async function updatePartnerApi(id, { name, url, file }) {
 
     if (file) formData.append("file", file);
 
-    const res = await fetch(`${API_URL}/api/partner/${id}`, {
+    const res = await fetch(`${getApiUrl()}/partner/${id}`, {
         method: "PUT",
+        headers: getAuthHeaders(),
         body: formData
     });
     // console.log(res);

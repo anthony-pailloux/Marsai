@@ -10,6 +10,9 @@ import {
 import BtnLogout from "../../components/Buttons/BtnLogout";
 import { decodeToken } from "../../utils/decodeToken";
 
+import { getApiBaseUrl } from "../../utils/apiBase.js";
+import { typeAdminMeta, typeAdminTitle } from "../../utils/typography.js";
+
 const STATUS_OPTIONS = [
   "All",
   "Pending",
@@ -45,7 +48,6 @@ export default function AdminVideos() {
 
   useEffect(() => {
     refresh();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const filtered = useMemo(() => {
@@ -115,10 +117,10 @@ export default function AdminVideos() {
         {/* Title */}
         <div className="flex justify-between items-center">
           <div className="mt-8">
-            <h2 className="text-[44px] font-extrabold tracking-tight md:text-[46px]">
+            <h2 className={typeAdminTitle}>
               FILMS SOUMIS
             </h2>
-            <p className="mt-1 text-black/50 dark:text-white/50">
+            <p className={`mt-1 text-black/50 dark:text-white/50 ${typeAdminMeta}`}>
               Gérez l&apos;intégralité des soumissions et gérez les mises en
               avant.
             </p>
@@ -279,7 +281,7 @@ export default function AdminVideos() {
                                 <img
                                   src={
                                     v.cover
-                                      ? `${import.meta.env.VITE_API_URL || ""}/uploads/covers/${v.cover}`
+                                      ? `${getApiBaseUrl()}/uploads/covers/${v.cover}`
                                       : ""
                                   }
                                   alt={v.title || ""}

@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Field, TextInput, Select } from "./Field";
 import ReCAPTCHA from "react-google-recaptcha";
+import { typeAdminSection, typeBadge } from "../../../../utils/typography.js";
 
 const SITE_KEY = import.meta.env.VITE_RECAPTCHA_SITE_KEY;
 
@@ -113,7 +114,7 @@ export default function TeamCompositionForm({ onPrev }) {
               <button
                 type="button"
                 onClick={() => setTermsOpen(false)}
-                className="rounded-xl bg-neutral-900 px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-white"
+                className={`rounded-xl bg-neutral-900 px-4 py-2 text-white ${typeBadge}`}
               >
                 {t("team.final.close")}
               </button>
@@ -122,7 +123,7 @@ export default function TeamCompositionForm({ onPrev }) {
             {/* NOTE: le contenu long des conditions est laissé tel quel pour l’instant.
                Si tu veux, je te le mets aussi en i18n (FR/EN) mais c’est un gros bloc. */}
             <div className="max-h-[70vh] overflow-auto p-6 text-sm leading-7 text-neutral-700">
-              <h3 className="text-base font-extrabold text-neutral-900">
+              <h3 className={`text-neutral-900 ${typeAdminSection}`}>
                 1) Objet
               </h3>
               <p className="mt-2">
@@ -131,7 +132,7 @@ export default function TeamCompositionForm({ onPrev }) {
                 œuvres soumises ne doivent pas dépasser 60 secondes.
               </p>
 
-              <h3 className="mt-6 text-base font-extrabold text-neutral-900">
+              <h3 className={`mt-6 text-neutral-900 ${typeAdminSection}`}>
                 2) Éligibilité
               </h3>
               <p className="mt-2">
@@ -140,7 +141,7 @@ export default function TeamCompositionForm({ onPrev }) {
                 ou disposer d’une autorisation parentale/légale si applicable.
               </p>
 
-              <h3 className="mt-6 text-base font-extrabold text-neutral-900">
+              <h3 className={`mt-6 text-neutral-900 ${typeAdminSection}`}>
                 3) Droits & propriété
               </h3>
               <p className="mt-2">
@@ -150,7 +151,7 @@ export default function TeamCompositionForm({ onPrev }) {
                 réclamation de tiers.
               </p>
 
-              <h3 className="mt-6 text-base font-extrabold text-neutral-900">
+              <h3 className={`mt-6 text-neutral-900 ${typeAdminSection}`}>
                 4) Contenu autorisé
               </h3>
               <p className="mt-2">
@@ -160,7 +161,7 @@ export default function TeamCompositionForm({ onPrev }) {
                 consentie de l’image d’autrui.
               </p>
 
-              <h3 className="mt-6 text-base font-extrabold text-neutral-900">
+              <h3 className={`mt-6 text-neutral-900 ${typeAdminSection}`}>
                 5) Utilisation par le festival
               </h3>
               <p className="mt-2">
@@ -171,7 +172,7 @@ export default function TeamCompositionForm({ onPrev }) {
                 presse), sans rémunération supplémentaire.
               </p>
 
-              <h3 className="mt-6 text-base font-extrabold text-neutral-900">
+              <h3 className={`mt-6 text-neutral-900 ${typeAdminSection}`}>
                 6) Données personnelles
               </h3>
               <p className="mt-2">
@@ -181,7 +182,7 @@ export default function TeamCompositionForm({ onPrev }) {
                 données selon la politique de confidentialité.
               </p>
 
-              <h3 className="mt-6 text-base font-extrabold text-neutral-900">
+              <h3 className={`mt-6 text-neutral-900 ${typeAdminSection}`}>
                 7) Modération / refus
               </h3>
               <p className="mt-2">
@@ -190,7 +191,7 @@ export default function TeamCompositionForm({ onPrev }) {
                 signalement sérieux.
               </p>
 
-              <h3 className="mt-6 text-base font-extrabold text-neutral-900">
+              <h3 className={`mt-6 text-neutral-900 ${typeAdminSection}`}>
                 8) Acceptation
               </h3>
               <p className="mt-2">
@@ -204,7 +205,7 @@ export default function TeamCompositionForm({ onPrev }) {
 
       {/* card */}
       <div className="rounded-2xl bg-white p-8 text-neutral-900 dark:bg-black dark:text-white">
-        <h2 className="text-center text-2xl font-semibold text-purple-500">
+        <h2 className={`text-center text-orange-500 ${typeAdminSection}`}>
           {t("team.title")}
         </h2>
 
@@ -342,7 +343,7 @@ export default function TeamCompositionForm({ onPrev }) {
                 <button
                   type="button"
                   onClick={() => setTermsOpen(true)}
-                  className="font-semibold text-purple-600 underline"
+                  className="font-semibold text-orange-600 underline"
                 >
                   {t("team.final.termsLink")}
                 </button>{" "}
@@ -387,7 +388,7 @@ export default function TeamCompositionForm({ onPrev }) {
           <button
             type="button"
             onClick={onPrev}
-            className="rounded-xl border border-purple-400 px-10 py-3 font-semibold text-purple-500"
+            className="rounded-xl border border-orange-400 px-10 py-3 font-semibold text-orange-500"
           >
             {t("page.prev")}
           </button>

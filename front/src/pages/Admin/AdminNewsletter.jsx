@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
+import { getAuthHeaders } from "../../utils/authHeaders.js";
 
-const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:3000";
+import { getApiUrl } from "../../utils/apiBase.js";
+import { typeAdminTitle } from "../../utils/typography.js";
 
 export default function AdminNewsletter() {
   const [subscribers, setSubscribers] = useState([]);
@@ -16,14 +18,14 @@ export default function AdminNewsletter() {
   async function loadAll() {
     setLoading(true);
     try {
-      const subsUrl = `${API_BASE}/api/admin/newsletter/subscribers?status=${status}&q=${encodeURIComponent(
+      const subsUrl = `${getApiUrl()}/admin/newsletter/subscribers?status=${status}&q=${encodeURIComponent(
         q,
       )}&limit=${limit}&offset=${page * limit}`;
 
       const [subsRes, statsRes] = await Promise.all([
-        fetch(subsUrl, { headers: { Accept: "application/json" } }),
-        fetch(`${API_BASE}/api/admin/newsletter/stats`, {
-          headers: { Accept: "application/json" },
+        fetch(subsUrl, { headers: getAuthHeaders({ Accept: "application/json" }) }),
+        fetch(`${getApiUrl()}/admin/newsletter/stats`, {
+          headers: getAuthHeaders({ Accept: "application/json" }),
         }),
       ]);
 
@@ -59,7 +61,7 @@ export default function AdminNewsletter() {
           <main className="min-w-0 flex-1">
 
             <div className="mt-10 w-full">
-              <h1 className="text-4xl font-black tracking-tight w-full">NEWSLETTER</h1>
+              <h1 className={`tracking-tight w-full ${typeAdminTitle}`}>NEWSLETTER</h1>
               <p className="mt-2 text-sm opacity-70">
                 Gestion des abonnés et statistiques (double opt-in).
               </p>

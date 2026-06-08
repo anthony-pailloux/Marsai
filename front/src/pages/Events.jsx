@@ -1,17 +1,35 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import agendaIcon from "../assets/imgs/icones/agenda.png";
 import arrowIcon from "../assets/imgs/icones/arrow.png";
 import baliseIcon from "../assets/imgs/icones/balise.png";
-import horlogeIcon from "../assets/imgs/icones/horloge.png";
 import wagonIcon from "../assets/imgs/icones/wagon.png";
 import carsIcon from "../assets/imgs/icones/cars.png";
-import peopleIcon from "../assets/imgs/icones/people.png";
-import starIcon from "../assets/imgs/icones/star.png";
 import { getEvents } from "../services/Events/EventsApi.js";
 import { getProgram } from "../services/Events/ConferenceProgramAPI.js";
 import BookingModal from "../components/BookingModal.jsx";
 import { useTranslation } from "react-i18next";
+import {
+  typeBody,
+  typeBodySm,
+  typeCta,
+  typeEyebrow,
+  typeSectionBody,
+  typeSectionSubtitle,
+  typeStat,
+} from "../utils/typography.js";
+import {
+  HOME_CARD_BODY,
+  HOME_CARD_COMPACT,
+  HOME_CARD_DASHED,
+  HOME_EYEBROW,
+  HOME_LIST_ITEM,
+  HOME_CARD,
+} from "../components/Home/homeCardStyles.js";
+
+const agendaIcon = "/icons/home/IconCalendar.svg";
+const horlogeIcon = "/icons/home/IconClock.svg";
+const starIcon = "/icons/home/IconStars.svg";
+const peopleIcon = "/icons/home/IconPeople.svg";
 
 function formatDayLabel(dayStr, locale = "fr") {
   if (!dayStr) return "—";
@@ -59,27 +77,27 @@ function Events() {
     <main className="w-full p-[25px] md:px-[100px] md:py-[50px]">
       <div className="mx-auto px-6 py-12 space-y-16">
         {/* INFOS PRATIQUES */}
-        <section id="infos-pratiques" className="space-y-6">
-          <div className="inline-flex items-center gap-3 rounded-full border border-black/10 bg-black/5 dark:border-[#F6339A]/60 dark:bg-white/5 px-5 py-2 text-xs font-semibold tracking-[0.25em] uppercase">
+        <section id="infos-pratiques" className="flex flex-col items-start space-y-6">
+          <div className={`${HOME_EYEBROW} gap-3 ${typeEyebrow}`}>
             <img src={agendaIcon} alt="" className="h-6 w-6" />
             <span>{t("title")}</span>
           </div>
 
           <div className="space-y-3">
-            <p className="text-sm font-semibold tracking-[0.35em] text-black dark:text-white">
+            <p className={`text-black dark:text-white ${typeEyebrow}`}>
               {t("datePlaceholder")}
             </p>
-            <p className="text-3xl font-semibold tracking-tight text-[#F6339A]">
+            <p className={`text-[#FF8C42] ${typeStat}`}>
               {t("city")}
             </p>
           </div>
 
-          <article className="mt-6 flex gap-5 rounded-3xl border border-black/10 bg-black/5 dark:border-[#F6339A]/60 dark:bg-white/5 p-6 backdrop-blur">
+          <article className={`mt-6 flex w-full gap-5 ${HOME_CARD_COMPACT} backdrop-blur`}>
             <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-[16px] bg-[#51A2FF]">
               <img src={baliseIcon} alt="" className="h-6 w-6" />
             </div>
             <div className="space-y-2 justify-center w-full ">
-              <h3 className="text-sm font-semibold tracking-[0.25em] text-blue-600 dark:text-blue-300">
+              <h3 className={`text-blue-600 dark:text-blue-300 ${typeEyebrow}`}>
                 {t("platformTitle")}
               </h3>
               <p className="text-sm text-black/80 dark:text-white/80">
@@ -94,9 +112,9 @@ function Events() {
         </section>
 
         {/* PROGRAMME DES CONFÉRENCES */}
-        <section id="programme" className="space-y-6">
+        <section id="programme" className="flex flex-col items-start space-y-6">
           <div className="flex flex-wrap items-center gap-3">
-            <div className="inline-flex items-center gap-3 rounded-full border border-black/10 bg-black/5 dark:border-[#F6339A]/60 dark:bg-white/5 px-5 py-2 text-xs font-semibold tracking-[0.25em] uppercase">
+            <div className={`${HOME_EYEBROW} gap-3 ${typeEyebrow}`}>
               <img src={horlogeIcon} alt="" className="h-6 w-6" />
               <span>{t("programmeTitle")}</span>
             </div>
@@ -111,8 +129,8 @@ function Events() {
                       onClick={() => setSelectedProgramDay(day)}
                       className={`rounded-full px-4 py-2 text-xs font-semibold transition-colors normal-case tracking-normal ${
                         isSelected
-                          ? "bg-[#F6339A] text-white dark:bg-[#F6339A] dark:text-white"
-                          : "border border-black/20 bg-black/5 text-black dark:border-[#F6339A]/40 dark:bg-white/5 dark:text-white hover:bg-black/10 dark:hover:bg-white/10"
+                          ? "bg-[#FF8C42] text-white dark:bg-[#FF8C42] dark:text-white"
+                          : "border border-black/10 bg-black/5 text-black dark:border-white/10 dark:bg-white/5 dark:text-white hover:bg-black/10 dark:hover:bg-white/10"
                       }`}
                     >
                       {formatDayLabel(day, locale)}
@@ -123,12 +141,12 @@ function Events() {
             )}
           </div>
 
-          <ul className="mt-4 space-y-3">
+          <ul className="mt-4 w-full space-y-3">
             {filteredProgramItems.length > 0
               ? filteredProgramItems.map((item) => (
                   <li
                     key={item.id}
-                    className="flex items-start gap-4 rounded-2xl border border-black/5 bg-black/5 dark:border-[#F6339A]/60 dark:bg-white/5 px-4 py-3"
+                    className={`flex items-start gap-4 ${HOME_LIST_ITEM}`}
                   >
                     <span
                       className={`mt-1 inline-flex h-8 items-center justify-center rounded-full px-4 text-xs font-semibold text-black ${item.color || "bg-sky-400"}`}
@@ -153,7 +171,7 @@ function Events() {
                   </li>
                 ))
               : (
-                <li className="rounded-2xl border border-dashed border-black/15 bg-black/5 px-4 py-6 text-center text-sm text-black/60 dark:text-white/60">
+                <li className={`px-4 py-6 text-center text-sm text-black/60 dark:text-white/60 ${HOME_CARD_DASHED}`}>
                   {effectiveDay ? t("noSlotDay") : t("noSlot")}
                 </li>
               )}
@@ -161,16 +179,16 @@ function Events() {
         </section>
 
         {/* ACCÈS */}
-        <section id="acces" className="space-y-6">
-          <div className="inline-flex items-center gap-3 rounded-full border border-black/10 bg-black/5 dark:border-[#F6339A]/60 dark:bg-white/5 px-5 py-2 text-xs font-semibold tracking-[0.25em] uppercase">
+        <section id="acces" className="flex flex-col items-start space-y-6">
+          <div className={`${HOME_EYEBROW} gap-3 ${typeEyebrow}`}>
             <img src={arrowIcon} alt="" className="h-6 w-6" />
             <span>{t("accessTitle")}</span>
           </div>
 
-          <div className="grid gap-4 md:grid-cols-3">
-            <article className="rounded-2xl border border-black/10 bg-black/5 dark:border-[#F6339A]/60 dark:bg-white/5 p-5">
+          <div className="grid w-full gap-4 md:grid-cols-3">
+            <article className={HOME_CARD_COMPACT}>
               <img src={wagonIcon} alt="" className="h-6 w-6" />
-              <h3 className="text-xs font-semibold tracking-[0.25em] uppercase text-sky-600 dark:text-sky-300">
+              <h3 className={`text-sky-600 dark:text-sky-300 ${typeEyebrow}`}>
                 {t("transportTitle")}
               </h3>
               <p className="mt-3 text-sm text-black/80 dark:text-white/80">
@@ -181,9 +199,9 @@ function Events() {
               </p>
             </article>
 
-            <article className="rounded-2xl border border-black/10 bg-black/5 dark:border-[#F6339A]/60 dark:bg-white/5 p-5">
+            <article className={HOME_CARD_COMPACT}>
               <img src={carsIcon} alt="" className="h-6 w-6" />
-              <h3 className="text-xs font-semibold tracking-[0.25em] uppercase text-emerald-600 dark:text-emerald-300">
+              <h3 className={`text-emerald-600 dark:text-emerald-300 ${typeEyebrow}`}>
                 {t("carTitle")}
               </h3>
               <p className="mt-3 text-sm text-black/80 dark:text-white/80">
@@ -194,9 +212,9 @@ function Events() {
               </p>
             </article>
 
-            <article className="rounded-2xl border border-black/10 bg-black/5 dark:border-[#F6339A]/60 dark:bg-white/5 p-5">
+            <article className={HOME_CARD_COMPACT}>
               <img src={baliseIcon} alt="" className="h-6 w-6" />
-              <h3 className="text-xs font-semibold tracking-[0.25em] uppercase text-fuchsia-600 dark:text-fuchsia-300">
+              <h3 className={`text-amber-500 dark:text-amber-300 ${typeEyebrow}`}>
                 {t("addressTitle")}
               </h3>
               <p className="mt-3 text-sm text-black/80 dark:text-white/80">
@@ -205,35 +223,37 @@ function Events() {
             </article>
           </div>
 
-          <div className="mt-6 overflow-hidden rounded-3xl border border-dashed border-black/20 bg-black/5 dark:border-white/20 dark:bg-white/5 flex justify-center">
-            <iframe
-              src="https://www.google.com/maps?q=%C3%89cole+de+la+Plateforme+12+Rue+d%27Uzes+13002+Marseille&output=embed"
-              allowFullScreen
-              loading="lazy"
-              referrerPolicy="no-referrer-when-downgrade"
-              title={t("mapTitle")}
-              className="flex w-full md:w-[974px] md:h-[547px] p-[10px] items-start gap-[10px] aspect-[276/155] rounded-[40px]"
-            />
+          <div className={`mx-auto mt-6 w-full max-w-[974px] overflow-hidden ${HOME_CARD}`}>
+            <div className="relative aspect-video w-full">
+              <iframe
+                src="https://www.google.com/maps?q=%C3%89cole+de+la+Plateforme+12+Rue+d%27Uzes+13002+Marseille&output=embed"
+                allowFullScreen
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+                title={t("mapTitle")}
+                className="absolute inset-0 h-full w-full border-0"
+              />
+            </div>
           </div>
         </section>
 
         {/* ATELIERS PRATIQUES */}
-        <section id="ateliers" className="space-y-6 pb-4">
-          <div className="inline-flex items-center gap-3 rounded-full border border-black/10 bg-black/5 dark:border-[#F6339A]/60 dark:bg-white/5 px-5 py-2 text-xs font-semibold tracking-[0.25em] uppercase">
+        <section id="ateliers" className="flex flex-col items-start space-y-6 pb-4">
+          <div className={`${HOME_EYEBROW} gap-3 ${typeEyebrow}`}>
             <img src={starIcon} alt="" className="h-6 w-6" />
             <span>{t("workshopsTitle")}</span>
           </div>
 
-          <article className="rounded-3xl border border-black/10 bg-black/5 dark:border-[#F6339A]/60 dark:bg-white/5 p-6 md:p-8">
+          <article className={`w-full ${HOME_CARD_BODY}`}>
             <div className="flex items-center justify-between gap-4">
-              <h3 className="font-['Arimo'] text-[30px] font-bold uppercase leading-[36px] tracking-[-1.5px] text-black dark:text-white">
+              <h3 className={`text-black dark:text-white ${typeSectionSubtitle}`}>
                 {t("workshopsHeading")}{" "}
-                <span className="text-[#F6339A]">{t("workshopsHeadingAccent")}</span>
+                <span className="text-[#FF8C42]">{t("workshopsHeadingAccent")}</span>
               </h3>
               <img src={peopleIcon} alt="" className="h-9 w-9" />
             </div>
 
-            <p className="mt-4 text-sm text-black/80 dark:text-white/80">
+            <p className={`mt-4 text-black/80 dark:text-white/80 ${typeSectionBody}`}>
               {t("workshopsIntro")}
             </p>
 
@@ -242,7 +262,7 @@ function Events() {
                 ? workshops.map((w) => (
                     <li
                       key={w.id}
-                      className="flex flex-col justify-between gap-3 rounded-2xl border border-black/10 bg-black/15 dark:border-[#F6339A]/60 dark:bg-black/40 p-5"
+                      className={`flex flex-col justify-between gap-3 ${HOME_LIST_ITEM}`}
                     >
                       <div className="flex items-center justify-between gap-3 flex-wrap">
                         <span className="inline-flex h-8 items-center justify-center rounded-full bg-sky-400 px-4 text-xs font-semibold text-black">
@@ -258,7 +278,7 @@ function Events() {
                         </span>
                       </div>
                       <div>
-                        <h4 className="text-sm font-semibold text-black dark:text-white">
+                        <h4 className={`text-black dark:text-white ${typeBodySm} font-semibold`}>
                           {w.title}
                         </h4>
                         {w.description && (
@@ -280,14 +300,14 @@ function Events() {
                       <div className="mt-2 flex flex-wrap items-center gap-2">
                         <Link
                           to={`/events/${w.id}`}
-                          className="inline-flex items-center justify-center rounded-full border border-black/20 dark:border-[#F6339A]/60 px-4 py-2 text-xs font-semibold text-black dark:text-white hover:bg-black/5 dark:hover:bg-white/5"
+                          className="inline-flex items-center justify-center rounded-full border border-black/10 px-4 py-2 text-xs font-semibold text-black dark:border-white/10 dark:text-white hover:bg-black/5 dark:hover:bg-white/5"
                         >
                           {t("seeDetail")}
                         </Link>
                         <button
                           type="button"
                           onClick={() => setSelectedEvent(w)}
-                          className="inline-flex items-center justify-center rounded-full bg-gradient-to-r from-sky-500 to-fuchsia-500 px-5 py-2 text-xs font-semibold tracking-[0.18em] text-white uppercase"
+                          className={`inline-flex items-center justify-center rounded-full bg-[#FF8C42] px-5 py-2 text-white transition-colors hover:bg-[#E07830] ${typeCta}`}
                         >
                           {t("reserveCta")}
                         </button>
@@ -296,7 +316,7 @@ function Events() {
                   ))
                 : (  
                     <li
-                      className="col-span-2 flex items-center justify-center rounded-2xl border border-dashed border-black/15 bg-black/5 dark:border-[#F6339A]/60 dark:bg-black/40 p-6 text-sm text-black/70 dark:text-white/70"
+                      className={`col-span-2 flex items-center justify-center p-6 text-sm text-black/70 dark:text-white/70 ${HOME_CARD_DASHED}`}
                     >
                       {t("noWorkshops")}
                     </li>

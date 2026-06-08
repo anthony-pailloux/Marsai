@@ -2,6 +2,7 @@ import { Router } from "express";
 import multer from "multer";
 import path from "path";
 import fs from "fs";
+import { verifyToken, isAdmin } from "../utils/isAdmin.js";
 
 const router = Router();
 
@@ -47,6 +48,8 @@ const upload = multer({
 // POST /api/admin/newsletters/upload-image
 router.post(
   "/admin/newsletters/upload-image",
+  verifyToken,
+  isAdmin,
   upload.single("image"),
   (req, res) => {
     if (!req.file) return res.status(400).json({ error: "Fichier manquant" });

@@ -1,7 +1,7 @@
 import { updateActiveApi } from "../../../../services/CMS/UpdateContentApi";
 
 
-function CmsHideToggle({ name, value = 1, values, onChange, page, section, locale, order_index }) {
+function CmsHideToggle({name, value = 1, onChange, page, section, locale, order_index}) {
 
     // 1 = visible, 0 = caché
     const isActive = Number(value) === 1;

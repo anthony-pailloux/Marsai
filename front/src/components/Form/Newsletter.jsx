@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 
-const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:3000";
+import { getApiUrl } from "../../utils/apiBase.js";
+import { typeBody, typeCta, typeNewsletterTitle } from "../../utils/typography.js";
 
 function Newsletter() {
 
@@ -33,7 +34,7 @@ function Newsletter() {
       setMsg("");
       setError("");
 
-      const res = await fetch(`${API_BASE}/api/newsletter`, {
+      const res = await fetch(`${getApiUrl()}/newsletter`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -62,9 +63,9 @@ function Newsletter() {
   return (
     <form
       onSubmit={submit}
-      className="w-full box-border overflow-hidden flex flex-col items-center justify-center gap-[6px] md:gap-[12px] lg:gap-[25px] p-[10px] md:p-[20px] lg:p-[41px] rounded-[10px] md:rounded-[20px] lg:rounded-[40px] rounded-[10px] md:rounded-[20px] lg:rounded-[40px] bg-[rgba(0,0,0,0.05)] dark:bg-white/20"
+      className="flex w-full flex-col items-stretch justify-center gap-2 overflow-hidden rounded-2xl bg-black/5 p-3 dark:bg-white/20 md:gap-2.5 md:p-4"
     >
-      <h2 className="text-[16px] lg:text-[24px] font-bold leading-[24px] tracking-[-1.2px] uppercase text-left w-full flex flex-row lg:flex-col gap-[5px]">
+      <h2 className={`flex w-full flex-row gap-1 text-left md:flex-col ${typeNewsletterTitle}`}>
         <span>{t("title_main")}</span>
         <span className="block">{t("title_accent")}</span>
       </h2>
@@ -75,13 +76,13 @@ function Newsletter() {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           placeholder={t("email_placeholder")}
-          className="flex h-[13.5px] md:h-[27px] lg:h-[54px] flex-1 items-center px-[6px] md:px-[12px] lg:px-[24px] py-[3px] md:py-[6px] lg:py-[16px] rounded-[4px] md:rounded-[8px] lg:rounded-[16px] border border-[rgba(0,0,0,0.10)] bg-[rgba(0,0,0,0.05)] placeholder:text-[rgba(0,0,0,0.50)] dark:placeholder:text-[rgba(255,255,255,0.50)] placeholder:text-[10px] lg:placeholder:text-[14px] placeholder:font-normal dark:bg-white/20"
+          className="h-10 flex-1 rounded-xl border border-black/10 bg-black/5 px-3 text-sm placeholder:text-black/50 dark:border-white/10 dark:bg-white/20 dark:placeholder:text-white/50"
         />
 
         <button
           type="submit"
           disabled={loading}
-          className="shrink-0 h-[44px] lg:h-[54px] px-4 rounded-[16px] bg-[linear-gradient(270deg,#3B82F6_-0.39%,#C27AFF_100.48%)] text-[12px] font-bold leading-[16px] tracking-[1.2px] uppercase text-white disabled:opacity-60"
+          className={`h-10 shrink-0 rounded-xl bg-[#FF8C42] px-4 text-white transition-colors hover:bg-[#E07830] disabled:opacity-60 ${typeCta}`}
         >
           {loading ? "..." : "OK"}
         </button>
@@ -102,7 +103,7 @@ function Newsletter() {
 
       {/* Affiche message succès */}
       {msg ? (
-        <p className="w-full text-left text-[10px] lg:text-[12px] text-green-700 dark:text-green-400">
+        <p className={`w-full text-left text-green-700 dark:text-green-400 ${typeBody}`}>
           {msg}
         </p>
       ) : null}

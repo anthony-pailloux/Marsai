@@ -1,55 +1,37 @@
-import iconPaintDark from "../../../../assets/imgs/icones/IconPaintDark.svg";
-import iconPaint from "../../../../assets/imgs/icones/IconPaint.svg";
-import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next"
-import { useForm } from "../../../../hooks/useForm";
-import useCmsContent from "../../../../hooks/useCmsContent";
 import CmsInputImage from "../Fields/CmsInputImage";
 import CmsHideToggle from "../Fields/CmsHideToggle";
 import CmsInput from "../Fields/CmsInput";
 import BtnSubmitForm from "../../../Buttons/BtnSubmitForm";
-import buildInitialValuesFromCms from "../../../../utils/buildInitialValuesFromCms";
-import saveCmsSection from "../../../../utils/saveCmsSection.js";
 import CmsFormHeader from "../Titles/CmsFormHeader.jsx";
 import CmsTitleBlock from "../Titles/CmsTitleBlock.jsx";
 import CmsFieldsBlock from "../Titles/CmsFieldsBlock.jsx";
 import CmsBlock from "../Titles/CmsBlock.jsx";
 import CmsSubtitleBlock from "../Titles/CmsSubtitleBlock.jsx";
+import useCmsSectionForm from "../../../../hooks/useCmsSectionForm.js";
+
 
 function HeaderForm({ forcedLocale }) {
+  const { t } = useTranslation("header");
 
-    const { t, i18n } = useTranslation("header");
-    const locale = forcedLocale ?? (i18n.language.startsWith("fr") ? "fr" : "en");
+  const PAGE = "layout";
+  const SECTION = "header";
+  const FIELDS = [
+  "logo",
+  "home",
+  "home_link",
+  "first",
+  "first_link",
+  "seconde",
+  "seconde_link",
+  "third",
+  "third_link",
+  "btn",
+  "btn_link",
+  "icon_country",
+  ];
 
-    const page = "layout";
-    const section = "header";
-    // console.log("Page:", page, "Section:", section);
-
-    const fields = [
-
-        "logo",
-
-        "home",
-        "home_link",
-
-        "first",
-        "first_link",
-
-        "seconde",
-        "seconde_link",
-
-        "third",
-        "third_link",
-
-        "btn",
-        "btn_link",
-
-        "icon_country"
-
-    ]
-
-    const { values, setValues, handleChange } = useForm({
-        logo: "",
+  const DEFAULT_VALUES = {logo: "",
         logo_is_active: 1,
 
         home: "",
@@ -73,70 +55,26 @@ function HeaderForm({ forcedLocale }) {
         btn_is_active: 1,
 
         icon_country: "",
-        icon_country_is_active: 1
-    })
+        icon_country_is_active: 1};
 
-    const [message, setMessage] = useState("");
-    const [loading, setLoading] = useState(false);
-    const { content, loading: cmsLoading } = useCmsContent(page, locale);
-    const [initialValues, setInitialValues] = useState({});
-    const [hasHydrated, setHasHydrated] = useState(false);
+  const {
+    page,
+    section,
+    locale,
+    values,
+    handleChange,
+    submitLoading,
+    handleSubmit,
+  } = useCmsSectionForm({
+    page: PAGE,
+    section: SECTION,
+    fields: FIELDS,
+    defaultValues: DEFAULT_VALUES,
+    forcedLocale,
+    fileFields: ["logo", "icon_country"],
+    successMessage: "Header mis à jour",
+  });
 
-    useEffect(() => {
-
-        if (cmsLoading) {
-            return;
-        }
-
-        if (hasHydrated) return;
-
-        const cmsSection = content?.[page]?.[section];
-
-        if (!cmsSection) return;
-
-        // construit les valeurs initiales depuis le CMS
-        const built = buildInitialValuesFromCms(fields, cmsSection, {
-            fileFields: ["logo", "icon_country"],
-        });
-
-        setValues(built);
-
-        setInitialValues(built);
-
-        setHasHydrated(true);
-
-    }, [cmsLoading, content, page, section, hasHydrated, setValues, locale])
-
-    // reinitialise quand locale change // Remplie le formulaire avec les données de la BDD
-    // fait que les données dans les champs sont chargé par raport à la langue
-    useEffect(() => {
-        setHasHydrated(false);
-    }, [locale]);
-
-    async function handleSubmit(event) {
-        // console.log("Fonction handleSubmit OK");
-
-        event.preventDefault();
-        setLoading(true);
-
-        try {
-
-            // console.log("try dans handleSubmit OK");
-
-            await saveCmsSection({ page, section, locale, fields, values });
-
-            setMessage("Header mis à jour");
-
-        } catch (error) {
-
-            console.error("erreur:", error);
-            setMessage("Erreur lors de la mise à jour");
-
-        } finally {
-            setLoading(false);
-        }
-
-    }
 
     return (
         <section className="w-full">
@@ -226,7 +164,7 @@ function HeaderForm({ forcedLocale }) {
                 </div>
 
                 <div className="w-full flex justify-center">
-                    <BtnSubmitForm loading={loading} className="flex h-[53px] items-center justify-center gap-[13px] px-[21px] py-[10px] rounded-[5px] border border-[#DBE3E6] bg-white dark:border-[rgba(0,0,0,0.11)] dark:bg-[#333] w-full">
+                    <BtnSubmitForm loading={submitLoading} className="flex h-[53px] items-center justify-center gap-[13px] px-[21px] py-[10px] rounded-[5px] border border-[#DBE3E6] bg-white dark:border-[rgba(0,0,0,0.11)] dark:bg-[#333] w-full">
                         Mettre à jour
                     </BtnSubmitForm>
                 </div>

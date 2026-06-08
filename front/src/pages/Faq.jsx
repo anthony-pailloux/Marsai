@@ -28,7 +28,7 @@ function Faq() {
     const [openFaq, setOpenFaq] = useState(null);
     const [loading, setLoading] = useState(false);
 
-    const { content, message } = useCmsContent(page, locale);
+    const { content } = useCmsContent(page, locale);
     
 
 
@@ -79,7 +79,7 @@ function Faq() {
 							<article key={faq.id} className="m-5 w-full max-w-225 mx-auto rounded-4xl border border-black/10 bg-white/5 shadow-[0_15px_25px_-12px_rgba(0,0,0,0.25)] flex flex-col justify-center gap-10 p-4 md:p-10">
                                 <button onClick={() => toggleFaq(faq.id)}   className="flex w-full justify-between items-center text-left font-semibold text-lg hover:text-blue-500 transition-colors">                                    
                                     <span>{isFrench ? faq.question_fr : faq.question_en}</span>
-                                    {/* Flèche d’ouverture de la réponse  */}                                 
+                                    {/* Fleche d'ouverture de la reponse */}                                 
                                     <span className={`font-bold transition-transform duration-300 ${openFaq === faq.id ? "rotate-90" : "rotate-0"}`}>&gt;</span>
                                 </button>
                                 

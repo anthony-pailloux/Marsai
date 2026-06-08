@@ -5,8 +5,14 @@ import Newsletter from "../Form/Newsletter";
 
 import AdminEntryButton from "./AdminEntryButton.jsx";
 import useCmsContent from "../../hooks/useCmsContent.js";
-import { resolveCmsAsset } from "../../utils/cmsAssets.js";
+import { resolveCmsAsset, resolveCmsAssetWithFallback } from "../../utils/cmsAssets.js";
 import { isVisible } from "../../utils/isVisible.js";
+import {
+  typeFooterHeading,
+  typeFooterLink,
+  typeFooterMeta,
+  typeFooterQuote,
+} from "../../utils/typography.js";
 
 function Footer() {
 
@@ -16,15 +22,15 @@ function Footer() {
   const page = "layout";
   const section = "footer";
 
-  const { content, loading, message } = useCmsContent(page, locale);
+  const { content, loading } = useCmsContent(page, locale);
 
 
   const logoSrc = resolveCmsAsset(content?.[page]?.[section]?.brand_logo)
   
-  const fbIconSrc = resolveCmsAsset(content?.[page]?.[section]?.social_facebook_icon);
-  const instaIconSrc = resolveCmsAsset(content?.[page]?.[section]?.social_instagram_icon);
-  const youtubeIconSrc = resolveCmsAsset(content?.[page]?.[section]?.social_youtube_icon);
-  const xIconSrc = resolveCmsAsset(content?.[page]?.[section]?.social_x_icon);
+  const fbIconSrc = resolveCmsAssetWithFallback(content?.[page]?.[section]?.social_facebook_icon, t("social.facebook.icon"));
+  const instaIconSrc = resolveCmsAssetWithFallback(content?.[page]?.[section]?.social_instagram_icon, t("social.instagram.icon"));
+  const youtubeIconSrc = resolveCmsAssetWithFallback(content?.[page]?.[section]?.social_youtube_icon, t("social.youtube.icon"));
+  const xIconSrc = resolveCmsAssetWithFallback(content?.[page]?.[section]?.social_x_icon, t("social.x.icon"));
 
   const fbHref = content?.[page]?.[section]?.social_facebook_href;
   const instaHref = content?.[page]?.[section]?.social_instagram_href;
@@ -43,31 +49,31 @@ function Footer() {
   return (
     <footer className="w-full border-t border-black/10 bg-[#F5F6F8] text-black dark:border-[#FFFFFF]/60 dark:bg-black dark:text-white flex-col md:flex-row">
 
-      <div className="mx-auto w-full px-10 py-7.5 flex flex-col">
+      <div className="mx-auto flex w-full flex-col px-6 py-5 md:px-8 md:py-6">
 
         {/* GRID PRINCIPAL */}
 
-        <div className="grid items-start gap-10 grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
+        <div className="grid grid-cols-1 items-start gap-6 md:grid-cols-2 md:gap-8 lg:grid-cols-4">
           {/* LEFT */}
           <div className="min-w-0 lg:col-span-1">
             {logoSrc ? (
               <Link to="/">
-                <div className="max-w-25 min-w-5">
-                  <img src={logoSrc} alt="Logo" className="w-full" draggable={false}/>
+                <div className="w-32 shrink-0 md:w-36">
+                  <img src={logoSrc} alt="Logo" className="w-full h-auto" draggable={false}/>
                 </div> 
               </Link>
             ): null}
 
             {/* Texte exact maquette */}
             {isVisible(content, page, section, "brand_quote") && (
-              <p className="mt-6 text-sm italic leading-7 text-black/80 dark:text-white/80">
+              <p className={`mt-3 text-black/80 dark:text-white/80 ${typeFooterQuote}`}>
                 {content?.[page]?.[section]?.brand_quote}
               </p>
             )}
 
             {/* SOCIAL */}
             {isVisible(content, page, section, "social") && (
-              <div className="mt-10 flex items-center gap-5">
+              <div className="mt-4 flex items-center gap-3">
                 {social.map((i) => (
                   <div key={i.alt}>
                     {isVisible(content, page, section, `social_${i.label}_label`) && (
@@ -75,7 +81,7 @@ function Footer() {
                         href={i.href}
                         className="
                           flex items-center justify-center
-                          w-12 h-12
+                          h-10 w-10
                           rounded-full
                           border border-black/15 dark:border-[#FFFFFF]/60
                           bg-[#ECECEC] dark:bg-[#FFFFFF]/5
@@ -104,15 +110,15 @@ function Footer() {
           {/* CENTER */}
           <div className="min-w-0 md:col-span-1 lg:col-span-2">
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-12 gap-y-10">
+            <div className="grid grid-cols-1 gap-x-8 gap-y-6 sm:grid-cols-2">
 
               {/* NAVIGATION */}
               <div className="min-w-0">
-                <h3 className="text-xs font-semibold tracking-[0.25em] text-violet-500 uppercase">
+                <h3 className={`text-amber-500 ${typeFooterHeading}`}>
                   {content?.[page]?.[section]?.sections_navigation || t("sections.navigation")}
                 </h3>
 
-                <ul className="mt-8 space-y-6 text-sm">
+                <ul className={`mt-3 space-y-2.5 ${typeFooterLink}`}>
                   <li>
                     <Link to={content?.[page]?.[section]?.links_gallery_href}>
                       {content?.[page]?.[section]?.links_gallery_label || t("links.gallery")}
@@ -133,11 +139,11 @@ function Footer() {
             
               {/* LEGAL */}
               <div className="min-w-0">
-                <h3 className="text-xs font-semibold tracking-[0.25em] text-pink-500 uppercase">
+                <h3 className={`text-orange-500 ${typeFooterHeading}`}>
                   {content?.[page]?.[section]?.sections_legal}
                 </h3>
 
-                <ul className="mt-8 space-y-6 text-sm">
+                <ul className={`mt-3 space-y-2.5 ${typeFooterLink}`}>
                   <li>
                     <Link to={content?.[page]?.[section]?.links_partners_href}>
                       {content?.[page]?.[section]?.links_patners_label || t("links.partners")}
@@ -170,20 +176,20 @@ function Footer() {
         </div>
 
         {/* SEPARATOR */}
-        <div className="mt-12.5 h-px w-full bg-black/20 dark:bg-[#FFFFFF]/20" />
+        <div className="mt-6 h-px w-full bg-black/20 md:mt-8 dark:bg-[#FFFFFF]/20" />
 
         {/* BOTTOM BAR */}
-        <div className="mt-7.5 flex items-center justify-between opacity-70 flex-col md:flex-row w-full gap-5">
-          <span className="text-[10px] font-bold tracking-[5px] uppercase w-full text-center md:text-left">
+        <div className="mt-4 flex w-full flex-col items-center justify-between gap-3 opacity-70 md:mt-5 md:flex-row">
+          <span className={`w-full text-center md:text-left ${typeFooterMeta}`}>
             {t("bottom.copyright")}
           </span>
 
-          <div className="flex flex-col md:flex-row items-center justify-end gap-5 w-full md:gap-12">
-            <span className="text-[10px] font-bold tracking-[5px] uppercase">
+          <div className="flex w-full flex-col items-center justify-end gap-3 md:flex-row md:gap-6">
+            <span className={typeFooterMeta}>
               {t("designSystem")}
             </span>
 
-            <Link to="/legal"  className="text-[10px] font-bold tracking-[5px] uppercase" >
+            <Link to="/legal" className={typeFooterMeta}>
               {t("links.legal")}
             </Link>
              

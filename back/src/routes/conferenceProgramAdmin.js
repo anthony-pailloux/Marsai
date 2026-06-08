@@ -7,8 +7,12 @@ import {
 } from "../controllers/conferenceProgram/ConferenceProgram.js";
 import { validate } from "../middlewares/zod/zodValidator.js";
 import { conferenceProgramSchema } from "../zodSchema/conferenceProgramValidationSchema.js";
+import { verifyToken, isAdmin } from "../utils/isAdmin.js";
 
 const router = Router();
+
+router.use(verifyToken, isAdmin);
+
 router.get("/", getProgramAdmin);
 router.post("/",validate([conferenceProgramSchema]), createItem);
 router.put("/:id",validate([conferenceProgramSchema]), updateItem);

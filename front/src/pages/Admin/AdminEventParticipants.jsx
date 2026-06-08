@@ -5,6 +5,7 @@ import AdminHero from "../../components/admin/AdminHero.jsx";
 import AdminLayoutSidebar from "../../components/admin/AdminLayoutSidebar.jsx";
 import AdminSidebarModal from "../../components/admin/AdminSidebarModal.jsx";
 import { getEventBookings } from "../../services/Events/AdminEventApi.js";
+import { typeAdminSection } from "../../utils/typography.js";
 
 export default function AdminEventParticipants() {
   const { t } = useTranslation("adminEventParticipants");
@@ -70,7 +71,7 @@ export default function AdminEventParticipants() {
 
             <div className="mt-10 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
               <div>
-                <h1 className="text-xl font-semibold tracking-tight text-black dark:text-white">
+                <h1 className={`tracking-tight text-black dark:text-white ${typeAdminSection}`}>
                   {t("title")}
                 </h1>
                 <p className="mt-1 text-sm text-black/60 dark:text-white/60">
@@ -99,7 +100,7 @@ export default function AdminEventParticipants() {
             )}
 
             {!loading && !err && (
-              <div className="mt-8 overflow-hidden rounded-3xl border border-black/10 bg-black/5 dark:border-[#F6339A]/60 dark:bg-white/5">
+              <div className="mt-8 overflow-hidden rounded-3xl border border-black/10 bg-black/5 dark:border-[#FF8C42]/60 dark:bg-white/5">
                 <div className="overflow-x-auto">
                   <table className="min-w-full text-sm">
                     <thead className="border-b border-black/10 bg-black/[0.03] dark:border-white/10 dark:bg-white/[0.06]">

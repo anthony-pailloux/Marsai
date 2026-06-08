@@ -4,6 +4,17 @@ import { useTranslation } from "react-i18next";
 import { getEvents } from "../../services/Events/EventsApi.js";
 import BookingModal from "../BookingModal.jsx";
 
+import { getApiBaseUrl } from "../../utils/apiBase.js";
+import { typeAdminSection, typeBody, typeBodySm, typeCaption, typeSectionTitle } from "../../utils/typography.js";
+import { HOME_CARD_BODY } from "../Home/homeCardStyles.js";
+
+function resolveIllustration(src) {
+  if (!src) return "";
+  if (src.startsWith("http")) return src;
+  if (src.startsWith("/uploads/")) return `${getApiBaseUrl()}${src}`;
+  return `${getApiBaseUrl()}/uploads/medias/${src}`;
+}
+
 export default function EventDetailsContent() {
   const { id } = useParams();
   const { t } = useTranslation("event");
@@ -24,7 +35,7 @@ export default function EventDetailsContent() {
   if (loading) {
     return (
       <div className="mx-auto max-w-3xl px-6 py-16 text-center">
-        <p className="text-black/60 dark:text-white/60">{t("detailLoading")}</p>
+        <p className={`text-black/60 dark:text-white/60 ${typeBodySm}`}>{t("detailLoading")}</p>
       </div>
     );
   }
@@ -32,15 +43,15 @@ export default function EventDetailsContent() {
   if (!event) {
     return (
       <div className="mx-auto max-w-3xl px-6 py-16 text-center space-y-4">
-        <h1 className="text-xl font-semibold text-black dark:text-white">
+        <h1 className={`text-black dark:text-white ${typeAdminSection}`}>
           {t("detailNotFound")}
         </h1>
-        <p className="text-sm text-black/60 dark:text-white/60">
+        <p className={`text-black/60 dark:text-white/60 ${typeBodySm}`}>
           {t("detailNotFoundHint")}
         </p>
         <Link
           to="/events"
-          className="inline-block rounded-full bg-gradient-to-r from-sky-500 to-fuchsia-500 px-5 py-2 text-sm font-semibold text-white"
+          className="inline-block rounded-full bg-[#FF8C42] hover:bg-[#E07830] transition-colors px-5 py-2 text-sm font-semibold text-white"
         >
           {t("detailBackToEvents")}
         </Link>
@@ -62,11 +73,11 @@ export default function EventDetailsContent() {
           ← {t("detailBackToEvents")}
         </Link>
 
-        <article className="rounded-3xl border border-black/10 bg-black/5 dark:border-[#F6339A]/60 dark:bg-white/5 p-6 md:p-8">
+        <article className={HOME_CARD_BODY}>
           {event.illustration && (
             <div className="mb-6 overflow-hidden rounded-2xl border border-black/10 dark:border-white/10">
               <img
-                src={event.illustration}
+                src={resolveIllustration(event.illustration)}
                 alt=""
                 className="h-48 w-full object-cover md:h-64"
               />
@@ -87,16 +98,16 @@ export default function EventDetailsContent() {
               </span>
             )}
           </div>
-          <h1 className="mt-4 font-['Arimo'] text-2xl font-bold tracking-tight text-black dark:text-white md:text-3xl">
+          <h1 className={`mt-4 text-black dark:text-white ${typeSectionTitle}`}>
             {event.title}
           </h1>
           {event.description && (
-            <p className="mt-4 text-sm text-black/80 dark:text-white/80 whitespace-pre-wrap">
+            <p className={`mt-4 text-black/80 dark:text-white/80 whitespace-pre-wrap ${typeBody}`}>
               {event.description}
             </p>
           )}
           {event.length != null && Number(event.length) > 0 && (
-            <p className="mt-3 text-xs text-black/60 dark:text-white/60">
+            <p className={`mt-3 text-black/60 dark:text-white/60 ${typeCaption}`}>
               {t("detailDuration", { count: event.length })}
             </p>
           )}
@@ -108,7 +119,7 @@ export default function EventDetailsContent() {
           <button
             type="button"
             onClick={() => setShowBooking(true)}
-            className="mt-6 inline-flex items-center justify-center rounded-full bg-gradient-to-r from-sky-500 to-fuchsia-500 px-6 py-3 text-sm font-semibold tracking-[0.18em] text-white uppercase"
+            className="mt-6 inline-flex items-center justify-center rounded-full bg-[#FF8C42] hover:bg-[#E07830] transition-colors px-6 py-3 text-sm font-semibold tracking-[0.18em] text-white uppercase"
           >
             {t("detailReserveCta")}
           </button>

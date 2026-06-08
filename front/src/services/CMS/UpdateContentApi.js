@@ -1,7 +1,9 @@
-const API_URL = import.meta.env.VITE_API_URL
+import { getAuthHeaders } from "../../utils/authHeaders.js";
+
+import { getApiUrl } from "../../utils/apiBase.js";
 
 function buildUrl({ page, section, locale, content_key }) {
-  return `${API_URL}/api/cms/${page}/${section}/${locale}/${content_key}`;
+  return `${getApiUrl()}/cms/${page}/${section}/${locale}/${content_key}`;
 }
 
 // TEXTE
@@ -12,7 +14,7 @@ async function updateContentApi({ page, section, locale, content_key, value, ord
 
     const res = await fetch(url, {
         method: "PUT",
-        headers: { "Content-Type": "application/json" },
+        headers: getAuthHeaders({ "Content-Type": "application/json" }),
         body: JSON.stringify({ value, order_index, is_active }),
     });
     // console.log(res);
@@ -43,6 +45,7 @@ async function updateImageApi({ page, section, locale, content_key, value, order
 
     const res = await fetch(url , {
         method: "PUT",
+        headers: getAuthHeaders(),
         body: formData,
     });
     // console.log(res);
@@ -67,7 +70,7 @@ async function updateActiveApi({ page, section, locale, content_key, order_index
 
     const res = await fetch(url, {
         method: "PUT",
-        headers: { "Content-Type": "application/json" },
+        headers: getAuthHeaders({ "Content-Type": "application/json" }),
         body: JSON.stringify({
             order_index,
             is_active,

@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from "react";
+﻿import { useState, useEffect, useMemo } from "react";
 import {
   getUsers,
   updateUserRole,
@@ -7,6 +7,7 @@ import {
 import { decodeToken } from "../../utils/decodeToken.js";
 import RegisterForm from "./RegisterForm.jsx";
 import InviteForm from "./InviteForm.jsx";
+import { typeBadge } from "../../utils/typography.js";
 import AdminSelect from "./AdminSelect.jsx";
 import ConfirmDialog from "../ConfirmDialog.jsx";
 
@@ -168,7 +169,7 @@ function DashboardUser() {
       />
 
       {error && (
-        <div className="mb-3 rounded-2xl bg-[#FF3D6E]/15 px-5 py-3 text-sm font-semibold text-[#FF3D6E] ring-1 ring-[#FF3D6E]/25">
+        <div className="mb-3 rounded-2xl bg-[#DC2626]/15 px-5 py-3 text-sm font-semibold text-[#DC2626] ring-1 ring-[#DC2626]/25">
           {error}
         </div>
       )}
@@ -270,7 +271,7 @@ function DashboardUser() {
         <div className="px-6 py-5">
           <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between md:gap-4">
             <div className="flex items-center gap-3">
-              <span className="inline-flex h-10 w-10 items-center justify-center rounded-2xl bg-[#FFE9F4] ring-1 ring-black/10 dark:bg-white/5 dark:ring-white/10">
+              <span className="inline-flex h-10 w-10 items-center justify-center rounded-2xl bg-[#FFF3E0] ring-1 ring-black/10 dark:bg-white/5 dark:ring-white/10">
                 👥
               </span>
               <div className="text-sm font-semibold">
@@ -343,9 +344,10 @@ function DashboardUser() {
                     <div>
                       <span
                         className={[
-                          "inline-flex min-w-[120px] justify-center rounded-full px-4 py-2 text-[11px] font-extrabold tracking-wider ring-1",
+                          "inline-flex min-w-[120px] justify-center rounded-full px-4 py-2 ring-1",
+                          typeBadge,
                           user.role === "superadmin"
-                            ? "bg-[#F6339A]/15 text-[#F6339A] ring-[#F6339A]/25"
+                            ? "bg-[#FF8C42]/15 text-[#FF8C42] ring-[#FF8C42]/25"
                             : user.role === "admin"
                               ? "bg-[#2F6BFF]/15 text-[#2F6BFF] ring-[#2F6BFF]/25"
                               : "bg-[#FFD24A]/15 text-[#FFD24A] ring-[#FFD24A]/25",
@@ -398,7 +400,7 @@ function DashboardUser() {
                               setUserToDelete(user.id);
                               setDeleteDialogOpen(true);
                             }}
-                            className="rounded-full border border-[#FF3D6E]/25 bg-[#FF3D6E]/15 px-4 py-2 text-xs font-semibold text-[#FF3D6E] hover:bg-[#FF3D6E]/25
+                            className="rounded-full border border-[#DC2626]/25 bg-[#DC2626]/15 px-4 py-2 text-xs font-semibold text-[#DC2626] hover:bg-[#DC2626]/25
                                     disabled:cursor-not-allowed disabled:opacity-50"
                           >
                             Supprimer

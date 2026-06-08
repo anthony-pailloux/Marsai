@@ -1,76 +1,56 @@
 import iconPaintDark from "../../../../assets/imgs/icones/IconPaintDark.svg";
 import iconPaint from "../../../../assets/imgs/icones/IconPaint.svg";
 import { useTranslation } from "react-i18next";
-import { useForm } from "../../../../hooks/useForm";
-import { useEffect, useState } from "react";
-import { updateContentApi, updateImageApi } from "../../../../services/CMS/UpdateContentApi";
 import CmsInput from "../Fields/CmsInput";
 import CmsHideToggle from "../Fields/CmsHideToggle";
 import CmsInputColor from "../Fields/CmsImputColor";
 import CmsInputImage from "../Fields/CmsInputImage";
 import CmsTextarea from "../Fields/CmsTextarea";
 import BtnSubmitForm from "../../../Buttons/BtnSubmitForm";
-import useCmsContent from "../../../../hooks/useCmsContent";
-import buildInitialValuesFromCms from "../../../../utils/buildInitialValuesFromCms";
-import saveCmsSection from "../../../../utils/saveCmsSection";
+
+const LIST_FIELDS = [
+  { name: "list_item1", label: "Petit 1", placeholderKey: "events.list.item1" },
+  { name: "list_item2", label: "Petit 2", placeholderKey: "events.list.item2" },
+  { name: "list_item3", label: "Petit 3", placeholderKey: "events.list.item3" },
+];
+
+import useCmsSectionForm from "../../../../hooks/useCmsSectionForm.js";
 
 function SectionEventsForm({ forcedLocale }) {
+  const { t } = useTranslation("home");
 
-    const { t, i18n } = useTranslation("home");
-    const locale = forcedLocale ?? (i18n.language.startsWith("fr") ? "fr" : "en");
+  const PAGE = "home";
+  const SECTION = "events";
+  const FIELDS = [
+  "section_visibility",
+  "title_main",
+  "title_main_color",
+  "title_accent",
+  "title_accent_color",
+  "list_item1",
+  "list_item2",
+  "list_item3",
+  "ctaAgenda",
+  "ctaAgenda_link",
+  "ctaAgenda_icon",
+  "card1_icon",
+  "card1_title",
+  "card1_title_color",
+  "card1_description",
+  "card1_link",
+  "card2_icon",
+  "card2_title",
+  "card2_title_color",
+  "card2_description",
+  "card2_link",
+  "card3_icon",
+  "card3_title",
+  "card3_title_color",
+  "card3_description",
+  "card3_link",
+  ];
 
-    // Page et section
-    const page = "home";
-    const section = "events";
-    // console.log("Page:", page, "Section:", section);
-
-    const listFields = [
-        { name: "list_item1", label: "Petit 1", placeholderKey: "events.list.item1" },
-        { name: "list_item2", label: "Petit 2", placeholderKey: "events.list.item2" },
-        { name: "list_item3", label: "Petit 3", placeholderKey: "events.list.item3" },
-    ];
-
-    // champs des differents éléments dans la section
-    const fields = [
-
-        "section_visibility",
-        
-        "title_main",
-        "title_main_color",
-        "title_accent",
-        "title_accent_color",
-
-        "list_item1",
-        "list_item2",
-        "list_item3",
-
-        "ctaAgenda",
-        "ctaAgenda_link",
-        "ctaAgenda_icon",
-
-        "card1_icon",
-        "card1_title",
-        "card1_title_color",
-        "card1_description",
-        "card1_link",
-
-        "card2_icon",
-        "card2_title",
-        "card2_title_color",
-        "card2_description",
-        "card2_link",
-
-        "card3_icon",
-        "card3_title",
-        "card3_title_color",
-        "card3_description",
-        "card3_link"
-    ];
-    // console.log(fields);
-
-    const { values, setValues, handleChange } = useForm({
-        
-        section_visibility:"",
+  const DEFAULT_VALUES = {section_visibility:"",
         section_visibility_is_active: 1,
         
         title_main:"",
@@ -111,62 +91,26 @@ function SectionEventsForm({ forcedLocale }) {
         card3_title: "",
         card3_title_is_active: 1,
         card3_description: "",
-        card3_link: "",
-    })
-    const [message, setMessage] = useState("");
-    const [loading, setLoading] = useState(false);
-    const { content, loading: cmsLoading } = useCmsContent(page, locale);
-    const [initialValues, setInitialValues] = useState({});
-    const [hasHydrated, setHasHydrated] = useState(false);
+        card3_link: "",};
 
-    useEffect(() => {
-        if (hasHydrated) return;
+  const {
+    page,
+    section,
+    locale,
+    values,
+    handleChange,
+    submitLoading,
+    handleSubmit,
+  } = useCmsSectionForm({
+    page: PAGE,
+    section: SECTION,
+    fields: FIELDS,
+    defaultValues: DEFAULT_VALUES,
+    forcedLocale,
+    fileFields: ["ctaAgenda_icon", "card1_icon", "card2_icon", "card3_icon"],
+    successMessage: "Section Programme mise à jour",
+  });
 
-        const cmsSection = content?.[page]?.[section];
-
-        if (!cmsSection) return;
-
-        // construit les valeurs initiales depuis le CMS
-        const built = buildInitialValuesFromCms(fields, cmsSection, {
-            fileFields: ["ctaAgenda_icon", "card1_icon", "card2_icon", "card3_icon"],
-        });
-
-        setValues(built);
-        setInitialValues(built);
-        setHasHydrated(true);
-    }, [content, page, section, hasHydrated, setValues])
-
-    // reinitialise quand locale change // Remplie le formulaire avec les données de la BDD
-    // fait que les données dans les champs sont chargé par raport à la langue
-    useEffect(()=>{
-        setHasHydrated(false);
-    }, [locale]);
-
-    async function handleSubmit(event) {
-        // console.log("Fonction handleSubmit OK");
-        
-        event.preventDefault();
-        setLoading(true);
-
-        try {
-
-            // console.log("try dans handleSubmit OK");
-
-            await saveCmsSection({ page, section, locale, fields, values });
-
-            setMessage("Section Programme mise à jour");
-            setInitialValues(values);
-
-        } catch (error) {
-
-            console.error("erreur:", error);
-            setMessage("Erreur lors de la mise à jour");
-
-        } finally {
-            setLoading(false);
-        }
-
-    }
 
     return(
         <section>
@@ -214,7 +158,7 @@ function SectionEventsForm({ forcedLocale }) {
                             </h4>
                         </div>
                         <div className="flex flex-col md:flex-wrap md:justify-between gap-[10px] w-full">
-                            {listFields.map((f) => (
+                            {LIST_FIELDS.map((f) => (
                                 < CmsInput key={f.name} name={f.name} label={f.label} value={values[f.name]} onChange={handleChange} placeholder={t(f.placeholderKey)} rightSlot={
                                     <CmsHideToggle name={f.name} value={values[`${f.name}_is_active`]} values={values} onChange={handleChange} page={page} section={section} locale={locale} />}
                                 />
@@ -318,7 +262,7 @@ function SectionEventsForm({ forcedLocale }) {
                     </div>
                 </div>
                 <div className="w-full flex justify-center">
-                    <BtnSubmitForm loading={ loading || cmsLoading } className="flex w-[200px] h-[53px] items-center justify-center gap-[13px] px-[21px] py-[10px] rounded-[5px] border border-[#DBE3E6] bg-white dark:border-[rgba(0,0,0,0.11)] dark:bg-[#333]">
+                    <BtnSubmitForm loading={submitLoading} className="flex w-[200px] h-[53px] items-center justify-center gap-[13px] px-[21px] py-[10px] rounded-[5px] border border-[#DBE3E6] bg-white dark:border-[rgba(0,0,0,0.11)] dark:bg-[#333]">
                         Mettre à jour
                     </BtnSubmitForm>
                 </div>

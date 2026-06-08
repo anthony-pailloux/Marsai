@@ -1,6 +1,8 @@
 import { getAuthHeaders } from "../../utils/authHeaders.js";
 
-const API = import.meta.env.VITE_API_URL || "";
+import { getApiBaseUrl } from "../../utils/apiBase.js";
+
+const API = getApiBaseUrl();
 
 /*========================
   Lister tout les users

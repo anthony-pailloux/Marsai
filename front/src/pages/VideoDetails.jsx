@@ -1,9 +1,18 @@
-import { useEffect, useMemo, useState } from "react";
+﻿import { useEffect, useMemo, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
+import { getApiUrl, getApiBaseUrl } from "../utils/apiBase.js";
+import {
+  typeBadge,
+  typeBody,
+  typeBodySm,
+  typeEyebrow,
+  typePageHero,
+  typeSectionSubtitle,
+} from "../utils/typography.js";
+
 // URL de base de l'API (env) + fallback local
-const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:3000";
 // Image de cover de secours si la vidéo n’en a pas
 const PLACEHOLDER_COVER = "/cover-fallback.jpg";
 
@@ -49,7 +58,9 @@ function getToken() {
           u?.user?.token,
       );
       if (tok) return tok;
-    } catch {}
+    } catch {
+      // token absent ou JSON invalide
+    }
   }
 
   return "";
@@ -143,7 +154,7 @@ function SocialItem({ label, icon, href }) {
         <IconImg src={icon} alt={label} className="!h-10 !w-10" scale={2.35} />
       </a>
 
-      <div className="text-[10px] font-semibold uppercase tracking-[0.18em] text-neutral-500 dark:text-white/50">
+      <div className={`text-neutral-500 dark:text-white/50 ${typeEyebrow}`}>
         {label}
       </div>
     </div>
@@ -192,7 +203,7 @@ export default function VideoDetails() {
         setLoading(true);
         setErr("");
 
-        const res = await fetch(`${API_BASE}/api/videos/${id}`);
+        const res = await fetch(`${getApiUrl()}/videos/${id}`);
         const data = await res.json();
 
         if (!res.ok) throw new Error(data?.error || "Erreur chargement vidéo");
@@ -225,7 +236,7 @@ export default function VideoDetails() {
         setReviewError("");
 
         const token = getToken();
-        const res = await fetch(`${API_BASE}/api/videos/${id}/review/me`, {
+        const res = await fetch(`${getApiUrl()}/videos/${id}/review/me`, {
           headers: { Authorization: `Bearer ${token}` },
         });
 
@@ -261,7 +272,7 @@ export default function VideoDetails() {
       setSavedMsg("");
 
       const token = getToken();
-      const res = await fetch(`${API_BASE}/api/videos/${id}/review`, {
+      const res = await fetch(`${getApiUrl()}/videos/${id}/review`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -323,11 +334,11 @@ export default function VideoDetails() {
   // Cover : si cover existe => URL API, sinon placeholder local
   const coverUrl =
     video?.cover && String(video.cover).trim()
-      ? `${API_BASE}/uploads/covers/${video.cover}`
+      ? `${getApiBaseUrl()}/uploads/covers/${video.cover}`
       : PLACEHOLDER_COVER;
 
   // URL de streaming utilisée par le <video>
-  const streamUrl = `${API_BASE}/api/videos/${id}/stream`;
+  const streamUrl = `${getApiUrl()}/videos/${id}/stream`;
   // “Lien direct” => ici c’est le streamUrl (affiché + copiable)
   const directLink = streamUrl;
 
@@ -379,7 +390,7 @@ export default function VideoDetails() {
         <div className="mb-6">
           <Link
             to="/gallery"
-            className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-[#2B7FFF] to-[#9810FA] px-5 py-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-white shadow-sm"
+            className={`inline-flex items-center gap-2 rounded-full bg-[#FF8C42] hover:bg-[#E07830] transition-colors px-5 py-2 text-white shadow-sm ${typeBadge}`}
           >
             <span className="grid h-6 w-6 place-items-center rounded-full bg-white/20">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
@@ -411,7 +422,7 @@ export default function VideoDetails() {
         </div>
 
         {/* Titre du film */}
-        <h1 className="mt-10 text-3xl font-extrabold uppercase tracking-tight text-[#2563EB]">
+        <h1 className={`mt-10 uppercase tracking-tight text-[#2563EB] ${typePageHero}`}>
           {title}
         </h1>
 
@@ -429,10 +440,10 @@ export default function VideoDetails() {
             </PillIcon>
 
             <div className="flex flex-col gap-1 leading-none">
-              <div className="text-[10px] font-semibold uppercase tracking-[0.18em] text-neutral-500 dark:text-white/50">
+              <div className={`text-neutral-500 dark:text-white/50 ${typeEyebrow}`}>
                 {tl("director")}
               </div>
-              <div className="text-sm font-semibold text-neutral-900 dark:text-white">
+              <div className={`font-semibold text-neutral-900 dark:text-white ${typeBodySm}`}>
                 {director || "—"}
               </div>
             </div>
@@ -450,7 +461,7 @@ export default function VideoDetails() {
             </PillIcon>
 
             <div className="flex flex-col gap-1 leading-none">
-              <div className="text-[10px] font-semibold uppercase tracking-[0.18em] text-neutral-500 dark:text-white/50">
+              <div className={`text-neutral-500 dark:text-white/50 ${typeEyebrow}`}>
                 {tl("origin")}
               </div>
 
@@ -461,7 +472,7 @@ export default function VideoDetails() {
                   className="block !h-6 !w-6"
                   scale={1}
                 />
-                <div className="text-sm font-semibold text-neutral-900 dark:text-white">
+                <div className={`font-semibold text-neutral-900 dark:text-white ${typeBodySm}`}>
                   {country}
                 </div>
               </div>
@@ -472,7 +483,7 @@ export default function VideoDetails() {
                 <button
                   type="button"
                   onClick={() => setReviewOpen(true)}
-                  className="mt-3 inline-flex items-center gap-2 rounded-xl bg-neutral-900 px-5 py-2 text-[11px] font-semibold text-white shadow-sm transition hover:opacity-90 dark:bg-white/10 dark:text-white dark:ring-1 dark:ring-white/10"
+                  className={`mt-3 inline-flex items-center gap-2 rounded-xl bg-neutral-900 px-5 py-2 text-white shadow-sm transition hover:opacity-90 dark:bg-white/10 dark:text-white dark:ring-1 dark:ring-white/10 ${typeBadge}`}
                 >
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
                     <path
@@ -518,18 +529,18 @@ export default function VideoDetails() {
           </div>
 
           <div className="flex flex-1 flex-col gap-2 sm:ml-6">
-            <div className="text-[10px] font-semibold uppercase tracking-[0.18em] text-neutral-500 dark:text-white/50">
+            <div className={`text-neutral-500 dark:text-white/50 ${typeEyebrow}`}>
               {tl("directLink")}
             </div>
             <div className="flex flex-wrap items-center gap-3">
-              <code className="break-all rounded-xl bg-neutral-50 px-3 py-2 text-[11px] font-semibold text-neutral-800 ring-1 ring-neutral-200 dark:bg-white/10 dark:text-white/85 dark:ring-white/10">
+              <code className={`break-all rounded-xl bg-neutral-50 px-3 py-2 text-neutral-800 ring-1 ring-neutral-200 dark:bg-white/10 dark:text-white/85 dark:ring-white/10 ${typeBadge}`}>
                 {directLink}
               </code>
 
               <button
                 type="button"
                 onClick={handleCopy}
-                className="inline-flex items-center gap-2 rounded-xl bg-neutral-900 px-5 py-2 text-[11px] font-semibold text-white shadow-sm dark:bg-white/10 dark:text-white dark:ring-1 dark:ring-white/10"
+                className={`inline-flex items-center gap-2 rounded-xl bg-neutral-900 px-5 py-2 text-white shadow-sm dark:bg-white/10 dark:text-white dark:ring-1 dark:ring-white/10 ${typeBadge}`}
               >
                 <CopyIcon />
                 {copied ? tl("copied") : tl("copy")}
@@ -547,12 +558,12 @@ export default function VideoDetails() {
               className="!h-9 !w-9"
               scale={2.2}
             />
-            <h2 className="text-xs font-extrabold uppercase tracking-[0.22em]">
+            <h2 className={typeEyebrow}>
               {tl("synopsis")}
             </h2>
           </div>
 
-          <p className="mt-4 max-w-3xl text-sm leading-7 text-neutral-700 dark:text-white/70">
+          <p className={`mt-4 max-w-3xl text-neutral-700 dark:text-white/70 ${typeBody}`}>
             {synopsis || "—"}
           </p>
 
@@ -563,7 +574,7 @@ export default function VideoDetails() {
               className="!h-9 !w-9"
               scale={2.2}
             />
-            <h3 className="text-xs font-extrabold uppercase tracking-[0.22em]">
+            <h3 className={typeEyebrow}>
               {tl("techStackAi")}
             </h3>
           </div>
@@ -573,7 +584,7 @@ export default function VideoDetails() {
               aiTags.map((tag) => (
                 <span
                   key={tag}
-                  className="rounded-full bg-neutral-900 px-4 py-1.5 text-[11px] font-semibold uppercase tracking-[0.12em] text-white dark:bg-white/10 dark:text-white dark:ring-1 dark:ring-white/10"
+                  className={`rounded-full bg-neutral-900 px-4 py-1.5 text-white dark:bg-white/10 dark:text-white dark:ring-1 dark:ring-white/10 ${typeBadge}`}
                 >
                   {tag}
                 </span>
@@ -593,10 +604,10 @@ export default function VideoDetails() {
           <div className="w-full max-w-lg rounded-3xl bg-white p-8 shadow-xl dark:bg-neutral-900">
             <div className="flex items-start justify-between gap-4">
               <div>
-                <h3 className="text-lg font-extrabold uppercase tracking-tight">
+                <h3 className={`uppercase tracking-tight ${typeSectionSubtitle}`}>
                   NOTER CE FILM
                 </h3>
-                <p className="mt-1 text-sm text-neutral-600 dark:text-white/60">
+                <p className={`mt-1 text-neutral-600 dark:text-white/60 ${typeBodySm}`}>
                   Note de 1 à 10 + commentaire (optionnel)
                 </p>
               </div>
@@ -612,7 +623,7 @@ export default function VideoDetails() {
             </div>
 
             <div className="mt-6">
-              <label className="text-xs font-semibold uppercase tracking-[0.18em] text-neutral-500 dark:text-white/50">
+              <label className={`text-neutral-500 dark:text-white/50 ${typeEyebrow}`}>
                 NOTE (1–10)
               </label>
 
@@ -630,7 +641,7 @@ export default function VideoDetails() {
                 </span>
               </div>
 
-              <label className="mt-6 block text-xs font-semibold uppercase tracking-[0.18em] text-neutral-500 dark:text-white/50">
+              <label className={`mt-6 block text-neutral-500 dark:text-white/50 ${typeEyebrow}`}>
                 COMMENTAIRE
               </label>
 
@@ -639,7 +650,7 @@ export default function VideoDetails() {
                 onChange={(e) => setMyComment(e.target.value)}
                 rows={4}
                 placeholder="Ton avis..."
-                className="mt-3 w-full rounded-2xl border border-neutral-200 bg-white p-4 text-sm text-neutral-800 outline-none focus:ring-2 focus:ring-[#9810FA]/30 dark:border-white/10 dark:bg-white/5 dark:text-white"
+                className="mt-3 w-full rounded-2xl border border-neutral-200 bg-white p-4 text-sm text-neutral-800 outline-none focus:ring-2 focus:ring-[#FF8C42]/30 dark:border-white/10 dark:bg-white/5 dark:text-white"
               />
 
               {reviewError && (
@@ -674,7 +685,7 @@ export default function VideoDetails() {
                 <button
                   type="button"
                   onClick={saveReview}
-                  className="rounded-xl bg-[#9810FA] px-5 py-2 text-sm font-semibold text-white shadow-sm hover:opacity-90 disabled:opacity-50"
+                  className="rounded-xl bg-[#FF8C42] px-5 py-2 text-sm font-semibold text-white shadow-sm hover:opacity-90 disabled:opacity-50"
                   disabled={reviewLoading}
                 >
                   {reviewLoading ? "Enregistrement..." : "Enregistrer"}

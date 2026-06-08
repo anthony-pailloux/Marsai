@@ -44,6 +44,8 @@ import aboutFR from "./locales/fr/about.json";
 import aboutEN from "./locales/en/about.json";
 import contactFR from "./locales/fr/contact.json";
 import contactEN from "./locales/en/contact.json";
+import partnersFR from "./locales/fr/partners.json";
+import partnersEN from "./locales/en/partners.json";
 
 i18n
   .use(LanguageDetector)
@@ -72,7 +74,8 @@ i18n
         gallery: galleryFR,
         participation: participationFR,
         about: aboutFR,
-        contact: contactFR
+        contact: contactFR,
+        partners: partnersFR,
       },
       en: {
         header: headerEN,
@@ -91,7 +94,8 @@ i18n
         gallery: galleryEN,
         participation: participationEN,
         about: aboutEN,
-        contact: contactEN
+        contact: contactEN,
+        partners: partnersEN,
       },
     },
 
@@ -111,7 +115,8 @@ i18n
       "adminEventParticipants",
       "adminHero",
       "zodErrors",
-      "contact"
+      "contact",
+      "partners",
     ],
     defaultNS: "home",
 

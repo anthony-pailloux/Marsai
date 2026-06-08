@@ -10,8 +10,6 @@ import Jury from "./pages/Jury.jsx";
 import Faq from "./pages/Faq.jsx";
 import Contact from "./pages/Contact.jsx";
 import Legal from "./pages/Legal.jsx";
-import Privacy from "./pages/Privacy.jsx";
-import Terms from "./pages/Terms.jsx";
 import PartnersPage from "./pages/Partner.jsx";
 import NewsletterConfirm from "./pages/NewsletterConfirm";
 import NewsletterUnsubscribe from "./pages/NewsletterUnsubscribe";
@@ -19,10 +17,13 @@ import LearnMore from "./pages/LearnMore.jsx";
 import VideoFeed from "./pages/VideoFeed.jsx";
 import AdminRegister from "./pages/Admin/AdminRegister.jsx";
 import AdminLogin from "./pages/Login.jsx";
+import ForgotPassword from "./pages/ForgotPassword.jsx";
+import ResetPassword from "./pages/ResetPassword.jsx";
 import { AdminRouter } from "./pages/Admin/AdminRouter.jsx";
 import AdminVideos from "./pages/Admin/AdminVideos.jsx";
 import RequireAuth from "./routes/RequireAuth.jsx";
 import About from "./pages/About.jsx";
+import NotFound from "./pages/NotFound.jsx";
 
 
 
@@ -49,8 +50,8 @@ export default function App() {
         <Route path="/faq" element={<Faq />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/legal" element={<Legal />} />
-        <Route path="/privacy" element={<Privacy />} />
-        <Route path="/terms" element={<Terms />} />
+        <Route path="/privacy" element={<Navigate to="/legal" replace />} />
+        <Route path="/terms" element={<Navigate to="/legal" replace />} />
         <Route path="/partners" element={<PartnersPage />} />
         <Route path="/about" element={<About />} />
 
@@ -61,6 +62,8 @@ export default function App() {
         {/* auth/admin */}
         <Route path="/register" element={<AdminRegister />} />
         <Route path="/login" element={<AdminLogin />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
 
 
 
@@ -79,8 +82,7 @@ export default function App() {
 
 
 
-      {/* FALLBACK */}
-      <Route path="*" element={<Navigate to="/" replace />} />
+      <Route path="*" element={<NotFound />} />
 
     </Routes>
   );

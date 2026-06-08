@@ -1,4 +1,6 @@
-// Petit composant qui affiche un badge de statut (pill)
+﻿// Petit composant qui affiche un badge de statut (pill)
+import { typeBadge } from "../../utils/typography.js";
+
 export default function StatusPill({ status }) {
 
   // On transforme le status en string
@@ -26,7 +28,7 @@ export default function StatusPill({ status }) {
     // Cas : refusé
     Rejected: {
       label: "REFUSÉ",
-      cls: "bg-[#FF3D6E]/15 text-[#FF3D6E] ring-[#FF3D6E]/25",
+      cls: "bg-[#DC2626]/15 text-[#DC2626] ring-[#DC2626]/25",
     },
 
     // Cas : en cours de traitement
@@ -44,7 +46,7 @@ export default function StatusPill({ status }) {
     // Cas : erreur / échec
     Failed: {
       label: "FAILED",
-      cls: "bg-[#FF3D6E]/15 text-[#FF3D6E] ring-[#FF3D6E]/25",
+      cls: "bg-[#DC2626]/15 text-[#DC2626] ring-[#DC2626]/25",
     },
   };
 
@@ -57,7 +59,8 @@ export default function StatusPill({ status }) {
     <span
       className={[
         // Style de base du pill (forme + taille + typo)
-        "inline-flex min-w-[120px] justify-center rounded-full px-4 py-2 text-[11px] font-extrabold tracking-wider ring-1",
+        "inline-flex min-w-[120px] justify-center rounded-full px-4 py-2 ring-1",
+        typeBadge,
 
         // Classes spécifiques au statut choisi
         conf.cls,

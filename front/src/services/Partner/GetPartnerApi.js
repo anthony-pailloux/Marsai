@@ -1,9 +1,8 @@
-const API_URL = import.meta.env.VITE_API_URL;
-
+import { getApiUrl } from "../../utils/apiBase.js";
 async function GetPartnerApi() {
     // console.log("fonction API GetPartner OK");
 
-    const response = await fetch(`${API_URL}/api/partner`)
+    const response = await fetch(`${getApiUrl()}/partner`)
     // console.log(response);
     
     const data = await response.json();

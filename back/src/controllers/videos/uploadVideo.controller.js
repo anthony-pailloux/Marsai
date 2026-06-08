@@ -4,6 +4,8 @@ import stillsModel from "../../models/stills.model.js";
 import videosModel from "../../models/videos.model.js";
 import subtitlesModel from "../../models/subtitles.model.js";
 import { pool } from "../../db/index.js";
+import { normalizeTags, upsertTags } from "../../models/tags.model.js";
+import { insertVideoTags } from "../../models/videoTags.model.js";
 import { uploadToYouTube } from "../../services/youtube.service.js";
 import {
   uploadVideoFromDisk,
@@ -23,40 +25,6 @@ function normalizeLangFromFilename(filename) {
 function isSrtFile(file) {
   const ext = path.extname(file?.originalname || "").toLowerCase();
   return ext === ".srt";
-}
-
-// Normalise les tags et retire doublons
-function normalizeTags(tags = []) {
-  return [
-    ...new Set(
-      tags
-        .map((t) =>
-          String(t || "")
-            .trim()
-            .toLowerCase(),
-        )
-        .filter((t) => t.length > 0),
-    ),
-  ];
-}
-
-// Crée les tags manquants et retourne leurs ids
-async function upsertTags(cleanTags, conn) {
-  if (!cleanTags.length) return [];
-
-  const values = cleanTags.map(() => "(?)").join(", ");
-  await conn.query(
-    `INSERT IGNORE INTO tags (name) VALUES ${values}`,
-    cleanTags,
-  );
-
-  const placeholders = cleanTags.map(() => "?").join(", ");
-  const [rows] = await conn.query(
-    `SELECT id, name FROM tags WHERE name IN (${placeholders})`,
-    cleanTags,
-  );
-
-  return rows;
 }
 
 // Helper safe delete
@@ -450,16 +418,7 @@ async function uploadVideoController(req, res) {
 
     if (cleanTags.length > 0) {
       const tagRows = await upsertTags(cleanTags, conn);
-
-      if (tagRows.length > 0) {
-        const values = tagRows.map(() => "(?, ?)").join(", ");
-        const params = tagRows.flatMap((t) => [videoId, t.id]);
-
-        await conn.query(
-          `INSERT IGNORE INTO video_tag (video_id, tag_id) VALUES ${values}`,
-          params,
-        );
-      }
+      await insertVideoTags(videoId, tagRows, conn);
     }
 
     // ✅ on insère les stills avec filename remplacé par clé S3

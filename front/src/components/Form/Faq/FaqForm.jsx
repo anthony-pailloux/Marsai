@@ -2,28 +2,23 @@ import { Field, TextInput, TextArea } from "../Participation/ui/Field";
 import BtnSubmitForm from "../../Buttons/BtnSubmitForm";
 import { useTranslation } from "react-i18next";
 
-function FaqForm({ faq, onChange, onSubmit, onDelete, loading, isEdit = false, formErrors=[] }) {
-    //paramétre i18n
-    const { t, i18n } = useTranslation(["faq", "zodErrors"]);
-    const locale = i18n.language?.startsWith("fr") ? "fr" : "en";
+function FaqFieldError({ field, formErrors, t }) {
+    const errors = formErrors.filter((e) => e.field === field);
 
-    //filtrer les erreurs par champ
-    const getErrors = (field) =>
-        formErrors.filter(e => e.field === field);
-
-    //composant pour afficher les erreurs d'un champ
-    const FieldError = ({ field }) => (
+    return (
         <>
-            {getErrors(field).map((e, i) => {
-                //si le message ressemble a un clé i18n
-                if(e.message.startsWith("faq.")) {
+            {errors.map((e, i) => {
+                if (e.message.startsWith("faq.")) {
                     return <p key={i} className="text-red-700">{t(e.message, { ns: "zodErrors" })}</p>;
                 }
-                //sinon c'est une erreur backend
                 return <p key={i} className="text-red-700">{e.message}</p>;
             })}
         </>
     );
+}
+
+function FaqForm({ faq, onChange, onSubmit, onDelete, loading, isEdit = false, formErrors=[] }) {
+    const { t } = useTranslation(["faq", "zodErrors"]);
 
     return (
         <form
@@ -44,7 +39,7 @@ function FaqForm({ faq, onChange, onSubmit, onDelete, loading, isEdit = false, f
                 />
             </Field>
             {/* Affichage de l erreur zod dans le back */}
-            <FieldError field="display_order" />
+            <FaqFieldError field="display_order" formErrors={formErrors} t={t} />
 
             <Field label={t("form.label.question_fr")}>
                 <TextArea
@@ -55,7 +50,7 @@ function FaqForm({ faq, onChange, onSubmit, onDelete, loading, isEdit = false, f
                 />
             </Field>
             {/* Affichage de l erreur zod dans le back */}
-            <FieldError field="question_fr" />
+            <FaqFieldError field="question_fr" formErrors={formErrors} t={t} />
 
             <Field label={t("form.label.question_en")}>
                 <TextArea
@@ -66,7 +61,7 @@ function FaqForm({ faq, onChange, onSubmit, onDelete, loading, isEdit = false, f
                 />
             </Field>
             {/* Affichage de l erreur zod dans le back */}
-            <FieldError field="question_en" />
+            <FaqFieldError field="question_en" formErrors={formErrors} t={t} />
 
             <Field label={t("form.label.answer_fr")}>
                 <TextArea
@@ -77,7 +72,7 @@ function FaqForm({ faq, onChange, onSubmit, onDelete, loading, isEdit = false, f
                 />
             </Field>
             {/* Affichage de l erreur zod dans le back */}
-            <FieldError field="answer_fr" />
+            <FaqFieldError field="answer_fr" formErrors={formErrors} t={t} />
 
             <Field label={t("form.label.answer_en")}>
                 <TextArea
@@ -88,7 +83,7 @@ function FaqForm({ faq, onChange, onSubmit, onDelete, loading, isEdit = false, f
                 />
             </Field>
             {/* Affichage de l erreur zod dans le back */}
-            <FieldError field="answer_en" />
+            <FaqFieldError field="answer_en" formErrors={formErrors} t={t} />
 
 
             <div className="flex gap-4 flex-wrap justify-center">

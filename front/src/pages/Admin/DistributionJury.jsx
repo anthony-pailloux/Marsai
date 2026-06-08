@@ -1,13 +1,16 @@
 import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import JuryForm from "../../components/Form/Jury/JuryForm.jsx";
+import SelectorAssignmentPanel from "../../components/admin/SelectorAssignmentPanel.jsx";
+import { getAuthHeaders } from "../../utils/authHeaders.js";
 
-const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:3000";
+import { getApiUrl, getApiBaseUrl } from "../../utils/apiBase.js";
+import { typeAdminTitle, typeBadge } from "../../utils/typography.js";
 
 function resolveImg(src) {
   if (!src) return "";
   if (src.startsWith("http")) return src;
-  return `${API_BASE}/uploads/jury/${src}`;
+  return `${getApiBaseUrl()}/uploads/jury/${src}`;
 }
 
 export default function DistributionJury() {
@@ -30,7 +33,7 @@ export default function DistributionJury() {
     setLoading(true);
     setError("");
     try {
-      const r = await fetch(`${API_BASE}/api/jury`);
+      const r = await fetch(`${getApiUrl()}/jury`);
       const d = await r.json();
       setJury(d?.jury || []);
     } catch {
@@ -110,12 +113,12 @@ export default function DistributionJury() {
 
       const url =
         mode === "create"
-          ? `${API_BASE}/api/jury`
-          : `${API_BASE}/api/jury/${currentId}`;
+          ? `${getApiUrl()}/jury`
+          : `${getApiUrl()}/jury/${currentId}`;
 
       const method = mode === "create" ? "POST" : "PUT";
 
-      const r = await fetch(url, { method, body: fd });
+      const r = await fetch(url, { method, headers: getAuthHeaders(), body: fd });
       const d = await r.json().catch(() => ({}));
 
       if (!r.ok) throw new Error(d?.error || t("admin.errors.save"));
@@ -136,8 +139,9 @@ export default function DistributionJury() {
     if (!ok) return;
 
     try {
-      const r = await fetch(`${API_BASE}/api/jury/${j.id}`, {
+      const r = await fetch(`${getApiUrl()}/jury/${j.id}`, {
         method: "DELETE",
+        headers: getAuthHeaders(),
       });
       const d = await r.json().catch(() => ({}));
       if (!r.ok) throw new Error(d?.error || t("admin.errors.delete"));
@@ -153,7 +157,7 @@ export default function DistributionJury() {
         <main className="min-w-0 w-full">
           <div className="mt-10 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
             <div>
-              <h3 className="text-[42px] font-extrabold tracking-tight">
+              <h3 className={typeAdminTitle}>
                 {t("admin.title")}
               </h3>
               <p className="mt-2 text-sm text-black/60 dark:text-white/60">
@@ -163,7 +167,7 @@ export default function DistributionJury() {
 
             <button
               onClick={openCreate}
-              className="inline-flex items-center justify-center gap-2 rounded-full bg-linear-to-r from-blue-600 to-pink-500 px-6 py-3 text-sm font-extrabold text-white shadow-sm hover:opacity-95 active:opacity-90"
+              className="inline-flex items-center justify-center gap-2 rounded-full bg-[#FF8C42] hover:bg-[#E07830] transition-colors px-6 py-3 text-sm font-extrabold text-white shadow-sm hover:opacity-95 active:opacity-90"
             >
               {t("admin.addButton")}
             </button>
@@ -199,7 +203,7 @@ export default function DistributionJury() {
                         </div>
 
                         {Number(j.is_president) === 1 && (
-                          <span className="rounded-full bg-pink-500/15 px-2 py-1 text-[10px] font-extrabold uppercase tracking-wider text-pink-600 dark:text-pink-300">
+                          <span className={`rounded-full bg-orange-500/15 px-2 py-1 text-orange-600 dark:text-orange-300 ${typeBadge}`}>
                             {t("admin.badges.president")}
                           </span>
                         )}
@@ -250,6 +254,8 @@ export default function DistributionJury() {
                 </div>
               ))}
           </div>
+
+          <SelectorAssignmentPanel />
 
           <JuryForm
             open={open}

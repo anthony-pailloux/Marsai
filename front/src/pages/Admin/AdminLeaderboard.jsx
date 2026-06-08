@@ -6,10 +6,16 @@ import AdminSidebarModal from "../../components/admin/AdminSidebarModal.jsx";
 import { getAuthHeaders } from "../../utils/authHeaders.js";
 
 
-const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:3000";
+import { getApiUrl, getApiBaseUrl } from "../../utils/apiBase.js";
+import {
+  typeAdminStat,
+  typeAdminTitle,
+  typeBadge,
+  typeBodySm,
+  typeCaption,
+} from "../../utils/typography.js";
 
 export default function AdminLeaderboard() {
-  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -22,7 +28,7 @@ export default function AdminLeaderboard() {
       setLoading(true);
       setErr("");
 
-      const res = await fetch(`${API_BASE}/api/videos/admin/leaderboard`, {
+      const res = await fetch(`${getApiUrl()}/videos/admin/leaderboard`, {
         headers: getAuthHeaders({ Accept: "application/json" }),
       });
 
@@ -97,10 +103,10 @@ export default function AdminLeaderboard() {
         <div className="flex gap-7">
           <main className="flex-1">
             <div className="mt-8">
-              <div className="text-[44px] font-extrabold tracking-tight md:text-[46px]">
+              <div className={typeAdminTitle}>
                 LEADERBOARD OFFICIEL
               </div>
-              <div className="mt-1 text-black/50 dark:text-white/50">
+              <div className={`mt-1 text-black/50 dark:text-white/50 ${typeBodySm}`}>
                 Classement des votes du jury pour la finale de Marseille.
               </div>
             </div>
@@ -111,12 +117,12 @@ export default function AdminLeaderboard() {
             >
               <div className="flex items-center justify-between gap-6 px-6 py-6">
                 <div className="flex items-center gap-4">
-                  <div className="grid h-12 w-12 place-items-center rounded-2xl bg-[#F5F1FF] ring-1 ring-black/10 dark:bg-white/5 dark:ring-white/10">
-                    <span className="text-[18px]">🏆</span>
+                  <div className="grid h-12 w-12 place-items-center rounded-2xl bg-[#FFF3E0] ring-1 ring-black/10 dark:bg-white/5 dark:ring-white/10">
+                    <span className="text-lg">🏆</span>
                   </div>
 
                   <div>
-                    <div className="text-[26px] font-extrabold leading-none">
+                    <div className={`leading-none ${typeAdminStat}`}>
                       {best?.score != null
                         ? Number(best.score).toFixed(1)
                         : "—"}
@@ -128,7 +134,7 @@ export default function AdminLeaderboard() {
                       Meilleure note
                     </div>
                     {best?.reviews_count != null && (
-                      <div className="mt-1 text-[11px] font-semibold text-black/45 dark:text-white/45">
+                      <div className={`mt-1 text-black/45 dark:text-white/45 ${typeCaption}`}>
                         {Number(best.reviews_count)} vote
                         {Number(best.reviews_count) > 1 ? "s" : ""}
                       </div>
@@ -212,7 +218,7 @@ export default function AdminLeaderboard() {
                     const coverUrl = v.cover
                       ? v.cover.startsWith("http")
                         ? v.cover
-                        : `${API_BASE}/uploads/covers/${v.cover}`
+                        : `${getApiBaseUrl()}/uploads/covers/${v.cover}`
                       : "";
 
                     return (
@@ -260,7 +266,7 @@ export default function AdminLeaderboard() {
                             </span>
                           </div>
                           {v.reviews_count != null && (
-                            <div className="mt-1 text-[11px] font-semibold text-black/45 dark:text-white/45">
+                            <div className={`mt-1 text-black/45 dark:text-white/45 ${typeCaption}`}>
                               {Number(v.reviews_count)} vote
                               {Number(v.reviews_count) > 1 ? "s" : ""}
                             </div>
@@ -277,8 +283,7 @@ export default function AdminLeaderboard() {
                               .map((tool) => (
                                 <span
                                   key={tool}
-                                  className="inline-flex justify-center rounded-full border border-black/10 bg-black/5 px-3 py-1 text-[10px] font-semibold uppercase tracking-wide text-black/70
-                                           dark:border-white/10 dark:bg-white/5 dark:text-white/70"
+                                  className={`inline-flex justify-center rounded-full border border-black/10 bg-black/5 px-3 py-1 text-black/70 dark:border-white/10 dark:bg-white/5 dark:text-white/70 ${typeBadge}`}
                                 >
                                   {tool}
                                 </span>

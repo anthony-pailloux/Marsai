@@ -14,6 +14,13 @@ import {
   togglePublish,
 } from "../../../services/Events/AdminEventApi.js";
 import EventCard from "../EventCard.jsx";
+import {
+  typeAdminMeta,
+  typeAdminSection,
+  typeAdminStat,
+  typeCaption,
+  typeEyebrow,
+} from "../../../utils/typography.js";
 
 export default function AdminEventsContent() {
   const { t } = useTranslation("adminEvents");
@@ -257,36 +264,36 @@ export default function AdminEventsContent() {
 
   return (
     <>
-      <section className="mt-5 overflow-hidden rounded-3xl border border-black/10 bg-black/5 dark:border-[#F6339A]/60 dark:bg-white/5">
+      <section className="mt-5 overflow-hidden rounded-3xl border border-black/10 bg-black/5 dark:border-[#FF8C42]/60 dark:bg-white/5">
         <div className="p-6">
-          <h2 className="text-xl font-semibold tracking-tight">{t("sectionTitle")}</h2>
-          <p className="mt-1 text-sm text-black/60 dark:text-white/60">
+          <h2 className={typeAdminSection}>{t("sectionTitle")}</h2>
+          <p className={`mt-1 ${typeAdminMeta}`}>
             {t("sectionSubtitle")}
           </p>
 
           {/* Stats */}
           <div className="mt-5 grid gap-3 md:grid-cols-3">
-            <div className="rounded-2xl border border-black/10 bg-black/5 p-4 dark:border-[#F6339A]/60 dark:bg-black/35">
-              <p className="text-xs text-black/60 dark:text-white/60">{t("statsTotalReservations")}</p>
-              <p className="mt-1 text-2xl font-semibold">{stats.totalReservations}</p>
-              <p className="mt-1 text-xs text-black/50 dark:text-white/50">{t("statsOnSelectedDay")}</p>
+            <div className="rounded-2xl border border-black/10 bg-black/5 p-4 dark:border-[#FF8C42]/60 dark:bg-black/35">
+              <p className={typeCaption}>{t("statsTotalReservations")}</p>
+              <p className={`mt-1 ${typeAdminStat}`}>{stats.totalReservations}</p>
+              <p className={`mt-1 text-black/50 dark:text-white/50 ${typeCaption}`}>{t("statsOnSelectedDay")}</p>
             </div>
 
-            <div className="rounded-2xl border border-black/10 bg-black/5 p-4 dark:border-[#F6339A]/60 dark:bg-black/35">
-              <p className="text-xs text-black/60 dark:text-white/60">{t("statsFillRate")}</p>
-              <p className="mt-1 text-2xl font-semibold">{stats.fillRate}%</p>
+            <div className="rounded-2xl border border-black/10 bg-black/5 p-4 dark:border-[#FF8C42]/60 dark:bg-black/35">
+              <p className={typeCaption}>{t("statsFillRate")}</p>
+              <p className={`mt-1 ${typeAdminStat}`}>{stats.fillRate}%</p>
               <div className="mt-3 h-2 w-full rounded-full bg-black/10 dark:bg-white/10">
                 <div
-                  className="h-2 rounded-full bg-gradient-to-r from-sky-500 to-fuchsia-500"
+                  className="h-2 rounded-full bg-[#FF8C42]"
                   style={{ width: `${stats.fillRate}%` }}
                 />
               </div>
             </div>
 
-            <div className="rounded-2xl border border-black/10 bg-black/5 p-4 dark:border-[#F6339A]/60 dark:bg-black/35">
-              <p className="text-xs text-black/60 dark:text-white/60">{t("statsPublished")}</p>
-              <p className="mt-1 text-2xl font-semibold">{stats.publishedCount}</p>
-              <p className="mt-1 text-xs text-black/50 dark:text-white/50">
+            <div className="rounded-2xl border border-black/10 bg-black/5 p-4 dark:border-[#FF8C42]/60 dark:bg-black/35">
+              <p className={typeCaption}>{t("statsPublished")}</p>
+              <p className={`mt-1 ${typeAdminStat}`}>{stats.publishedCount}</p>
+              <p className={`mt-1 text-black/50 dark:text-white/50 ${typeCaption}`}>
                 {t("statsOnEvents", { count: stats.eventsCount })}
               </p>
             </div>
@@ -325,14 +332,14 @@ export default function AdminEventsContent() {
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
                   placeholder={t("searchPlaceholder")}
-                  className="w-full rounded-2xl border border-black/10 bg-black/5 px-4 py-2 text-sm text-black outline-none placeholder:text-black/40 focus:border-black/20 dark:border-[#F6339A]/60 dark:bg-black/35 dark:text-white dark:placeholder:text-white/40 dark:focus:border-[#F6339A]/60"
+                  className="w-full rounded-2xl border border-black/10 bg-black/5 px-4 py-2 text-sm text-black outline-none placeholder:text-black/40 focus:border-black/20 dark:border-[#FF8C42]/60 dark:bg-black/35 dark:text-white dark:placeholder:text-white/40 dark:focus:border-[#FF8C42]/60"
                 />
               </div>
 
               <button
                 type="button"
                 onClick={openCreate}
-                className="rounded-2xl bg-gradient-to-r from-sky-500 to-fuchsia-500 px-4 py-2 text-xs font-semibold tracking-[0.18em] uppercase"
+                className="rounded-2xl bg-[#FF8C42] hover:bg-[#E07830] transition-colors px-4 py-2 text-xs font-semibold tracking-[0.18em] uppercase"
               >
                 {t("addButton")}
               </button>
@@ -342,11 +349,11 @@ export default function AdminEventsContent() {
           {/* List */}
           <div className="mt-6 space-y-4">
             {loading ? (
-              <div className="rounded-3xl border border-black/10 bg-black/10 p-6 text-sm text-black/70 dark:border-[#F6339A]/60 dark:bg-black/30 dark:text-white/70">
+              <div className="rounded-3xl border border-black/10 bg-black/10 p-6 text-sm text-black/70 dark:border-[#FF8C42]/60 dark:bg-black/30 dark:text-white/70">
                 {t("loading")}
               </div>
             ) : filtered.length === 0 ? (
-              <div className="rounded-3xl border border-dashed border-black/15 bg-black/5 p-8 dark:border-[#F6339A]/60 dark:bg-black/25">
+              <div className="rounded-3xl border border-dashed border-black/15 bg-black/5 p-8 dark:border-[#FF8C42]/60 dark:bg-black/25">
                 <p className="text-sm font-semibold">{t("noEvents")}</p>
                 <p className="mt-1 text-sm text-black/60 dark:text-white/60">{t("noEventsHint")}</p>
 
@@ -377,16 +384,16 @@ export default function AdminEventsContent() {
       {/* Modal */}
       {modalOpen && (
         <div className="fixed inset-0 z-[200] flex items-center justify-center bg-black/50 p-4 dark:bg-black/70">
-          <div className="w-full max-w-2xl rounded-3xl border border-black/10 bg-white p-6 shadow-xl dark:border-[#F6339A]/60 dark:bg-[#0b0b0b] dark:shadow-[0_0_40px_rgba(246,51,154,0.2)]">
+          <div className="w-full max-w-2xl rounded-3xl border border-black/10 bg-white p-6 shadow-xl dark:border-[#FF8C42]/60 dark:bg-[#0b0b0b] dark:shadow-[0_0_40px_rgba(255,140,66,0.2)]">
             <div className="flex items-start justify-between gap-4">
               <div>
                 <p className="text-xs font-semibold tracking-[0.22em] uppercase text-black/60 dark:text-white/60">
                   {editing ? t("modalSubtitleEdit") : t("modalSubtitleCreate")}{" "}
                   {t("modalSubtitleSuffix")}
                 </p>
-                <h3 className="mt-1 text-lg font-semibold">
+                <h3 className={`mt-1 ${typeAdminSection}`}>
                   {editing ? t("modalTitleEdit") : t("modalTitleNew")} —{" "}
-                  <span className="text-[#F6339A]">marsAI</span>
+                  <span className="text-[#FF8C42]">marsAI</span>
                 </h3>
               </div>
 
@@ -406,7 +413,7 @@ export default function AdminEventsContent() {
                   value={form.title}
                   onChange={(e) => setForm((s) => ({ ...s, title: e.target.value }))}
                   required
-                  className="mt-1 w-full rounded-2xl border border-black/10 bg-black/5 px-4 py-3 text-sm outline-none focus:border-black/20 dark:border-[#F6339A]/60 dark:bg-black/35 dark:focus:border-[#F6339A]/60"
+                  className="mt-1 w-full rounded-2xl border border-black/10 bg-black/5 px-4 py-3 text-sm outline-none focus:border-black/20 dark:border-[#FF8C42]/60 dark:bg-black/35 dark:focus:border-[#FF8C42]/60"
                   placeholder={t("placeholderTitle")}
                 />
               </div>
@@ -417,7 +424,7 @@ export default function AdminEventsContent() {
                   value={form.description}
                   onChange={(e) => setForm((s) => ({ ...s, description: e.target.value }))}
                   rows={3}
-                  className="mt-1 w-full rounded-2xl border border-black/10 bg-black/5 px-4 py-3 text-sm outline-none focus:border-black/20 dark:border-[#F6339A]/60 dark:bg-black/35 dark:focus:border-[#F6339A]/60"
+                  className="mt-1 w-full rounded-2xl border border-black/10 bg-black/5 px-4 py-3 text-sm outline-none focus:border-black/20 dark:border-[#FF8C42]/60 dark:bg-black/35 dark:focus:border-[#FF8C42]/60"
                   placeholder={t("placeholderDescription")}
                 />
               </div>
@@ -428,7 +435,7 @@ export default function AdminEventsContent() {
                   type="datetime-local"
                   value={form.startAt}
                   onChange={(e) => setForm((s) => ({ ...s, startAt: e.target.value }))}
-                  className="mt-1 w-full rounded-2xl border border-black/10 bg-black/5 px-4 py-3 text-sm outline-none focus:border-black/20 dark:border-[#F6339A]/60 dark:bg-black/35 dark:focus:border-[#F6339A]/60"
+                  className="mt-1 w-full rounded-2xl border border-black/10 bg-black/5 px-4 py-3 text-sm outline-none focus:border-black/20 dark:border-[#FF8C42]/60 dark:bg-black/35 dark:focus:border-[#FF8C42]/60"
                 />
               </div>
 
@@ -439,7 +446,7 @@ export default function AdminEventsContent() {
                   min={0}
                   value={form.capacity}
                   onChange={(e) => setForm((s) => ({ ...s, capacity: e.target.value }))}
-                  className="mt-1 w-full rounded-2xl border border-black/10 bg-black/5 px-4 py-3 text-sm outline-none focus:border-black/20 dark:border-[#F6339A]/60 dark:bg-black/35 dark:focus:border-[#F6339A]/60"
+                  className="mt-1 w-full rounded-2xl border border-black/10 bg-black/5 px-4 py-3 text-sm outline-none focus:border-black/20 dark:border-[#FF8C42]/60 dark:bg-black/35 dark:focus:border-[#FF8C42]/60"
                 />
               </div>
 
@@ -450,7 +457,7 @@ export default function AdminEventsContent() {
                   min={1}
                   value={form.length}
                   onChange={(e) => setForm((s) => ({ ...s, length: e.target.value }))}
-                  className="mt-1 w-full rounded-2xl border border-black/10 bg-black/5 px-4 py-3 text-sm outline-none focus:border-black/20 dark:border-[#F6339A]/60 dark:bg-black/35 dark:focus:border-[#F6339A]/60"
+                  className="mt-1 w-full rounded-2xl border border-black/10 bg-black/5 px-4 py-3 text-sm outline-none focus:border-black/20 dark:border-[#FF8C42]/60 dark:bg-black/35 dark:focus:border-[#FF8C42]/60"
                   placeholder="90"
                 />
               </div>
@@ -460,7 +467,7 @@ export default function AdminEventsContent() {
                 <input
                   value={form.location}
                   onChange={(e) => setForm((s) => ({ ...s, location: e.target.value }))}
-                  className="mt-1 w-full rounded-2xl border border-black/10 bg-black/5 px-4 py-3 text-sm outline-none focus:border-black/20 dark:border-[#F6339A]/60 dark:bg-black/35 dark:focus:border-[#F6339A]/60"
+                  className="mt-1 w-full rounded-2xl border border-black/10 bg-black/5 px-4 py-3 text-sm outline-none focus:border-black/20 dark:border-[#FF8C42]/60 dark:bg-black/35 dark:focus:border-[#FF8C42]/60"
                   placeholder={t("placeholderLocation")}
                 />
               </div>
@@ -470,7 +477,7 @@ export default function AdminEventsContent() {
                 <select
                   value={form.type}
                   onChange={(e) => setForm((s) => ({ ...s, type: e.target.value }))}
-                  className="mt-1 w-full rounded-2xl border border-black/10 bg-black/5 px-4 py-3 text-sm outline-none focus:border-black/20 dark:border-[#F6339A]/60 dark:bg-black/35 dark:focus:border-[#F6339A]/60"
+                  className="mt-1 w-full rounded-2xl border border-black/10 bg-black/5 px-4 py-3 text-sm outline-none focus:border-black/20 dark:border-[#FF8C42]/60 dark:bg-black/35 dark:focus:border-[#FF8C42]/60"
                 >
                   <option value="atelier">{t("typeAtelier")}</option>
                   <option value="masterclass">{t("typeMasterclass")}</option>
@@ -490,7 +497,7 @@ export default function AdminEventsContent() {
 
                 <button
                   type="submit"
-                  className="rounded-2xl bg-gradient-to-r from-sky-500 to-fuchsia-500 px-4 py-3 text-sm font-semibold"
+                  className="rounded-2xl bg-[#FF8C42] hover:bg-[#E07830] transition-colors px-4 py-3 text-sm font-semibold"
                 >
                   {editing ? t("save") : t("createEventButton")}
                 </button>

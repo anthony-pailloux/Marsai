@@ -3,7 +3,9 @@
 /* ==================================================================================
   Service d'authentification : envoie email/password au backend et gère les erreurs
 ===================================================================================*/
-const API = import.meta.env.VITE_API_URL || "";
+import { getApiBaseUrl } from "../../utils/apiBase.js";
+
+const API = getApiBaseUrl();
 
 
 /* ========================================================================================
@@ -34,7 +36,7 @@ export async function loginUser(email, password) {
     try {
       const data = JSON.parse(text);
       message = data.details || data.error || message;
-    } catch (_) {
+    } catch {
       if (text) message = `${message}: ${text.slice(0, 100)}`;
     }
     throw new Error(message);

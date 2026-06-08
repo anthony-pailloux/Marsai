@@ -1,329 +1,149 @@
-import { useEffect, useState } from "react";
 import CmsInput from "../Fields/CmsInput";
 import CmsTextarea from "../Fields/CmsTextarea";
 import CmsInputImage from "../Fields/CmsInputImage";
 import CmsHideToggle from "../Fields/CmsHideToggle";
-import useCmsContent from "../../../../hooks/useCmsContent";
 import { useTranslation } from "react-i18next";
-import { updateContentApi, updateImageApi } from "../../../../services/CMS/UpdateContentApi";
-import buildInitialValuesFromCms from "../../../../utils/buildInitialValuesFromCms";
-import { useForm } from "../../../../hooks/useForm";
 import iconPaintDark from "../../../../assets/imgs/icones/IconPaintDark.svg";
 import iconPaint from "../../../../assets/imgs/icones/IconPaint.svg";
 import BtnSubmitForm from "../../../Buttons/BtnSubmitForm";
+import useCmsSectionForm from "../../../../hooks/useCmsSectionForm.js";
+import saveFooterCmsSection from "../../../../utils/saveFooterCmsSection.js";
+
+const PAGE = "layout";
+const SECTION = "footer";
+
+const FIELDS = [
+  "brand_logo",
+  "brand_quote",
+  "sections_navigation",
+  "sections_legal",
+  "links_gallery_label",
+  "links_gallery_href",
+  "links_program_label",
+  "links_program_href",
+  "links_jury_label",
+  "links_jury_href",
+  "links_partners_label",
+  "links_partners_href",
+  "links_faq_label",
+  "links_faq_href",
+  "links_contact_label",
+  "links_contact_href",
+  "links_legal_label",
+  "links_legal_href",
+  "bottom_copyright",
+  "bottom_designSystem",
+  "social",
+  "social_facebook_label",
+  "social_facebook_href",
+  "social_facebook_icon",
+  "social_instagram_label",
+  "social_instagram_href",
+  "social_instagram_icon",
+  "social_youtube_label",
+  "social_youtube_href",
+  "social_youtube_icon",
+  "social_x_label",
+  "social_x_href",
+  "social_x_icon",
+  "aria_openSocial",
+];
+
+const DEFAULT_VALUES = {
+  brand_logo: "",
+  brand_logo_is_active: 1,
+  brand_quote: "",
+  brand_quote_is_active: 1,
+  sections_navigation: "",
+  sections_navigation_is_active: 1,
+  sections_legal: "",
+  sections_legal_is_active: 1,
+  links_gallery_label: "",
+  links_gallery_label_is_active: 1,
+  links_gallery_href: "",
+  links_program_label: "",
+  links_program_label_is_active: 1,
+  links_program_href: "",
+  links_jury_label: "",
+  links_jury_label_is_active: 1,
+  links_jury_href: "",
+  links_partners_label: "",
+  links_partners_label_is_active: 1,
+  links_partners_href: "",
+  links_faq_label: "",
+  links_faq_label_is_active: 1,
+  links_faq_href: "",
+  links_contact_label: "",
+  links_contact_label_is_active: 1,
+  links_contact_href: "",
+  links_legal_label: "",
+  links_legal_label_is_active: 1,
+  links_legal_href: "",
+  bottom_copyright: "",
+  bottom_copyright_is_active: 1,
+  bottom_designSystem: "",
+  bottom_designSystem_is_active: 1,
+  social: "",
+  social_is_active: 1,
+  social_facebook_label: "",
+  social_facebook_label_is_active: 1,
+  social_facebook_href: "",
+  social_facebook_icon: "",
+  social_instagram_label: "",
+  social_instagram_label_is_active: 1,
+  social_instagram_href: "",
+  social_instagram_icon: "",
+  social_youtube_label: "",
+  social_youtube_label_is_active: 1,
+  social_youtube_href: "",
+  social_youtube_icon: "",
+  social_x_label: "",
+  social_x_label_is_active: 1,
+  social_x_href: "",
+  social_x_icon: "",
+  aria_openSocial: "",
+  aria_openSocial_is_active: 1,
+  newsletter_is_active: 1,
+};
+
+const FILE_FIELDS = [
+  "brand_logo",
+  "social_facebook_icon",
+  "social_instagram_icon",
+  "social_youtube_icon",
+  "social_x_icon",
+];
+
+function hydrateFooterValues(built, cmsSection) {
+  built.social_is_active = Number(cmsSection?.social_is_active ?? 1);
+  built.newsletter_is_active = Number(cmsSection?.newsletter_is_active ?? 1);
+  return built;
+}
 
 function FooterForm({ forcedLocale }) {
+  const { t } = useTranslation("footer");
+
+  const {
+    page,
+    section,
+    locale,
+    values,
+    handleChange,
+    submitLoading,
+    handleSubmit,
+    message,
+  } = useCmsSectionForm({
+    page: PAGE,
+    section: SECTION,
+    fields: FIELDS,
+    defaultValues: DEFAULT_VALUES,
+    forcedLocale,
+    fileFields: FILE_FIELDS,
+    saveFn: saveFooterCmsSection,
+    hydrateValues: hydrateFooterValues,
+    successMessage: "Footer mis à jour",
+  });
 
-    const { t, i18n } = useTranslation("footer");
-    const locale = forcedLocale ?? (i18n.language.startsWith("fr") ? "fr" : "en");
-
-    const page = "layout";
-    const section = "footer";
-    // console.log("Page:", page, "Section:", section);
-
-    const fields = [
-
-        // brand
-        "brand_logo",
-        "brand_quote",
-
-        // sections
-        "sections_navigation",
-        "sections_legal",
-
-        // links (label + href)
-        "links_gallery_label",
-        "links_gallery_href",
-
-        "links_program_label",
-        "links_program_href",
-
-        "links_jury_label",
-        "links_jury_href",
-
-        "links_partners_label",
-        "links_partners_href",
-
-        "links_faq_label",
-        "links_faq_href",
-
-        "links_contact_label",
-        "links_contact_href",
-
-        "links_legal_label",
-        "links_legal_href",
-
-        // bottom
-        "bottom_copyright",
-        "bottom_designSystem",
-
-        // social
-        "social",
-
-        "social_facebook_label",
-        "social_facebook_href",
-        "social_facebook_icon",
-
-        "social_instagram_label",
-        "social_instagram_href",
-        "social_instagram_icon",
-
-        "social_youtube_label",
-        "social_youtube_href",
-        "social_youtube_icon",
-
-        "social_x_label",
-        "social_x_href",
-        "social_x_icon",
-
-        // aria
-        "aria_openSocial",
-
-    ]
-
-    const { values, setValues, handleChange } = useForm({
-        // Brand
-        brand_logo: "",
-        brand_logo_is_active: 1,
-
-        brand_quote: "",
-        brand_quote_is_active: 1,
-
-        // Sections
-        sections_navigation: "",
-        sections_navigation_is_active: 1,
-
-        sections_legal: "",
-        sections_legal_is_active: 1,
-
-        // Links
-        links_gallery_label: "",
-        links_gallery_label_is_active: 1,
-        links_gallery_href: "",
-
-        links_program_label: "",
-        links_program_label_is_active: 1,
-        links_program_href: "",
-
-        links_jury_label: "",
-        links_jury_label_is_active: 1,
-        links_jury_href: "",
-
-        links_partners_label: "",
-        links_partners_label_is_active: 1,
-        links_partners_href: "",
-
-        links_faq_label: "",
-        links_faq_label_is_active: 1,
-        links_faq_href: "",
-
-        links_contact_label: "",
-        links_contact_label_is_active: 1,
-        links_contact_href: "",
-
-        links_legal_label: "",
-        links_legal_label_is_active: 1,
-        links_legal_href: "",
-
-        // Bottom
-        bottom_copyright: "",
-        bottom_copyright_is_active: 1,
-
-        bottom_designSystem: "",
-        bottom_designSystem_is_active: 1,
-
-
-        // Social
-        social: "",
-        social_is_active: 1,
-
-        social_facebook_label: "",
-        social_facebook_label_is_active: 1,
-        social_facebook_href: "",
-        social_facebook_icon: "",
-
-        social_instagram_label: "",
-        social_instagram_label_is_active: 1,
-        social_instagram_href: "",
-        social_instagram_icon: "",
-
-        social_youtube_label: "",
-        social_youtube_label_is_active: 1,
-        social_youtube_href: "",
-        social_youtube_icon: "",
-
-        social_x_label: "",
-        social_x_label_is_active: 1,
-        social_x_href: "",
-        social_x_icon: "",
-
-        // Aria
-        aria_openSocial: "",
-        aria_openSocial_is_active: 1,
-
-        newsletter_is_active: 1
-    })
-
-    const [message, setMessage] = useState("");
-    const [loading, setLoading] = useState(false);
-    const { content, loading: cmsLoading } = useCmsContent(page, locale);
-    const [initialValues, setInitialValues] = useState({});
-    const [hasHydrated, setHasHydrated] = useState(false);
-
-    useEffect(() => {
-
-        if (cmsLoading) {
-            return;
-        }
-
-        if (hasHydrated) return;
-
-        const cmsSection = content?.[page]?.[section];
-
-        if (!cmsSection) return;
-
-        // construit les valeurs initiales depuis le CMS
-        const built = buildInitialValuesFromCms(fields, cmsSection, {
-            fileFields: [
-                "brand_logo", 
-                "social_facebook_icon", 
-                "social_instagram_icon", 
-                "social_youtube_icon", 
-                "social_x_icon"
-            ],
-        });
-
-        built.social_is_active = Number(cmsSection?.social_is_active ?? 1);
-        built.newsletter_is_active = Number(cmsSection?.newsletter_is_active ?? 1);
-
-        setValues(built);
-
-        setInitialValues(built);
-
-        setHasHydrated(true);
-
-    }, [cmsLoading, content, page, section, hasHydrated, setValues, locale])
-
-    // reinitialise quand locale change // Remplie le formulaire avec les données de la BDD
-    // fait que les données dans les champs sont chargé par raport à la langue
-    useEffect(() => {
-        setHasHydrated(false);
-    }, [page, locale]);
-
-    async function handleSubmit(event) {
-        // console.log("Fonction handleSubmit OK");
-
-        event.preventDefault();
-        setLoading(true);
-
-        try {
-
-            // console.log("try dans handleSubmit OK");
-
-            const sharedImageKeys = new Set([
-                "brand_logo",
-                "social_facebook_icon",
-                "social_instagram_icon",
-                "social_youtube_icon",
-                "social_x_icon"
-            ]);
-
-            const sharedLinkKeys = new Set([
-                "links_gallery_href",
-                "links_program_href",
-                "links_jury_href",
-                "links_partners_href",
-                "links_faq_href",
-                "links_contact_href",
-                "links_legal_href",
-                "social_facebook_href",
-                "social_instagram_href",
-                "social_youtube_href",
-                "social_x_href"
-            ]);
-
-            const sharedKeys = new Set([...sharedImageKeys, ...sharedLinkKeys]);
-
-            const localesToSave = (key) => (sharedKeys.has(key) ? ["fr", "en"] : [locale]);
-
-            for (const loc of ["fr", "en"]) {
-                await updateContentApi({
-                    page,
-                    section,
-                    locale: loc,
-                    content_key: "social_is_active",
-                    value: String(values.social_is_active),
-                    order_index: 999,
-                    is_active: 1,
-                });
-
-                await updateContentApi({
-                    page,
-                    section,
-                    locale: loc,
-                    content_key: "newsletter_is_active",
-                    value: String(values.newsletter_is_active),
-                    order_index: 1000,
-                    is_active: 1,
-                });
-            }
-            
-            for (let i = 0; i < fields.length; i++) {
-                const key = fields[i];
-                const val = values[key];
-                const is_active = typeof values[`${key}_is_active`] === "number" ? values[`${key}_is_active`] : 1;
-
-                const targetLocales = localesToSave(key);
-
-                for (const loc of targetLocales) {
-
-                    // IMAGE
-                    if (val instanceof File) {
-                        await updateImageApi({
-                            page,
-                            section,
-                            locale: loc,
-                            content_key: key,
-                            value: val,
-                            order_index: i,
-                            is_active,
-                        });
-                        continue;
-                    }
-
-                    // TEXTE VIDE
-                    const empty = val === undefined || val === null || String(val).trim() === "";
-
-                    // si vide on continue sans rien changer
-                    if (empty) continue;
-
-                    // TEXTE NON VIDE
-                    await updateContentApi({
-                        page,
-                        section,
-                        locale: loc,
-                        content_key: key,
-                        value: val,
-                        order_index: i,
-                        is_active,
-                    })
-
-                }
-
-            }
-
-            setMessage("Footer mis à jour");
-
-        } catch (error) {
-
-            console.error("erreur:", error);
-            setMessage("Erreur lors de la mise à jour");
-
-        } finally {
-            setLoading(false);
-        }
-
-    }
 
     return (
         <>
@@ -542,7 +362,7 @@ function FooterForm({ forcedLocale }) {
                     </div>
 
                     <div className="w-full flex flex-col justify-center">
-                        <BtnSubmitForm loading={loading} className="flex h-[53px] items-center justify-center gap-[13px] px-[21px] py-[10px] rounded-[5px] border border-[#DBE3E6] bg-white dark:border-[rgba(0,0,0,0.11)] dark:bg-[#333] w-full">
+                        <BtnSubmitForm loading={submitLoading} className="flex h-[53px] items-center justify-center gap-[13px] px-[21px] py-[10px] rounded-[5px] border border-[#DBE3E6] bg-white dark:border-[rgba(0,0,0,0.11)] dark:bg-[#333] w-full">
                             Mettre à jour
                         </BtnSubmitForm>
                         {message && <p className="text-sm">{message}</p>}

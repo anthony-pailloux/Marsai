@@ -1,7 +1,9 @@
 // URL de l'API (définie dans .env)
 import { getAuthHeaders } from "../../utils/authHeaders.js";
 
-const API = import.meta.env.VITE_API_URL || "";
+import { getApiBaseUrl } from "../../utils/apiBase.js";
+
+const API = getApiBaseUrl();
 
 /**
  * Récupère toutes les vidéos côté admin

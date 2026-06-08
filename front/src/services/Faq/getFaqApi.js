@@ -1,8 +1,7 @@
-const API_URL = import.meta.env.VITE_API_URL;
-
+import { getApiUrl } from "../../utils/apiBase.js";
 async function getAllFaq() {
     try{
-        const res = await fetch(`${API_URL}/api/faq`,{
+        const res = await fetch(`${getApiUrl()}/faq`,{
             method: "GET",
         });
 

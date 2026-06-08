@@ -4,11 +4,7 @@ async function DeletePartnerController(req, res, next) {
     // console.log("Controller DeletPartner OK");
     
     try {
-        console.log("try in the controller DeletePartner OK");
-
         const { id } = req.params;
-        console.log(id);
-        
         const partnerDelete = await deletePartner(id);
 
         if (!partnerDelete) {

@@ -1,6 +1,6 @@
 import DashboardUser from "../../components/admin/DashboardUser";
 
-function AdminUsers(params) {
+function AdminUsers() {
     return(
         <>
             <DashboardUser/>

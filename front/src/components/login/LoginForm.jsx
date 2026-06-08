@@ -2,7 +2,10 @@ import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { loginUser } from "../../services/Auth/LoginApi";
 import { decodeToken } from "../../utils/decodeToken.js";
-import { inputLightClasses } from "../../utils/formInputClasses.js";
+import { typeAdminSection, typeBodySm } from "../../utils/typography.js";
+import Button from "../ui/Button.jsx";
+import Field from "../ui/Field.jsx";
+import { Input } from "../ui/Input.jsx";
 
 /* ========================
    Page de connexion admin
@@ -71,83 +74,80 @@ function LoginForm() {
   return (
     <div className="flex min-h-[60vh] flex-col items-center justify-center px-6 py-12">
       <div className="w-full max-w-[420px]">
-        {/* ======== En-tête ======== */}
         <div className="mb-8 text-center">
-          <div className="inline-flex items-center gap-2 rounded-full bg-black/10 px-4 py-2 text-[18px] font-semibold tracking-[0.2em] uppercase dark:bg-white/10">
-            MARS <span className="text-[#F6339A]">AI</span>
+          <div className="inline-flex items-center gap-2 rounded-full bg-black/10 px-4 py-2 text-lg font-semibold tracking-[0.2em] uppercase dark:bg-white/10">
+            MARS <span className="text-brand">AI</span>
           </div>
-          <h1 className="mt-4 text-2xl font-bold tracking-tight">
+          <h1 className={`mt-4 ${typeAdminSection}`}>
             Connexion à votre espace utilisateur
           </h1>
-          <p className="mt-2 text-sm text-black/60 dark:text-white/60">
+          <p className={`mt-2 text-black/60 dark:text-white/60 ${typeBodySm}`}>
             Utilisez vos identifiants pour vous connecter.
           </p>
         </div>
 
-        {/* ======================== Formulaire de connexion ======================== */}
-        <div className="overflow-hidden rounded-3xl border border-black/10 bg-black/5 dark:border-[#F6339A]/60 dark:bg-white/5 p-6 shadow-sm">
+        <div className="overflow-hidden rounded-lg border border-black/10 bg-black/5 p-6 shadow-sm dark:border-brand/60 dark:bg-white/5">
           <form onSubmit={handleSubmit} className="space-y-5">
-            <div>
-              <label
-                htmlFor="admin-email"
-                className="block text-xs font-semibold uppercase tracking-wider text-black/70 dark:text-white/70"
-              >
-                Adresse e-mail
-              </label>
-              <input
+            <Field label="Adresse e-mail" htmlFor="admin-email" required>
+              <Input
                 id="admin-email"
                 type="email"
+                variant="light"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 autoComplete="email"
                 placeholder="admin@example.com"
                 required
-                className={`mt-2 h-12 text-sm ${inputLightClasses}`}
+                className="h-12"
               />
-            </div>
+            </Field>
 
-            <div>
-              <label
-                htmlFor="admin-password"
-                className="block text-xs font-semibold uppercase tracking-wider text-black/70 dark:text-white/70"
-              >
-                Mot de passe
-              </label>
-              <input
+            <Field label="Mot de passe" htmlFor="admin-password" required>
+              <Input
                 id="admin-password"
                 type="password"
+                variant="light"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 autoComplete="current-password"
                 placeholder="••••••••"
                 required
-                className={`mt-2 h-12 text-sm ${inputLightClasses}`}
+                className="h-12"
               />
-            </div>
+            </Field>
 
             {error && (
-              <div className="rounded-xl bg-red-500/10 px-4 py-3 text-sm text-red-700 dark:text-red-400">
+              <div className="rounded-md bg-danger/10 px-4 py-3 text-sm text-danger">
                 {error}
               </div>
             )}
 
             {success && (
-              <div className="rounded-xl bg-green-500/10 px-4 py-3 text-sm text-green-700 dark:text-green-400">
+              <div className="rounded-md bg-success/10 px-4 py-3 text-sm text-success">
                 Connexion réussie, redirection…
               </div>
             )}
 
-            <button
+            <Button
               type="submit"
-              disabled={loading}
-              className="h-12 w-full rounded-xl bg-black px-4 text-sm font-semibold text-white transition hover:opacity-90 disabled:opacity-60 dark:bg-white dark:text-black"
+              variant="primary"
+              loading={loading}
+              className="h-12 w-full rounded-md"
             >
-              {loading ? "Connexion…" : "Se connecter"}
-            </button>
+              Se connecter
+            </Button>
+
+            <p className="text-center text-sm">
+              <Link
+                to="/forgot-password"
+                className="text-black/60 hover:text-black dark:text-white/60 dark:hover:text-white"
+              >
+                Mot de passe oublié ?
+              </Link>
+            </p>
           </form>
         </div>
 
-        {/* ===== Liens ===== */}
         <div className="mt-6 flex flex-col items-center gap-2 text-center text-sm">
           <Link
             to="/"

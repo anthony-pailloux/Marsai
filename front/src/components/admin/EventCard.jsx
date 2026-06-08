@@ -1,4 +1,5 @@
 import { clamp, formatTimeFR } from "../../pages/Admin/AdminEvents.utils.js";
+import { typeAdminSection } from "../../utils/typography.js";
 
 export default function EventCard({
   ev,
@@ -23,7 +24,7 @@ export default function EventCard({
       : ev.type === "conference"
         ? {
             label: "Conférence",
-            cls: "bg-fuchsia-500/15 text-fuchsia-700 border-fuchsia-400/30 dark:text-fuchsia-200 dark:border-fuchsia-400/20",
+            cls: "bg-amber-500/15 text-amber-600 border-amber-400/30 dark:text-amber-200 dark:border-amber-400/20",
           }
         : ev.type === "projection"
           ? {
@@ -37,7 +38,7 @@ export default function EventCard({
 
   return (
     // Carte événement
-    <article className="rounded-3xl border border-black/10 bg-black/5 dark:border-[#F6339A]/60 dark:bg-black/35 p-6">
+    <article className="rounded-3xl border border-black/10 bg-black/5 dark:border-[#FF8C42]/60 dark:bg-black/35 p-6">
       <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
         {/* Contenu principal */}
         <div className="min-w-0">
@@ -65,7 +66,7 @@ export default function EventCard({
             </span>
           </div>
 
-          <h3 className="mt-3 text-base font-semibold tracking-tight md:text-lg">
+          <h3 className={`mt-3 tracking-tight ${typeAdminSection}`}>
             {ev.title}
           </h3>
 
@@ -89,7 +90,7 @@ export default function EventCard({
 
           <div className="mt-3 h-2 w-full max-w-xl rounded-full bg-black/10 dark:bg-white/10">
             <div
-              className="h-2 rounded-full bg-gradient-to-r from-sky-500 to-fuchsia-500"
+              className="h-2 rounded-full bg-[#FF8C42]"
               style={{ width: `${clamp(fill, 0, 100)}%` }}
             />
           </div>
@@ -120,7 +121,7 @@ export default function EventCard({
               "rounded-2xl px-4 py-3 text-sm font-semibold",
               ev.published
                 ? "bg-emerald-500/15 text-emerald-700 hover:bg-emerald-500/20 dark:text-emerald-200"
-                : "bg-gradient-to-r from-sky-500 to-fuchsia-500 text-white",
+                : "bg-[#FF8C42] hover:bg-[#E07830] transition-colors text-white",
             ].join(" ")}
           >
             {ev.published ? "Dépublier" : "Publier"}

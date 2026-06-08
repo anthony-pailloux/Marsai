@@ -3,7 +3,16 @@ import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { getAuthHeaders } from "../../utils/authHeaders.js";
 
-const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:3000";
+import { getApiBaseUrl } from "../../utils/apiBase.js";
+import {
+  typeAdminStat,
+  typeAdminTitle,
+  typeBadge,
+  typeBodySm,
+  typeCaption,
+  typeEyebrow,
+} from "../../utils/typography.js";
+
 const TOP_FILMS_ENDPOINT = "/api/videos/admin/leaderboard";
 
 // ✅ helper pour /public (marche même si ton app est servie dans un sous-dossier)
@@ -38,10 +47,10 @@ function pickCoverUrl(v) {
   if (String(cover).startsWith("http")) return String(cover);
 
   // si cover est déjà un path /uploads/...
-  if (String(cover).startsWith("/uploads/")) return `${API_BASE}${cover}`;
+  if (String(cover).startsWith("/uploads/")) return `${getApiBaseUrl()}${cover}`;
 
   // sinon on suppose juste un filename
-  return `${API_BASE}/uploads/covers/${cover}`;
+  return `${getApiBaseUrl()}/uploads/covers/${cover}`;
 }
 
 function formatK(n) {
@@ -100,7 +109,8 @@ function MetricCard({
           {pill ? (
             <span
               className={[
-                "inline-flex items-center rounded-full px-3 py-1 text-[10px] font-extrabold uppercase tracking-widest",
+                "inline-flex items-center rounded-full px-3 py-1",
+                typeBadge,
                 pillClass,
               ].join(" ")}
             >
@@ -112,16 +122,16 @@ function MetricCard({
         {cta ? <div>{cta}</div> : null}
       </div>
 
-      <div className="mt-5 text-[22px] font-extrabold tracking-tight text-black/90 dark:text-white/90">
+      <div className={`mt-5 text-black/90 dark:text-white/90 ${typeAdminStat}`}>
         {value}
       </div>
 
-      <div className="mt-1 text-[10px] font-semibold uppercase tracking-widest text-black/45 dark:text-white/45">
+      <div className={`mt-1 text-black/45 dark:text-white/45 ${typeEyebrow}`}>
         {label}
       </div>
 
       {subLabel ? (
-        <div className="mt-3 text-[11px] font-semibold uppercase tracking-wider text-black/45 dark:text-white/45">
+        <div className={`mt-3 text-black/45 dark:text-white/45 ${typeBadge}`}>
           {subLabel}
         </div>
       ) : null}
@@ -192,7 +202,6 @@ function TopFilmRow({ rank, title, likes, votes, coverUrl }) {
 // Page
 // -----------------------
 export default function Overview() {
-  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [list, setList] = useState([]);
   const [loading, setLoading] = useState(true);
   const [err, setErr] = useState("");
@@ -202,7 +211,7 @@ export default function Overview() {
       setLoading(true);
       setErr("");
 
-      const res = await fetch(`${API_BASE}${TOP_FILMS_ENDPOINT}`, {
+      const res = await fetch(`${getApiBaseUrl()}${TOP_FILMS_ENDPOINT}`, {
         headers: getAuthHeaders({ Accept: "application/json" }),
       });
 
@@ -289,10 +298,10 @@ export default function Overview() {
           <div className="min-w-0 flex-1">
 
             <div className="mt-10">
-              <div className="text-[44px] font-extrabold tracking-tight md:text-[56px]">
+              <div className={typeAdminTitle}>
                 VUE D'ENSEMBLE
               </div>
-              <div className="mt-2 max-w-2xl text-black/55 dark:text-white/55">
+              <div className={`mt-2 max-w-2xl text-black/55 dark:text-white/55 ${typeBodySm}`}>
                 Analyse détaillée de la progression du festival et des
                 indicateurs de performance.
               </div>
@@ -301,7 +310,7 @@ export default function Overview() {
             {/* KPI row */}
             <div className="mt-8 grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-4">
               <MetricCard
-                iconSrc={publicUrl("public/icons/admin/sparkles.svg")}
+                iconSrc={publicUrl("icons/admin/sparkles.svg")}
                 iconBgClass="bg-[#EAF1FF] ring-black/10 dark:bg-white/5 dark:ring-white/10"
                 pill="OBJECTIF : 600"
                 pillClass="bg-[#EAF1FF] text-[#2F6BFF] dark:bg-white/5 dark:text-white/80"
@@ -313,19 +322,19 @@ export default function Overview() {
               />
 
               <MetricCard
-                iconSrc={publicUrl("public/icons/admin/star.svg")}
-                iconBgClass="bg-[#FFE9F4] ring-black/10 dark:bg-white/5 dark:ring-white/10"
+                iconSrc={publicUrl("icons/admin/star.svg")}
+                iconBgClass="bg-[#FFF3E0] ring-black/10 dark:bg-white/5 dark:ring-white/10"
                 pill="QUOTA : 100/JURE"
-                pillClass="bg-[#FFE9F4] text-[#F6339A] dark:bg-white/5 dark:text-white/80"
+                pillClass="bg-[#FFF3E0] text-[#FF8C42] dark:bg-white/5 dark:text-white/80"
                 value={kpi.quota}
                 label="JURÉS AYANT FINALISÉ LEUR LOT"
                 subLabel={kpi.quotaState}
                 progress={0}
-                progressClass="bg-[#F6339A]"
+                progressClass="bg-[#FF8C42]"
               />
 
               <MetricCard
-                iconSrc={publicUrl("public/icons/admin/globe.svg")}
+                iconSrc={publicUrl("icons/admin/globe.svg")}
                 iconBgClass="bg-[#EAF1FF] ring-black/10 dark:bg-white/5 dark:ring-white/10"
                 value={kpi.countries}
                 label="PAYS REPRÉSENTÉS"
@@ -333,7 +342,7 @@ export default function Overview() {
               />
 
               <MetricCard
-                iconSrc={publicUrl("public/icons/admin/ticket.svg")}
+                iconSrc={publicUrl("icons/admin/ticket.svg")}
                 iconBgClass="bg-[#E9FFF2] ring-black/10 dark:bg-white/5 dark:ring-white/10"
                 value={`${kpi.occupancy}%`}
                 label="TAUX D’OCCUPATION WORKSHOPS"
@@ -359,7 +368,7 @@ export default function Overview() {
               "
             >
               <div className="px-6 pt-6">
-                <div className="text-[16px] font-extrabold">
+                <div className={typeAdminSection}>
                   Top Films (Communauté)
                 </div>
               </div>

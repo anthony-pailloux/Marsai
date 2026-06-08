@@ -1,26 +1,78 @@
-const API_BASE = import.meta.env.VITE_API_URL;
+import { getApiBaseUrl } from "../utils/apiBase.js";
+const HOME_ICON_ALIASES = {
+    "iconstars.svg": "IconStars.svg",
+    "iconclock.svg": "IconClock.svg",
+    "arrowright.svg": "arrowRight.svg",
+    "plus.svg": "plus.svg",
+    "ticket.svg": "ticket.svg",
+};
+
+function normalizeHomeIconFilename(filename = "") {
+    const base = filename.split("?")[0];
+    return HOME_ICON_ALIASES[base.toLowerCase()] || base;
+}
+
+/** Chemins statiques servis depuis /public (icônes locales, fallbacks i18n). */
+export function resolveStaticIcon(src) {
+    if (!src || typeof src !== "string") return "";
+
+    const trimmed = src.trim();
+    if (!trimmed || trimmed === "+") return "/icons/home/plus.svg";
+    if (/^https?:\/\//.test(trimmed)) return trimmed;
+    if (trimmed.startsWith("/icons/")) return trimmed;
+
+    const filename = normalizeHomeIconFilename(trimmed.split("/").pop() || "");
+    const isLocalAsset =
+        trimmed.startsWith("/src/") ||
+        trimmed.includes("assets/imgs/icones") ||
+        trimmed.startsWith("../") ||
+        trimmed.startsWith("../../");
+
+    if (isLocalAsset && filename) {
+        return `/icons/home/${filename}`;
+    }
+
+    return trimmed;
+}
 
 export function resolveCmsAsset(src) {
-
-    // verification de la scr
     if (!src) return "";
 
-    // verification de la route (string)
     if (/^https?:\/\//.test(src)) return src;
 
-    // verifie le dossier et ajoute le lien du back
     if (src.startsWith("/uploads/")) {
-        // Le back enregistre les médias CMS dans uploads/medias/ ; si la valeur est /uploads/fichier.ext, on corrige
         const path = src.replace(/^\/uploads\/?/, "");
         const normalized = path.includes("/") ? src : `/uploads/medias/${path}`;
-        return `${API_BASE}${normalized}`;
+        return `${getApiBaseUrl()}${normalized}`;
     }
 
-    // Valeur en base = juste le nom de fichier (ex. 1770992600472-859095709.mp4) → on préfixe par uploads/medias
     if (typeof src === "string" && src.trim() && !src.includes("/")) {
-        return `${API_BASE}/uploads/medias/${src.trim()}`;
+        return `${getApiBaseUrl()}/uploads/medias/${src.trim()}`;
     }
 
-    return src;
-    
+    return resolveStaticIcon(src);
+}
+
+export function resolveCmsAssetWithFallback(cmsValue, fallback) {
+    const resolved = resolveCmsAsset(cmsValue);
+    if (resolved) return resolved;
+    return resolveStaticIcon(fallback);
+}
+
+/** Variante logo navbar : "light" (MARS blanc) sur vidéo / fond sombre, "dark" (MARS foncé) sur fond clair. */
+export function resolveLogoVariant(src, variant = "light") {
+    if (!src) return "";
+
+    if (variant === "dark") {
+        const darkSrc = src.replace(/(\.[^./]+)$/, "-dark$1");
+        return resolveCmsAsset(darkSrc);
+    }
+
+    return resolveCmsAsset(src);
+}
+
+/** Logo navbar : MARS foncé uniquement sur fond clair (hors hero). Sinon MARS blanc, AI inchangé. */
+export function resolveNavbarLogoVariant(src, { isOnHero, prefersDark }) {
+    const variant = !isOnHero && !prefersDark ? "dark" : "light";
+    return resolveLogoVariant(src, variant);
 }

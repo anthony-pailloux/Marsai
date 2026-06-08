@@ -3,8 +3,39 @@
 
 @import "tailwindcss";
 
+/* =============================
+   Design tokens MarsAI
+   ============================= */
+@theme {
+  --color-brand: #ff8c42;
+  --color-brand-hover: #e07830;
+  --color-accent: #3b82f6;
+  --color-danger: #dc2626;
+  --color-success: #22c55e;
+  --color-surface-dark: #0b0b0f;
+  --color-surface-light: #e9e9ea;
+  --color-border-dark: #2a2a3a;
+
+  --radius-sm: 8px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+  --radius-full: 9999px;
+
+  /* Typographie — Arimo partout */
+  --font-sans: "Arimo", ui-sans-serif, system-ui, sans-serif;
+
+  /* Échelle fluide — modérée, lisible */
+  --text-hero-fluid: clamp(1.75rem, 4vw, 2.25rem);
+  --text-home-hero-fluid: clamp(3rem, 11vw, 5.5rem);
+  --text-home-hero-sub-fluid: clamp(1.5rem, 4.5vw, 2.5rem);
+  --text-home-hero-body-fluid: clamp(1.125rem, 2.8vw, 1.375rem);
+  --text-home-hero-eyebrow-fluid: clamp(0.8125rem, 1.6vw, 1rem);
+  --text-section-fluid: clamp(1.5rem, 3vw, 2rem);
+  --text-display-fluid: clamp(1.5rem, 3vw, 2rem);
+}
+
 :root {
-  font-family: "Arimo", sans-serif;
+  font-family: var(--font-sans);
 
   /* On garde un rendu propre */
   font-synthesis: none;

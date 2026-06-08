@@ -1,6 +1,7 @@
-import { useState } from "react";
+﻿import { useState } from "react";
 import { registerUser, registerWithInvite } from "../../services/Auth/RegisterApi.js";
 import AdminSelect from "./AdminSelect.jsx";
+import { typeAdminSection, typeBodySm, typeEyebrow } from "../../utils/typography.js";
 import { useNavigate } from "react-router-dom";
 
 
@@ -24,7 +25,7 @@ function RegisterForm({
 
   const inputClass = isDashboard
     ? "w-full rounded-full border border-black/10 bg-black/5 px-3 py-2 text-sm text-black placeholder:text-black/40 dark:border-white/10 dark:bg-white/5 dark:text-white dark:placeholder:text-white/40 outline-none focus:ring-2 focus:ring-black/20 dark:focus:ring-white/20"
-    : "w-full bg-[#08080e] border border-[#2a2a3a] rounded-full px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-purple-500";
+    : "w-full bg-[#08080e] border border-[#2a2a3a] rounded-full px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-orange-500";
 
   const selectClass = isDashboard
     ? "min-w-[140px] rounded-full border border-black/10 bg-black/0 px-3 py-2 text-sm text-black/70 outline-none dark:border-white/10 dark:bg-white/5 dark:text-white/80"
@@ -36,11 +37,11 @@ function RegisterForm({
 
   const btnCancelClass = isDashboard
     ? "rounded-full border border-black/10 bg-black/5 px-4 py-2 text-xs font-semibold text-black/70 hover:bg-black/10 dark:border-white/10 dark:bg-white/5 dark:text-white/70 dark:hover:bg-white/10"
-    : "flex-1 rounded-full border border-[#2a2a3a] py-3 text-sm uppercase tracking-wider hover:border-purple-500 transition-colors cursor-pointer";
+    : "flex-1 rounded-full border border-[#2a2a3a] py-3 text-sm uppercase tracking-wider hover:border-orange-500 transition-colors cursor-pointer";
 
   const btnSubmitClass = isDashboard
     ? "rounded-full bg-[#2F6BFF] px-4 py-2 text-xs font-semibold text-white hover:bg-[#2F6BFF]/90"
-    : "flex-1 w-full bg-[#0d0d14] border border-[#2a2a3a] rounded-full py-3 text-white uppercase tracking-wider text-sm hover:border-purple-500 transition-colors cursor-pointer";
+    : "flex-1 w-full bg-[#0d0d14] border border-[#2a2a3a] rounded-full py-3 text-white uppercase tracking-wider text-sm hover:border-orange-500 transition-colors cursor-pointer";
   /* ======================================================================
   state pour stocker et changer les valeur grace au champ vide usestate("")
   ====================================================================== */
@@ -175,15 +176,15 @@ function RegisterForm({
     <form onSubmit={handleSubmit} className={formClass}>
       <div className={isDashboard ? "" : "flex flex-col items-center gap-2"}>
         {isDashboard ? (
-          <h3 className="text-sm font-semibold text-black/90 dark:text-white/90">
+          <h3 className={`text-black/90 dark:text-white/90 ${typeBodySm}`}>
             Nouvel utilisateur
           </h3>
         ) : (
           <>
-            <h2 className="text-2xl font-bold uppercase tracking-widest text-transparent bg-clip-text bg-linear-to-t from-[#7c2cfb] to-[#2e7afe]">
+            <h2 className={`uppercase tracking-widest text-transparent bg-clip-text bg-linear-to-t from-[#51A2FF] to-[#FF8C42] ${typeAdminSection}`}>
               Create an Account
             </h2>
-            <p className="text-xs text-gray-500 uppercase tracking-wider">
+            <p className={`text-gray-500 uppercase tracking-wider ${typeEyebrow}`}>
               New Profile
             </p>
           </>
@@ -280,7 +281,7 @@ function RegisterForm({
       </div>
 
       {error && (
-        <p className={isDashboard ? "text-sm text-[#FF3D6E]" : "text-red-500 text-sm text-center"}>
+        <p className={isDashboard ? "text-sm text-[#DC2626]" : "text-red-500 text-sm text-center"}>
           {error}
         </p>
       )}

@@ -78,14 +78,14 @@ function CmsCentralization() {
             ],
         },        
         {
-            pageId: "partner",
+            pageId: "partners",
             label: "Partner",
             sections: [
                 { id: "hero", label: "Hero", component: PartnersSectionHeroForm},
             ],            
         },
         {
-            pageId: "fag",
+            pageId: "faq",
             label: "FAQ",
             sections: [
                 { id: "hero", label: "Hero", component: FaqSectionHeroForm },

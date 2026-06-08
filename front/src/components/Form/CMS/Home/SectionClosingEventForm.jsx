@@ -1,61 +1,37 @@
 import iconPaintDark from "../../../../assets/imgs/icones/IconPaintDark.svg";
 import iconPaint from "../../../../assets/imgs/icones/IconPaint.svg";
 import { useTranslation } from "react-i18next";
-import { useForm } from "../../../../hooks/useForm";
-import { useEffect, useState } from "react";
-import useCmsContent from "../../../../hooks/useCmsContent";
-import buildInitialValuesFromCms from "../../../../utils/buildInitialValuesFromCms";
-import { updateContentApi, updateImageApi } from "../../../../services/CMS/UpdateContentApi";
 import CmsHideToggle from "../Fields/CmsHideToggle";
 import CmsInput from "../Fields/CmsInput";
 import CmsInputImage from "../Fields/CmsInputImage";
 import BtnSubmitForm from "../../../Buttons/BtnSubmitForm";
-import saveCmsSection from "../../../../utils/saveCmsSection";
-
+import useCmsSectionForm from "../../../../hooks/useCmsSectionForm.js";
 
 function SectionClosingEventForm({ forcedLocale }) {
+  const { t } = useTranslation("home");
 
-    const { t, i18n } = useTranslation("home");
-    const locale = forcedLocale ?? (i18n.language.startsWith("fr") ? "fr" : "en");
+  const PAGE = "home";
+  const SECTION = "closingEvent";
+  const FIELDS = [
+  "section_visibility",
+  "eyebrow",
+  "eyebrow_text_color",
+  "eyebrow_bg_color",
+  "title_main",
+  "title_main_color",
+  "title_accent",
+  "title_accent_color",
+  "description_ligne1",
+  "description_ligne2",
+  "card_icon",
+  "card_date",
+  "card_hour",
+  "card_localisation",
+  "card_ctaBooking",
+  "card_ctaBooking_link",
+  ];
 
-    // Page et section
-    const page = "home";
-    const section = "closingEvent";
-    // console.log("Page:", page, "Section:", section);
-
-    // champs des differents éléments dans la section
-    const fields = [
-
-        "section_visibility",
-
-        "eyebrow",
-        "eyebrow_text_color",
-        "eyebrow_bg_color",
-
-        "title_main",
-        "title_main_color",
-
-        "title_accent",
-        "title_accent_color",
-
-        "description_ligne1",
-        "description_ligne2",
-
-        "card_icon",
-        "card_date",
-        "card_hour",
-        "card_localisation",
-        "card_ctaBooking",
-        "card_ctaBooking_link"
-
-    ];
-    // console.log(fields);
-
-    const orderIndexByKey = Object.fromEntries(fields.map((k, i) => [k, i]));
-
-    const { values, setValues, handleChange } = useForm({
-
-        section_visibility:"",
+  const DEFAULT_VALUES = {section_visibility:"",
         section_visibility_is_active: 1,
 
         eyebrow: "",
@@ -101,70 +77,27 @@ function SectionClosingEventForm({ forcedLocale }) {
         card_ctaBooking_is_active: 1,
         
         card_ctaBooking_link: "",
-        card_ctaBooking_link_is_active: 1
+        card_ctaBooking_link_is_active: 1};
 
-    })
-    const [message, setMessage] = useState("");
-    const [loading, setLoading] = useState(false);
-    const { content, loading: cmsLoading } = useCmsContent(page, locale);
-    const [initialValues, setInitialValues] = useState({});
-    const [hasHydrated, setHasHydrated] = useState(false);
-    
-    useEffect(() => {
+  const {
+    page,
+    section,
+    locale,
+    values,
+    handleChange,
+    submitLoading,
+    handleSubmit,
+  } = useCmsSectionForm({
+    page: PAGE,
+    section: SECTION,
+    fields: FIELDS,
+    defaultValues: DEFAULT_VALUES,
+    forcedLocale,
+    fileFields: ["eyebrow_icon", "card_icon"],
+    successMessage: "Section de la soirée de clôture mise à jour",
+  });
+  const orderIndexByKey = Object.fromEntries(FIELDS.map((k, i) => [k, i]));
 
-        if (cmsLoading) {
-            return;
-        }
-
-        if (hasHydrated) return;
-
-        const cmsSection = content?.[page]?.[section];
-
-        if (!cmsSection) return;
-
-        // construit les valeurs initiales depuis le CMS
-        const built = buildInitialValuesFromCms(fields, cmsSection, {
-            fileFields: ["eyebrow_icon", "card_icon"],
-        });
-
-        setValues(built);
-
-        setInitialValues(built);
-
-        setHasHydrated(true);
-
-    }, [cmsLoading, content, page, section, hasHydrated, setValues, locale])
-
-    // reinitialise quand locale change // Remplie le formulaire avec les données de la BDD
-    // fait que les données dans les champs sont chargé par raport à la langue
-    useEffect(()=>{
-        setHasHydrated(false);
-    }, [locale]);
-
-    async function handleSubmit(event) {
-        // console.log("Fonction handleSubmit OK");
-        
-        event.preventDefault();
-        setLoading(true);
-
-        try {
-
-            // console.log("try dans handleSubmit OK");
-
-            await saveCmsSection({ page, section, locale, fields, values });
-
-            setMessage("Section de la soirée de clôture mise à jour");
-
-        } catch (error) {
-
-            console.error("erreur:", error);
-            setMessage("Erreur lors de la mise à jour");
-
-        } finally {
-            setLoading(false);
-        }
-
-    }    
 
     return(
         <section>
@@ -308,7 +241,7 @@ function SectionClosingEventForm({ forcedLocale }) {
                 </div>
 
                 <div className="w-full flex justify-center">
-                    <BtnSubmitForm loading={loading} className="flex w-[200px] h-[53px] items-center justify-center gap-[13px] px-[21px] py-[10px] rounded-[5px] border border-[#DBE3E6] bg-white dark:border-[rgba(0,0,0,0.11)] dark:bg-[#333]">
+                    <BtnSubmitForm loading={submitLoading} className="flex w-[200px] h-[53px] items-center justify-center gap-[13px] px-[21px] py-[10px] rounded-[5px] border border-[#DBE3E6] bg-white dark:border-[rgba(0,0,0,0.11)] dark:bg-[#333]">
                         Mettre à jour
                     </BtnSubmitForm>
                 </div>

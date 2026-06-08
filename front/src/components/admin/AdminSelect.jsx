@@ -91,7 +91,7 @@ function AdminSelect({
         className="flex min-h-[36px] min-w-[140px] cursor-pointer items-center justify-between gap-2 rounded-full border border-black/10 bg-black/0 px-3 py-2 text-sm text-black/70 outline-none hover:bg-black/5 disabled:cursor-not-allowed disabled:opacity-50 dark:border-white/10 dark:bg-white/5 dark:text-white/80 dark:hover:bg-white/10"
       >
         <span className="truncate">{selectedLabel}</span>
-        <span className={`text-[10px] opacity-60 transition-transform ${open ? "rotate-180" : ""}`}>▼</span>
+        <span className={`text-xs opacity-60 transition-transform ${open ? "rotate-180" : ""}`}>▼</span>
       </button>
 
       {menu && createPortal(menu, document.body)}

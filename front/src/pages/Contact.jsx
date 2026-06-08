@@ -12,10 +12,10 @@ export default function Contact() {
   const form = "form";
 
   //paramétre i18n
-  const { t, i18n } = useTranslation(page);
+  const { i18n } = useTranslation(page);
   const locale = i18n.language?.startsWith("fr") ? "fr" : "en";
 
-  const { content, loading, message } = useCmsContent(page, locale);
+  const { content, loading } = useCmsContent(page, locale);
 
   if (loading) return null;
 

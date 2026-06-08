@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { useSearchParams, Link } from "react-router";
 
-const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:3000";
+import { getApiUrl } from "../utils/apiBase.js";
+import { typeAdminSection } from "../utils/typography.js";
 
 export default function NewsletterUnsubscribe() {
   const [params] = useSearchParams();
@@ -22,7 +23,7 @@ export default function NewsletterUnsubscribe() {
 
       try {
         const res = await fetch(
-          `${API_BASE}/api/newsletter/unsubscribe?token=${encodeURIComponent(token)}`,
+          `${getApiUrl()}/newsletter/unsubscribe?token=${encodeURIComponent(token)}`,
           { method: "GET", headers: { Accept: "application/json" } },
         );
 
@@ -52,7 +53,7 @@ export default function NewsletterUnsubscribe() {
 
   return (
     <div className="mx-auto max-w-[720px] px-6 py-16">
-      <h1 className="text-2xl font-bold">Désinscription newsletter</h1>
+      <h1 className={typeAdminSection}>Désinscription newsletter</h1>
 
       <div className="mt-6 rounded-2xl border border-black/10 p-6 dark:border-white/10">
         {status === "loading" ? (

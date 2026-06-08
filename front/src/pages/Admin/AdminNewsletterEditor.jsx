@@ -1,8 +1,10 @@
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import NewsletterCkEditor from "../../components/newsletter/NewsletterCkEditor.jsx";
+import { getAuthHeaders } from "../../utils/authHeaders.js";
 
-const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:3000";
+import { getApiUrl, getApiBaseUrl } from "../../utils/apiBase.js";
+import { typeAdminTitle } from "../../utils/typography.js";
 
 // Les blocs qu’on autorise dans l’éditeur
 const blockTemplates = [
@@ -14,7 +16,7 @@ const blockTemplates = [
 function fullUrl(path) {
   if (!path) return "";
   if (path.startsWith("http")) return path;
-  return `${API_BASE}${path}`;
+  return `${getApiBaseUrl()}${path}`;
 }
 
 // Format pour l’input datetime-local
@@ -65,8 +67,8 @@ export default function AdminNewsletterEditor() {
     setError("");
 
     try {
-      const res = await fetch(`${API_BASE}/api/admin/newsletters/${id}`, {
-        headers: { Accept: "application/json" },
+      const res = await fetch(`${getApiUrl()}/admin/newsletters/${id}`, {
+        headers: getAuthHeaders({ Accept: "application/json" }),
       });
 
       const data = await res.json().catch(() => null);
@@ -148,8 +150,9 @@ export default function AdminNewsletterEditor() {
     const form = new FormData();
     form.append("image", file);
 
-    const res = await fetch(`${API_BASE}/api/admin/newsletters/upload-image`, {
+    const res = await fetch(`${getApiUrl()}/admin/newsletters/upload-image`, {
       method: "POST",
+      headers: getAuthHeaders(),
       body: form,
     });
 
@@ -171,12 +174,12 @@ export default function AdminNewsletterEditor() {
     setMsg("");
 
     try {
-      const res = await fetch(`${API_BASE}/api/admin/newsletters/${id}`, {
+      const res = await fetch(`${getApiUrl()}/admin/newsletters/${id}`, {
         method: "PUT",
-        headers: {
+        headers: getAuthHeaders({
           "Content-Type": "application/json",
           Accept: "application/json",
-        },
+        }),
         body: JSON.stringify({
           subject,
           title,
@@ -210,13 +213,13 @@ export default function AdminNewsletterEditor() {
 
     try {
       const res = await fetch(
-        `${API_BASE}/api/admin/newsletters/${id}/send-test`,
+        `${getApiUrl()}/admin/newsletters/${id}/send-test`,
         {
           method: "POST",
-          headers: {
+          headers: getAuthHeaders({
             "Content-Type": "application/json",
             Accept: "application/json",
-          },
+          }),
           body: JSON.stringify({ to: testTo }),
         },
       );
@@ -244,13 +247,13 @@ export default function AdminNewsletterEditor() {
       const iso = new Date(scheduledAt).toISOString();
 
       const res = await fetch(
-        `${API_BASE}/api/admin/newsletters/${id}/schedule`,
+        `${getApiUrl()}/admin/newsletters/${id}/schedule`,
         {
           method: "POST",
-          headers: {
+          headers: getAuthHeaders({
             "Content-Type": "application/json",
             Accept: "application/json",
-          },
+          }),
           body: JSON.stringify({ scheduled_at: iso }),
         },
       );
@@ -274,10 +277,10 @@ export default function AdminNewsletterEditor() {
 
     try {
       const res = await fetch(
-        `${API_BASE}/api/admin/newsletters/${id}/cancel-schedule`,
+        `${getApiUrl()}/admin/newsletters/${id}/cancel-schedule`,
         {
           method: "POST",
-          headers: { Accept: "application/json" },
+          headers: getAuthHeaders({ Accept: "application/json" }),
         },
       );
 
@@ -301,10 +304,10 @@ export default function AdminNewsletterEditor() {
 
     try {
       const res = await fetch(
-        `${API_BASE}/api/admin/newsletters/${id}/send-now`,
+        `${getApiUrl()}/admin/newsletters/${id}/send-now`,
         {
           method: "POST",
-          headers: { Accept: "application/json" },
+          headers: getAuthHeaders({ Accept: "application/json" }),
         },
       );
 
@@ -384,7 +387,7 @@ export default function AdminNewsletterEditor() {
     <div className="mx-auto w-full px-6 pb-14 pt-10">
       <main className="min-w-0">
         <div className="mt-10 flex items-center justify-between">
-          <h1 className="text-4xl font-black">NEWSLETTER #{id}</h1>
+          <h1 className={typeAdminTitle}>NEWSLETTER #{id}</h1>
 
           <button
             onClick={() => navigate("/admin/newsletters")}

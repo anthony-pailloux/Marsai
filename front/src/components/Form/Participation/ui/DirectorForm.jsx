@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Field, TextInput, Select } from "./Field";
+import { typeAdminSection, typeBadge } from "../../../../utils/typography.js";
 
 /* URL drapeau */
 function flagUrl(code, size = 24) {
@@ -20,9 +21,10 @@ function CountryPickerModal({ open, onClose, countries, onPick }) {
   const { t } = useTranslation("participation");
   const [q, setQ] = useState("");
 
-  useEffect(() => {
-    if (!open) setQ("");
-  }, [open]);
+  function closeModal() {
+    setQ("");
+    onClose();
+  }
 
   const filtered = useMemo(() => {
     const s = q.trim().toLowerCase();
@@ -43,7 +45,7 @@ function CountryPickerModal({ open, onClose, countries, onPick }) {
       <button
         type="button"
         className="absolute inset-0 bg-black/60"
-        onClick={onClose}
+        onClick={closeModal}
         aria-label={t("countryPicker.closeAria")}
       />
 
@@ -54,8 +56,8 @@ function CountryPickerModal({ open, onClose, countries, onPick }) {
           </div>
           <button
             type="button"
-            onClick={onClose}
-            className="ml-auto rounded-xl bg-neutral-900 px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-white"
+            onClick={closeModal}
+            className={`ml-auto rounded-xl bg-neutral-900 px-4 py-2 text-white ${typeBadge}`}
           >
             {t("countryPicker.close")}
           </button>
@@ -189,7 +191,7 @@ export default function DirectorForm({ onNext }) {
         if (d?.phoneCountry?.dial && d?.phoneCountry?.code) {
           setPhoneCountry(d.phoneCountry);
         }
-      } catch {}
+      } catch { /* ignore parse errors */ }
     }
 
     const saved = localStorage.getItem("directorProfile");
@@ -219,7 +221,7 @@ export default function DirectorForm({ onNext }) {
       if (dial && (!phoneCountry?.dial || phoneCountry.dial === "+33")) {
         setPhoneCountry((pc) => ({ ...pc, dial }));
       }
-    } catch {}
+    } catch { /* ignore parse errors */ }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -355,7 +357,7 @@ export default function DirectorForm({ onNext }) {
       />
 
       <div className="rounded-2xl border border-neutral-200 bg-white p-8 dark:bg-black dark:border-neutral-800">
-        <h2 className="text-center text-2xl font-semibold text-blue-600">
+        <h2 className={`text-center text-blue-600 ${typeAdminSection}`}>
           {t("director.title")}
         </h2>
 
@@ -535,7 +537,7 @@ export default function DirectorForm({ onNext }) {
           <button
             type="submit"
             disabled={!canSubmit}
-            className="inline-flex items-center gap-3 rounded-xl bg-[#7C3AED] px-10 py-3 font-semibold text-white disabled:cursor-not-allowed disabled:opacity-40"
+            className="inline-flex items-center gap-3 rounded-xl bg-[#E07830] px-10 py-3 font-semibold text-white disabled:cursor-not-allowed disabled:opacity-40"
           >
             {t("director.next")} <span aria-hidden>→</span>
           </button>

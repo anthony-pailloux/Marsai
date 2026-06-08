@@ -16,6 +16,8 @@ import contactAdminRoutes from "./contactAdmin.routes.js";
 import faq from "./faq.js";
 import conferenceProgramPublicRouter from "./conferenceProgramPublic.js";
 import conferenceProgramAdminRouter from "./conferenceProgramAdmin.js";
+import awardsRouter from "./awards.routes.js";
+import assignmentRouter from "./assignment.routes.js";
 import { isAdmin, isSuperAdmin, verifyToken } from "../utils/isAdmin.js";
 
 const router = Router();
@@ -39,5 +41,7 @@ router.use(adminNewsletterRoutes);
 router.use(adminNewslettersRoutes);
 router.use(newsletterUploadRoutes);
 router.use("/admin/conference-program", conferenceProgramAdminRouter);
+router.use("/awards", awardsRouter);
+router.use("/admin/assignments", assignmentRouter);
 
 export default router;

@@ -1,7 +1,9 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
 
-const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:3000";
+import { getApiUrl, getApiBaseUrl } from "../utils/apiBase.js";
+import { typeBadge, typeBodySm, typeCardTitle, typeEyebrow } from "../utils/typography.js";
+
 const PLACEHOLDER_COVER = "/cover-fallback.jpg";
 
 function useActiveIndex(containerRef, itemCount) {
@@ -41,10 +43,10 @@ function FeedSlide({ video, index, activeIndex }) {
 
   const coverUrl =
     video?.cover && String(video.cover).trim()
-      ? `${API_BASE}/uploads/covers/${video.cover}`
+      ? `${getApiBaseUrl()}/uploads/covers/${video.cover}`
       : PLACEHOLDER_COVER;
 
-  const streamUrl = `${API_BASE}/api/videos/${video.id}/stream`;
+  const streamUrl = `${getApiUrl()}/videos/${video.id}/stream`;
 
   useEffect(() => {
     const el = videoRef.current;
@@ -86,18 +88,18 @@ function FeedSlide({ video, index, activeIndex }) {
       <div className="pointer-events-none absolute inset-0">
         <div className="pointer-events-auto absolute bottom-6 left-6 right-6 flex items-end justify-between gap-4">
           <div className="max-w-[70%]">
-            <div className="text-xs font-semibold uppercase tracking-[0.18em] text-white/60">
+            <div className={`text-white/60 ${typeEyebrow}`}>
               MarsAI • Court métrage
             </div>
-            <h2 className="mt-2 line-clamp-2 text-xl font-extrabold uppercase tracking-tight text-white">
+            <h2 className={`mt-2 line-clamp-2 text-white ${typeCardTitle}`}>
               {title}
             </h2>
-            <div className="mt-2 text-sm text-white/75">{director}</div>
+            <div className={`mt-2 text-white/75 ${typeBodySm}`}>{director}</div>
           </div>
 
           <Link
             to={`/gallery/${video.id}`}
-            className="pointer-events-auto inline-flex items-center gap-2 rounded-full bg-white/10 px-5 py-3 text-[11px] font-semibold uppercase tracking-[0.18em] text-white ring-1 ring-white/15 backdrop-blur hover:bg-white/15"
+            className={`pointer-events-auto inline-flex items-center gap-2 rounded-full bg-white/10 px-5 py-3 text-white ring-1 ring-white/15 backdrop-blur hover:bg-white/15 ${typeBadge}`}
           >
             Détails
             <span className="grid h-6 w-6 place-items-center rounded-full bg-white/10">
@@ -163,7 +165,7 @@ export default function VideoFeed() {
         setLoading(true);
         setErr("");
 
-        const res = await fetch(`${API_BASE}/api/videos`);
+        const res = await fetch(`${getApiUrl()}/videos`);
         const data = await res.json();
         if (!res.ok) throw new Error(data?.error || "Erreur chargement vidéos");
 
@@ -253,12 +255,12 @@ export default function VideoFeed() {
           <button
             type="button"
             onClick={() => navigate("/gallery")}
-            className="inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.18em] ring-1 ring-white/15 backdrop-blur hover:bg-white/15"
+            className={`inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-2 ring-1 ring-white/15 backdrop-blur hover:bg-white/15 ${typeBadge}`}
           >
             ← Retour galerie
           </button>
 
-          <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-white/60">
+          <div className={`text-white/60 ${typeBadge}`}>
             {activeIndex + 1} / {items.length}
           </div>
         </div>

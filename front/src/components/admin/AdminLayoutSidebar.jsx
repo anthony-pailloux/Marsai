@@ -1,22 +1,15 @@
 import { useNavigate } from "react-router-dom";
 import { ADMIN_NAV } from "./adminNav.js";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { decodeToken } from "../../utils/decodeToken.js";
 import logout from "../../utils/logout.js";
 
 
-const API_URL = import.meta.env.VITE_API_URL;
+import { getApiBaseUrl } from "../../utils/apiBase.js";
 
 export default function AdminLayoutSidebar({ active }) {
   const navigate = useNavigate();
-  const [currentUser, setCurrentUser] = useState(null);
-
-  /*=======================================================
-    Décodage du token pour récupérer l'utilisateur courant
-  =======================================================*/
-  useEffect(() => {
-    setCurrentUser(decodeToken());
-  }, []);
+  const [currentUser] = useState(() => decodeToken());
 
   return (
     <aside className="hidden w-[270px] flex shrink-0 flex-col rounded-3xl border border-black/10 bg-black/5 p-4 dark:border-[#FFFFFF]/10 dark:bg-white/5 md:flex h-full gap-[100px] justify-between">
@@ -26,7 +19,7 @@ export default function AdminLayoutSidebar({ active }) {
          Profil : affiche avatar nom prénom et email de l'utilisateur connecté
       =======================================================================*/}
         <div className="flex items-center gap-3 rounded-2xl border border-black/10 bg-black/10 p-3 dark:border-[#FFFFFF]/20 dark:bg-black/30">
-          <div className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-[#F6339A]/15 text-lg">
+          <div className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-[#FF8C42]/15 text-lg">
             👤
           </div>
           <div className="min-w-0">
@@ -84,7 +77,7 @@ export default function AdminLayoutSidebar({ active }) {
                   ) : (
                     link.icon && (
                       <img
-                        src={`${API_URL}/uploads/adminsidebar/${link.icon}`}
+                        src={`${getApiBaseUrl()}/uploads/adminsidebar/${link.icon}`}
                         alt=""
                         className={[
                           "h-5 w-5 shrink-0",

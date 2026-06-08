@@ -1,11 +1,7 @@
 import getOnePartner from "../../models/partner/getOne.model.js";
 
 async function GetOnePartner(req, res, next) {
-    console.log("Controller GetOnePartner OK");
-
     try {
-        // console.log("try in the controller GetOnePartner OK");
-
         const { id } = req.params
         // console.log(id);
 

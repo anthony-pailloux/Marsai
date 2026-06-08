@@ -32,9 +32,9 @@ async function findPublishedVideos(filters = {}) {
     sql += `
       AND EXISTS (
         SELECT 1
-        FROM film_tag ft
-        JOIN tag t ON t.id = ft.tag_id
-        WHERE ft.video_id = v.id AND t.name = ?
+        FROM video_tag vt
+        JOIN tags t ON t.id = vt.tag_id
+        WHERE vt.video_id = v.id AND t.name = ?
       )
     `;
     params.push(theme);
@@ -146,6 +146,37 @@ async function createVideo(payload, connection = pool) {
 
   const [result] = await connection.execute(sql, params);
   return result.insertId;
+}
+
+// Liste admin filtrée par ids (assignation sélecteur)
+async function findVideosAdminByIds(videoIds) {
+  if (!videoIds?.length) return [];
+
+  const placeholders = videoIds.map(() => "?").join(", ");
+  const sql = `
+    SELECT
+      v.id,
+      v.title,
+      v.title_en,
+      v.synopsis,
+      v.synopsis_en,
+      v.cover,
+      v.duration,
+      v.country,
+      v.language,
+      v.director_name,
+      v.director_lastname,
+      v.director_country,
+      v.upload_status,
+      v.featured,
+      v.created_at
+    FROM videos v
+    WHERE v.id IN (${placeholders})
+    ORDER BY v.created_at DESC, v.id DESC
+  `;
+
+  const [rows] = await pool.execute(sql, videoIds);
+  return rows;
 }
 
 // Liste admin de toutes les vidéos
@@ -280,6 +311,7 @@ export default {
   findOnePublishedVideoById,
   findVideoFileById,
   createVideo,
+  findVideosAdminByIds,
   findAllVideosAdmin,
   updateVideoStatus,
   updateVideoFeatured,

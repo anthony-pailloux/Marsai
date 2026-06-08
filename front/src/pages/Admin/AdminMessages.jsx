@@ -1,6 +1,14 @@
 import { useEffect, useMemo, useState } from "react";
+import { getAuthHeaders } from "../../utils/authHeaders.js";
 
-const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:3000";
+import { getApiBaseUrl } from "../../utils/apiBase.js";
+import {
+  typeAdminSection,
+  typeAdminTitle,
+  typeBadge,
+  typeBodySm,
+  typeCaption,
+} from "../../utils/typography.js";
 
 const ENDPOINTS = {
   list: "/api/contact/admin/messages",
@@ -32,7 +40,8 @@ function StatusPill({ status }) {
   return (
     <span
       className={[
-        "inline-flex items-center rounded-full border px-3 py-1 text-[10px] font-extrabold uppercase tracking-widest",
+        "inline-flex items-center rounded-full border px-3 py-1",
+        typeBadge,
         cls,
       ].join(" ")}
     >
@@ -60,9 +69,8 @@ export default function AdminMessages() {
       setLoading(true);
       setErr("");
 
-      const res = await fetch(`${API_BASE}${ENDPOINTS.list}`, {
-        headers: { Accept: "application/json" },
-        credentials: "include",
+      const res = await fetch(`${getApiBaseUrl()}${ENDPOINTS.list}`, {
+        headers: getAuthHeaders({ Accept: "application/json" }),
       });
 
       const data = await res.json().catch(() => null);
@@ -121,10 +129,9 @@ export default function AdminMessages() {
     if (!id) return;
 
     try {
-      const res = await fetch(`${API_BASE}${ENDPOINTS.markRead(id)}`, {
+      const res = await fetch(`${getApiBaseUrl()}${ENDPOINTS.markRead(id)}`, {
         method: "POST",
-        headers: { Accept: "application/json" },
-        credentials: "include",
+        headers: getAuthHeaders({ Accept: "application/json" }),
       });
 
       if (!res.ok) return;
@@ -163,13 +170,12 @@ export default function AdminMessages() {
       setSendErr("");
       setSendOk("");
 
-      const res = await fetch(`${API_BASE}${ENDPOINTS.reply(selected.id)}`, {
+      const res = await fetch(`${getApiBaseUrl()}${ENDPOINTS.reply(selected.id)}`, {
         method: "POST",
-        headers: {
+        headers: getAuthHeaders({
           "Content-Type": "application/json",
           Accept: "application/json",
-        },
-        credentials: "include",
+        }),
         body: JSON.stringify({ reply: text }),
       });
 
@@ -208,10 +214,10 @@ export default function AdminMessages() {
           <div className="min-w-0 flex-1">
 
             <div className="w-full">
-              <h3 className="w-full text-[44px] font-extrabold tracking-tight md:text-[56px]">
+              <h3 className={`w-full ${typeAdminTitle}`}>
                 MESSAGES
               </h3>
-              <div className="mt-2 max-w-2xl text-black/55 dark:text-white/55">
+              <div className={`mt-2 max-w-2xl text-black/55 dark:text-white/55 ${typeBodySm}`}>
                 Messages reçus via le formulaire de contact. Réponds directement
                 depuis cette page.
               </div>
@@ -228,7 +234,7 @@ export default function AdminMessages() {
                 "
               >
                 <div className="flex items-center justify-between gap-4 px-6 py-5">
-                  <div className="text-[16px] font-extrabold">
+                  <div className={typeAdminSection}>
                     Boîte de réception
                   </div>
                   <button
@@ -314,7 +320,7 @@ export default function AdminMessages() {
 
                             <div className="flex shrink-0 flex-col items-end gap-2">
                               <StatusPill status={status} />
-                              <div className="text-[10px] font-semibold text-black/40 dark:text-white/40">
+                              <div className={`text-black/40 dark:text-white/40 ${typeCaption}`}>
                                 {date}
                               </div>
                             </div>
@@ -343,7 +349,7 @@ export default function AdminMessages() {
                     {/* header detail */}
                     <div className="flex flex-wrap items-start justify-between gap-4">
                       <div className="min-w-0">
-                        <div className="text-[18px] font-extrabold tracking-tight">
+                        <div className={typeAdminSection}>
                           {selected.subject || "Sans sujet"}
                         </div>
 

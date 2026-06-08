@@ -14,7 +14,6 @@ function PartnerUpdate({ partner, onClose, onUpdated }) {
         url: ""
     })
 
-    const [message, setMessage] = useState("");
     const [loading, setLoading] = useState(false);
 
     useEffect(() => {
@@ -40,7 +39,6 @@ function PartnerUpdate({ partner, onClose, onUpdated }) {
             // console.log("try dans la fonction handleUpdate OK");
             
             setLoading(true);
-            setMessage("");
 
             const payload = {
                 name: values.name,
@@ -48,10 +46,9 @@ function PartnerUpdate({ partner, onClose, onUpdated }) {
                 file: values.file,
             };
 
-            const res = await updatePartnerApi(partner.id, payload);
+            await updatePartnerApi(partner.id, payload);
             // console.log(res);
 
-            setMessage("Mis à jour !")
             
             if (onUpdated) {
                 onUpdated();
@@ -60,7 +57,6 @@ function PartnerUpdate({ partner, onClose, onUpdated }) {
         } catch (error) {
 
             console.error("erreur:", error);
-            setMessage("Erreur lors de la mise à jour");
 
         } finally {
 

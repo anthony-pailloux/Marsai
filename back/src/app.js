@@ -2,6 +2,7 @@
 import express from "express";
 import morgan from "morgan";
 import cors from "cors";
+import helmet from "helmet";
 import path from "path";
 import { fileURLToPath } from "url";
 import router from "./routes/index.js";
@@ -37,12 +38,16 @@ app.options(/.*/, cors({ origin: FRONT_ORIGIN, credentials: true }));
 // --------------------
 // Middlewares globaux
 // --------------------
+app.use(helmet({ crossOriginResourcePolicy: { policy: "cross-origin" } }));
 app.use(express.json());
 app.use(morgan("dev"));
 
-// Route test serveur
 app.get("/", (req, res) => {
   res.json({ message: "the site is running" });
+});
+
+app.get("/api/health", (req, res) => {
+  res.json({ status: "ok", timestamp: new Date().toISOString() });
 });
 
 // Routes API principales
