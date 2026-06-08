@@ -1,7 +1,7 @@
-﻿import AdminSelect from "./AdminSelect.jsx";
-import useRegisterForm from "../../hooks/useRegisterForm.js";
+﻿import useRegisterForm from "../../hooks/useRegisterForm.js";
 import { getRegisterFormStyles } from "../../utils/registerFormStyles.js";
 import { typeAdminSection, typeBodySm, typeEyebrow } from "../../utils/typography.js";
+import RegisterFormFields from "./RegisterFormFields.jsx";
 
 function RegisterForm({
   role = "admin",
@@ -62,112 +62,26 @@ function RegisterForm({
         )}
       </div>
 
-      <div className={isDashboard ? "grid sm:grid-cols-2 gap-4" : "w-full flex gap-4"}>
-        <div className={isDashboard ? "" : "flex-1 flex flex-col gap-1"}>
-          <label className={labelClass}>
-            {isDashboard ? "Prénom *" : "Firstname *"}
-          </label>
-          <input
-            type="text"
-            value={firstName}
-            onChange={(e) => setFirstName(e.target.value)}
-            placeholder="John"
-            className={inputClass}
-          />
-        </div>
-        <div className={isDashboard ? "" : "flex-1 flex flex-col gap-1"}>
-          <label className={labelClass}>
-            {isDashboard ? "Nom *" : "Lastname *"}
-          </label>
-          <input
-            type="text"
-            value={lastName}
-            onChange={(e) => setLastName(e.target.value)}
-            placeholder="Doe"
-            className={inputClass}
-          />
-        </div>
-      </div>
-
-      {!isInviteMode && (
-        <div className={isDashboard ? "" : "w-full flex flex-col gap-1"}>
-          <label className={labelClass}>
-            {isDashboard ? "E-mail *" : "E-mail address *"}
-          </label>
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="mon@exemple.com"
-            className={inputClass}
-          />
-        </div>
-      )}
-
-      {selectableRole && !isInviteMode && (
-        <div className={isDashboard ? "" : "w-full flex flex-col gap-1"}>
-          <label className={labelClass}>
-            {isDashboard ? "Choix rôle *" : "Role choice *"}
-          </label>
-          {isDashboard ? (
-            <AdminSelect
-              value={selectedRole}
-              onChange={setSelectedRole}
-              placeholder="Choix rôle"
-              options={[
-                { value: "admin", label: "Administrateur" },
-                { value: "selector", label: "Sélectionneur" },
-              ]}
-            />
-          ) : (
-            <select
-              value={selectedRole}
-              onChange={(e) => setSelectedRole(e.target.value)}
-              className={selectClass}
-            >
-              <option
-                value="admin"
-                className="bg-white text-black dark:bg-black dark:text-white"
-              >
-                Administrateur
-              </option>
-              <option
-                value="selector"
-                className="bg-white text-black dark:bg-black dark:text-white"
-              >
-                Sélectionneur
-              </option>
-            </select>
-          )}
-        </div>
-      )}
-
-      <div className={isDashboard ? "grid sm:grid-cols-2 gap-4" : "w-full flex gap-4"}>
-        <div className={isDashboard ? "" : "flex-1 flex flex-col gap-1"}>
-          <label className={labelClass}>
-            {isDashboard ? "Mot de passe *" : "Mot de passe *"}
-          </label>
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="••••••"
-            className={inputClass}
-          />
-        </div>
-        <div className={isDashboard ? "" : "flex-1 flex flex-col gap-1"}>
-          <label className={labelClass}>
-            {isDashboard ? "Confirmation *" : "Confirm *"}
-          </label>
-          <input
-            type="password"
-            value={verifyPassword}
-            onChange={(e) => setVerifyPassword(e.target.value)}
-            placeholder="••••••"
-            className={inputClass}
-          />
-        </div>
-      </div>
+      <RegisterFormFields
+        isDashboard={isDashboard}
+        isInviteMode={isInviteMode}
+        selectableRole={selectableRole}
+        labelClass={labelClass}
+        inputClass={inputClass}
+        selectClass={selectClass}
+        firstName={firstName}
+        setFirstName={setFirstName}
+        lastName={lastName}
+        setLastName={setLastName}
+        email={email}
+        setEmail={setEmail}
+        selectedRole={selectedRole}
+        setSelectedRole={setSelectedRole}
+        password={password}
+        setPassword={setPassword}
+        verifyPassword={verifyPassword}
+        setVerifyPassword={setVerifyPassword}
+      />
 
       {error && (
         <p
