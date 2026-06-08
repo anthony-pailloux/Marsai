@@ -1,5 +1,5 @@
-﻿import { Link } from "react-router"
-import { typeCta, typeEyebrow, typeSectionBody, typeSectionTitle } from '../../utils/typography.js';
+import { Link } from "react-router"
+import { typeBodySm, typeCta, typeEyebrow, typeSectionTitle } from '../../utils/typography.js';
 import { useTranslation } from "react-i18next";
 import useCmsContent from "../../hooks/useCmsContent";
 import { isSectionVisible, isVisible } from "../../utils/isVisible";
@@ -12,7 +12,6 @@ import {
     HOME_CARD_ICON_IMG,
     HOME_CARD_TITLE,
     HOME_EYEBROW,
-    HOME_LIST_ITEM,
 } from "./homeCardStyles.js";
 
 function SectionEvent() {
@@ -46,11 +45,11 @@ function SectionEvent() {
     return(
         <>
             {isSectionVisible(content, page, section) && (
-                <section className="flex flex-col items-center gap-8 md:gap-12 px-5 md:px-18.75 md:py-8 self-stretch w-full max-w-7xl mx-auto">
+                <section className="flex flex-col items-center gap-8 md:gap-10 px-5 md:px-18.75 md:py-6 self-stretch w-full max-w-7xl mx-auto">
 
-                    <div className="grid w-full grid-cols-1 items-start gap-6 lg:grid-cols-2 lg:gap-10">
+                    <div className="grid w-full grid-cols-1 items-center gap-6 lg:grid-cols-2 lg:gap-8">
 
-                        <div className="flex flex-col items-start gap-5 md:gap-6">
+                        <div className="flex flex-col items-start gap-4 md:gap-5">
                             <div className={`${HOME_EYEBROW} ${typeEyebrow} text-black dark:text-white`}>
                                 {ctaAgendaIconSrc ? (
                                     <img src={ctaAgendaIconSrc} alt="" className="h-5 w-5 shrink-0 object-contain" />
@@ -63,23 +62,23 @@ function SectionEvent() {
                                     <span className="block">{content?.[page]?.[section]?.title_main}</span>
                                 )}
                                 {isVisible(content, page, section, "title_accent") && (
-                                    <span className="block mt-2 md:mt-3" style={{ color: accentColor }}>
+                                    <span className="block mt-1.5 md:mt-2" style={{ color: accentColor }}>
                                         {content?.[page]?.[section]?.title_accent}
                                     </span>
                                 )}
                             </h2>
                         </div>
 
-                        <div className={`${HOME_CARD} flex flex-col gap-5 p-6 md:p-8`}>
+                        <div className={`${HOME_CARD} flex flex-col gap-4 p-5 md:p-6`}>
                             {visibleListItems.length > 0 && (
-                                <ul className="flex flex-col gap-3">
+                                <ul className="flex flex-col gap-2">
                                     {visibleListItems.map(({ key }, index) => (
                                         <li
                                             key={key}
-                                            className={`flex items-start gap-4 ${HOME_LIST_ITEM}`}
+                                            className="flex items-center gap-3 rounded-xl border border-black/10 bg-black/[0.03] px-3.5 py-2 dark:border-white/10 dark:bg-white/[0.03]"
                                         >
                                             <span
-                                                className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-sm font-bold"
+                                                className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-xs font-bold"
                                                 style={{
                                                     backgroundColor: `${accentColor}33`,
                                                     color: accentColor,
@@ -87,7 +86,7 @@ function SectionEvent() {
                                             >
                                                 {index + 1}
                                             </span>
-                                            <p className={`pt-0.5 text-black dark:text-white ${typeSectionBody}`}>
+                                            <p className={`leading-snug text-black dark:text-white ${typeBodySm}`}>
                                                 {content?.[page]?.[section]?.[key]}
                                             </p>
                                         </li>
@@ -98,7 +97,7 @@ function SectionEvent() {
                             {isVisible(content, page, section, "ctaAgenda") && (
                                 <Link
                                     to={content?.[page]?.[section]?.ctaAgenda_link || "/events"}
-                                    className="inline-flex w-fit items-center gap-2.5 rounded-full border border-black/10 bg-black/5 px-5 py-2.5 transition-colors hover:bg-black/10 dark:border-white/10 dark:bg-white/5 dark:hover:bg-white/10"
+                                    className="inline-flex w-fit items-center gap-2 rounded-full border border-black/10 bg-black/5 px-4 py-2 transition-colors hover:bg-black/10 dark:border-white/10 dark:bg-white/5 dark:hover:bg-white/10"
                                 >
                                     {ctaAgendaIconSrc ? (
                                         <img src={ctaAgendaIconSrc} alt="" className="h-4 w-4 shrink-0 object-contain" />
