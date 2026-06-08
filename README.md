@@ -105,6 +105,7 @@ Application : http://localhost:5173 — API : http://localhost:3000
 🧪 Tests rapides (avant push)
 
 ```bash
+cd back && npm run seed:users && npm run smoke:test
 cd back && npm run test:film-validation && npm run test:shared-validation
 cd ../front && npm run build
 ```

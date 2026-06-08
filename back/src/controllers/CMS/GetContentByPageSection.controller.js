@@ -12,11 +12,7 @@ async function GetContentByPageSection(req, res, next) {
         
         
 
-        const result = await getCmsByPageSection({
-            page,
-            section,
-            locale
-        });
+        const result = await getCmsByPageSection(page, section, locale);
 
         return res.status(200).json({
             success: true,
