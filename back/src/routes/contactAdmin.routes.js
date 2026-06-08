@@ -1,74 +1,14 @@
 import { Router } from "express";
-import nodemailer from "nodemailer";
 import { pool } from "../db/index.js";
+import { verifyToken, isAdmin } from "../utils/isAdmin.js";
+import {
+  isSmtpConfigured,
+  sendContactReplyEmail,
+} from "../services/contactReplyEmail.service.js";
 
 const router = Router();
 
-const transporter = nodemailer.createTransport({
-  host: process.env.MAIL_HOST,
-  port: Number(process.env.MAIL_PORT || 2525),
-  secure: false, // false pour 2525/587 ; true uniquement pour 465
-  auth: {
-    user: process.env.MAIL_USER,
-    pass: process.env.MAIL_PASS,
-  },
-});
-
-// Optionnel mais utile : vérifier SMTP au démarrage
-transporter
-  .verify()
-  .then(() => console.log(" SMTP OK (Mailtrap prêt)"))
-  .catch((err) => console.error(" SMTP KO:", err?.message || err));
-
-function escapeHtml(str) {
-  return String(str || "")
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;")
-    .replaceAll("'", "&#039;");
-}
-
-async function sendReplyEmail({ to, subject, originalMessage, reply }) {
-  const from = process.env.MAIL_FROM || "MarsAI <no-reply@marsai.local>";
-
-  const text = `Bonjour,
-
-Nous avons bien reçu ton message :
-"${originalMessage}"
-
-Réponse de l'équipe MarsAI :
-"${reply}"
-
-— MarsAI
-`;
-
-  const html = `
-    <div style="font-family:Arial,sans-serif;line-height:1.5">
-      <p>Bonjour,</p>
-
-      <p><strong>Nous avons bien reçu ton message :</strong></p>
-      <blockquote style="margin:12px 0;padding:10px 12px;border-left:4px solid #ddd;background:#fafafa">
-        ${escapeHtml(originalMessage)}
-      </blockquote>
-
-      <p><strong>Réponse de l'équipe MarsAI :</strong></p>
-      <blockquote style="margin:12px 0;padding:10px 12px;border-left:4px solid #ddd;background:#fafafa">
-        ${escapeHtml(reply)}
-      </blockquote>
-
-      <p>— MarsAI</p>
-    </div>
-  `;
-
-  await transporter.sendMail({
-    from,
-    to,
-    subject: `[MarsAI] Re: ${subject}`,
-    text,
-    html,
-  });
-}
+router.use(verifyToken, isAdmin);
 
 // GET /api/contact/admin/messages
 router.get("/messages", async (req, res) => {
@@ -138,7 +78,6 @@ router.post("/messages/:id/reply", async (req, res) => {
       return res.status(400).json({ error: "replied_by invalide" });
     }
 
-    // 1) récupérer le message original
     const [rows] = await pool.query(
       `SELECT id, email, subject, message
        FROM contact_messages
@@ -151,7 +90,6 @@ router.post("/messages/:id/reply", async (req, res) => {
       return res.status(404).json({ error: "Message introuvable" });
     }
 
-    // 2) update DB
     await pool.query(
       `UPDATE contact_messages
        SET reply = ?,
@@ -163,14 +101,8 @@ router.post("/messages/:id/reply", async (req, res) => {
       [reply, repliedBy, id],
     );
 
-    // 3) envoi email (Mailtrap -> visible dans Inbox Mailtrap)
-    // Si tu n'as pas de config mail, on ne bloque pas.
-    if (
-      process.env.MAIL_HOST &&
-      process.env.MAIL_USER &&
-      process.env.MAIL_PASS
-    ) {
-      await sendReplyEmail({
+    if (isSmtpConfigured()) {
+      await sendContactReplyEmail({
         to: m.email,
         subject: m.subject,
         originalMessage: m.message,
