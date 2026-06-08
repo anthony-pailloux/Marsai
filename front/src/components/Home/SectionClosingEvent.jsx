@@ -105,7 +105,7 @@ function SectionClosingEvent() {
 
                         {isVisible(content, page, section, "card_ctaBooking") && (
 
-                            <Link to={ content?.[page]?.[section]?.card_ctaBooking_link } className={`inline-flex items-center justify-center rounded-2xl bg-[#CBCBCB] py-5 px-[49.5px] dark:bg-[#FFFFFF] dark:text-black ${typeCta}`}>
+                            <Link to={ content?.[page]?.[section]?.card_ctaBooking_link } className={`inline-flex items-center justify-center rounded-xl bg-[#CBCBCB] py-5 px-[49.5px] dark:bg-[#FFFFFF] dark:text-black ${typeCta}`}>
                                 {content?.[page]?.[section]?.card_ctaBooking || t("closingEvent.card.ctaBooking")}
                             </Link>
 

@@ -3,7 +3,7 @@ import { typeCardBody, typeCardTitle } from "../../utils/typography.js";
 
 /** Carte standard */
 export const HOME_CARD =
-  "rounded-[40px] border border-black/10 bg-black/[0.05] dark:border-white/10 dark:bg-white/5";
+  "rounded-2xl border border-black/10 bg-black/[0.05] dark:border-white/10 dark:bg-white/5";
 
 /** Pill eyebrow / label de section */
 export const HOME_EYEBROW =
@@ -14,14 +14,14 @@ export const HOME_CARD_BODY = `${HOME_CARD} p-8 md:p-10 flex flex-col gap-4`;
 export const HOME_CARD_COMPACT = `${HOME_CARD} p-5 md:p-6 flex flex-col gap-3`;
 
 /** Item de liste (programme, timeline…) */
-export const HOME_LIST_ITEM = `${HOME_CARD} rounded-[24px] p-4 md:p-5`;
+export const HOME_LIST_ITEM = `${HOME_CARD} rounded-xl p-4 md:p-5`;
 
 /** Etat vide */
 export const HOME_CARD_DASHED =
-  "rounded-[24px] border border-dashed border-black/15 bg-black/[0.05] dark:border-white/15 dark:bg-white/5";
+  "rounded-xl border border-dashed border-black/15 bg-black/[0.05] dark:border-white/15 dark:bg-white/5";
 
 export const HOME_CARD_ICON =
-  "flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-black/[0.04] dark:bg-white/10";
+  "flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-black/[0.04] dark:bg-white/10";
 
 export const HOME_CARD_ICON_IMG = "h-7 w-7 object-contain";
 
