@@ -6,4 +6,4 @@ export {
   passwordResetTokenSchema,
   createUserSnakeSchema,
   createUserJurySchema,
-} from "../../../shared/validation/userValidationSchema.js";
+} from "../../../../../shared/validation/userValidationSchema.js";
