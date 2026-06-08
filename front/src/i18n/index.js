@@ -23,6 +23,7 @@ const namespaces = [
   "zodErrors",
   "contact",
   "partners",
+  "participation",
 ];
 
 i18n
