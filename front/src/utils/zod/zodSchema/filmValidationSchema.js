@@ -2,4 +2,4 @@
 export {
   createFilmSchema,
   uploadFilmFilesSchema,
-} from "../../../shared/validation/filmValidationSchema.js";
+} from "../../../../../shared/validation/filmValidationSchema.js";

@@ -1,4 +1,15 @@
-/** Règles de validation du formulaire d'upload vidéo (étape 2 → 3 et envoi final). */
+/**
+ * Validation du formulaire d'upload vidéo.
+ * Les règles Zod complètes vivent dans shared/validation/ (même source que le back).
+ */
+import {
+  createFilmSchema,
+  uploadFilmFilesSchema,
+} from "../../../../utils/zod/zodSchema/filmValidationSchema.js";
+import {
+  buildCreateFilmPayload,
+  buildUploadFilesPayload,
+} from "../../../../../../shared/validation/filmValidationHelpers.js";
 
 export function readOwnershipFromStorage() {
   try {
@@ -8,7 +19,32 @@ export function readOwnershipFromStorage() {
   }
 }
 
-/** Champs texte + fichiers requis pour passer à l'étape 3. */
+/** Validation Zod alignée sur le backend (formulaire + fichiers). */
+export function validateFilmUpload({ form, files, tags = [], contributors = [] }) {
+  const formResult = createFilmSchema.safeParse(
+    buildCreateFilmPayload(form, { tags, contributors }),
+  );
+
+  if (!formResult.success) {
+    return {
+      ok: false,
+      message: formResult.error.issues[0]?.message || "Validation error",
+    };
+  }
+
+  const filesResult = uploadFilmFilesSchema.safeParse(buildUploadFilesPayload(files));
+
+  if (!filesResult.success) {
+    return {
+      ok: false,
+      message: filesResult.error.issues[0]?.message || "File validation error",
+    };
+  }
+
+  return { ok: true };
+}
+
+/** Champs texte + fichiers requis pour passer à l'étape 3 (contrôle rapide UX). */
 export function canProceedToStep3(form, files) {
   const durationNum = Number(form.duration);
 

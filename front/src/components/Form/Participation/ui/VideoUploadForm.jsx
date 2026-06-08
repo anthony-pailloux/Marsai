@@ -8,7 +8,9 @@ import {
   canProceedToStep3,
   canSubmitUpload,
   readOwnershipFromStorage,
+  validateFilmUpload,
 } from "./videoUploadValidation.js";
+import { toBackendBirthday } from "../../../../../../shared/validation/filmValidationHelpers.js";
 
 import { getApiUrl } from "../../../../utils/apiBase.js";
 import { typeAdminSection } from "../../../../utils/typography.js";
@@ -231,21 +233,35 @@ export default function VideoUploadForm({ formRef, onCanProceedChange }) {
     setUploading(true);
 
     try {
-      const fd = new FormData();
-
-      Object.entries(form).forEach(([k, v]) => {
-        if (v !== "" && v !== null && v !== undefined) fd.append(k, v);
-      });
-
       const safeTags = Array.isArray(tags) ? tags : [];
-      localStorage.setItem("video_tags", JSON.stringify(safeTags));
-      fd.append("tags", JSON.stringify(safeTags));
 
       let contributors = [];
       try {
         const saved = JSON.parse(localStorage.getItem("contributors") || "[]");
         contributors = Array.isArray(saved) ? saved : [];
       } catch { /* ignore parse errors */ }
+
+      const zodCheck = validateFilmUpload({
+        form,
+        files,
+        tags: safeTags,
+        contributors,
+      });
+
+      if (!zodCheck.ok) {
+        throw new Error(zodCheck.message);
+      }
+
+      const fd = new FormData();
+
+      Object.entries(form).forEach(([k, v]) => {
+        if (v === "" || v === null || v === undefined) return;
+        const value = k === "birthday" ? toBackendBirthday(v) : v;
+        fd.append(k, value);
+      });
+
+      localStorage.setItem("video_tags", JSON.stringify(safeTags));
+      fd.append("tags", JSON.stringify(safeTags));
 
       fd.append("contributors", JSON.stringify(contributors));
       fd.append(
