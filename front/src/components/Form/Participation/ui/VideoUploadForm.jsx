@@ -3,40 +3,15 @@ import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Field, TextInput, TextArea, Select } from "./Field";
 import TagInput from "./TagInput";
+import ModalShell from "./ModalShell.jsx";
+import {
+  canProceedToStep3,
+  canSubmitUpload,
+  readOwnershipFromStorage,
+} from "./videoUploadValidation.js";
 
 import { getApiUrl } from "../../../../utils/apiBase.js";
-import { typeAdminSection, typeBadge, typeEyebrow } from "../../../../utils/typography.js";
-
-function ModalShell({ open, title, children, onClose, closeAriaLabel }) {
-  const { t } = useTranslation("participation");
-  if (!open) return null;
-
-  return (
-    <div className="fixed inset-0 z-[99999]">
-      <button
-        type="button"
-        className="absolute inset-0 bg-black/60"
-        onClick={onClose}
-        aria-label={closeAriaLabel || t("countryPicker.closeAria")}
-      />
-      <div className="absolute left-1/2 top-1/2 w-[min(92vw,560px)] -translate-x-1/2 -translate-y-1/2 overflow-hidden rounded-3xl bg-white shadow-xl ring-1 ring-black/10">
-        <div className="flex items-center justify-between gap-3 border-b border-neutral-200 px-6 py-4">
-          <div className={`text-neutral-900 ${typeEyebrow}`}>
-            {title}
-          </div>
-          <button
-            type="button"
-            onClick={onClose}
-            className={`rounded-xl bg-neutral-900 px-4 py-2 text-white ${typeBadge}`}
-          >
-            {t("countryPicker.close")}
-          </button>
-        </div>
-        <div className="p-6">{children}</div>
-      </div>
-    </div>
-  );
-}
+import { typeAdminSection } from "../../../../utils/typography.js";
 
 export default function VideoUploadForm({ formRef, onCanProceedChange }) {
   const { t, i18n } = useTranslation("participation");
@@ -203,60 +178,10 @@ export default function VideoUploadForm({ formRef, onCanProceedChange }) {
     });
   }
 
-  function getFreshOwnership() {
-    try {
-      return JSON.parse(localStorage.getItem("ownership") || "{}");
-    } catch {
-      return {};
-    }
-  }
-
-  //  step 2 uniquement (pour autoriser Step2 -> Step3)
-  function computeCanProceedStep3() {
-    const durationNum = Number(form.duration);
-
-    return (
-      form.title.trim() &&
-      form.title_en.trim() &&
-      form.synopsis.trim() &&
-      form.synopsis_en.trim() &&
-      form.language.trim() &&
-      form.country.trim() &&
-      Number.isFinite(durationNum) &&
-      durationNum > 0 &&
-      form.tech_resume.trim() &&
-      form.ai_tech.trim() &&
-      form.creative_resume.trim() &&
-      form.email.trim() &&
-      form.director_name.trim() &&
-      form.director_lastname.trim() &&
-      (form.director_gender === "Mr" || form.director_gender === "Mrs") &&
-      form.birthday.trim() &&
-      form.address.trim() &&
-      form.director_country.trim() &&
-      form.discovery_source.trim() &&
-      form.mobile_number.trim() &&
-      files.video &&
-      files.cover &&
-      files.stills[0] &&
-      files.subtitles.length > 0
-    );
-  }
-
-  //  Informe le parent pour activer/désactiver le bouton "SUIVANT →"
+  // Informe le parent pour activer/désactiver le bouton "SUIVANT →"
   useEffect(() => {
-    onCanProceedChange?.(!!computeCanProceedStep3());
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [form, files, tags, onCanProceedChange]);
-
-  //  calcule canSubmit (final) avec ownership fresh à chaque render
-  function computeCanSubmit(ownershipObj) {
-    const termsOk = !!ownershipObj?.termsAccepted;
-    const ageOk = !!ownershipObj?.ageConfirmed;
-    const robotOk = !!ownershipObj?.recaptchaToken;
-
-    return computeCanProceedStep3() && termsOk && ageOk && robotOk;
-  }
+    onCanProceedChange?.(canProceedToStep3(form, files));
+  }, [form, files, onCanProceedChange]);
 
 
   //  expose API au parent (step 3)
@@ -268,7 +193,7 @@ export default function VideoUploadForm({ formRef, onCanProceedChange }) {
         if (uploading) return;
         if (submitRequestedRef.current) return;
 
-        const okNow = computeCanSubmit(getFreshOwnership());
+        const okNow = canSubmitUpload(form, files, readOwnershipFromStorage());
         if (!okNow) {
           setErrorMsg(t("upload.missingValidations"));
           return;
@@ -293,8 +218,8 @@ export default function VideoUploadForm({ formRef, onCanProceedChange }) {
   async function doUpload() {
     if (uploading) return;
 
-    const ownershipFresh = getFreshOwnership();
-    const canSubmitNow = computeCanSubmit(ownershipFresh);
+    const ownershipFresh = readOwnershipFromStorage();
+    const canSubmitNow = canSubmitUpload(form, files, ownershipFresh);
 
     if (!canSubmitNow) {
       setErrorMsg(t("upload.missingValidations"));
@@ -376,7 +301,7 @@ export default function VideoUploadForm({ formRef, onCanProceedChange }) {
 
     if (submitRequestedRef.current) return;
 
-    const okNow = computeCanSubmit(getFreshOwnership());
+    const okNow = canSubmitUpload(form, files, readOwnershipFromStorage());
     if (!okNow) {
       setErrorMsg(t("upload.missingValidations"));
       return;
