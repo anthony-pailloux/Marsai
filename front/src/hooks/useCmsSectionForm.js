@@ -28,6 +28,7 @@ export default function useCmsSectionForm({
     forcedLocale ?? (i18n.language?.startsWith("fr") ? "fr" : "en");
 
   const { values, setValues, handleChange } = useForm(defaultValues);
+  const toastScope = `cms:${page}:${section}`;
   const [submitLoading, setSubmitLoading] = useState(false);
   const [hasHydrated, setHasHydrated] = useState(false);
   const { content, loading: cmsLoading } = useCmsContent(page, locale);
@@ -75,15 +76,15 @@ export default function useCmsSectionForm({
       try {
         const save = saveFn ?? saveCmsSection;
         await save({ page, section, locale, fields, values });
-        toast.success(successMessage);
+        toast.success(successMessage, { scope: toastScope });
       } catch (error) {
         console.error("erreur:", error);
-        toast.error(errorMessage);
+        toast.error(errorMessage, { scope: toastScope });
       } finally {
         setSubmitLoading(false);
       }
     },
-    [page, section, locale, fields, values, successMessage, errorMessage, saveFn],
+    [page, section, locale, fields, values, successMessage, errorMessage, saveFn, toastScope],
   );
 
   return {
@@ -96,6 +97,7 @@ export default function useCmsSectionForm({
     content,
     cmsLoading,
     submitLoading,
+    toastScope,
     handleSubmit,
   };
 }

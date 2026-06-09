@@ -8,7 +8,10 @@ import {
 import { getAuthHeaders } from "../../utils/authHeaders.js";
 import { typeAdminSection } from "../../utils/typography.js";
 import { getApiUrl } from "../../utils/apiBase.js";
+import ActionToastZone from "../ui/ActionToastZone.jsx";
 import { toast } from "../../utils/toast.js";
+
+const ASSIGN_TOAST_SCOPE = "selector-assignment";
 
 export default function SelectorAssignmentPanel() {
   const [assignments, setAssignments] = useState([]);
@@ -50,12 +53,12 @@ export default function SelectorAssignmentPanel() {
     if (!selectorId || !videoId) return;
     try {
       await createAssignment(Number(selectorId), Number(videoId));
-      toast.success("Film assigné");
+      toast.success("Film assigné", { scope: ASSIGN_TOAST_SCOPE });
       setSelectorId("");
       setVideoId("");
       await load();
     } catch (err) {
-      toast.error(err?.message || "Erreur");
+      toast.error(err?.message || "Erreur", { scope: ASSIGN_TOAST_SCOPE });
     }
   }
 
@@ -76,7 +79,9 @@ export default function SelectorAssignmentPanel() {
         Chaque sélecteur ne voit que les films qui lui sont assignés.
       </p>
 
-      <form onSubmit={onAssign} className="mt-6 flex flex-wrap gap-3">
+      <form onSubmit={onAssign} className="mt-6 flex flex-col gap-3">
+        <ActionToastZone scope={ASSIGN_TOAST_SCOPE} placement="above" />
+        <div className="flex flex-wrap gap-3">
         <select
           value={selectorId}
           onChange={(e) => setSelectorId(e.target.value)}
@@ -109,6 +114,7 @@ export default function SelectorAssignmentPanel() {
         >
           Assigner
         </button>
+        </div>
       </form>
 
       <div className="mt-6 space-y-2">

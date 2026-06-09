@@ -2,7 +2,10 @@
 import { inviteUser } from "../../services/Admin/Users.api.js";
 import AdminSelect from "./AdminSelect.jsx";
 import { typeBodySm } from "../../utils/typography.js";
+import ActionToastZone from "../ui/ActionToastZone.jsx";
 import { toast } from "../../utils/toast.js";
+
+const TOAST_SCOPE = "invite-user";
 
 export default function InviteForm({ onSuccess, onCancel }) {
   const [email, setEmail] = useState("");
@@ -14,11 +17,11 @@ export default function InviteForm({ onSuccess, onCancel }) {
 
     const cleanEmail = email.trim();
     if (!cleanEmail) {
-      toast.error("Email requis");
+      toast.error("Email requis", { scope: TOAST_SCOPE });
       return;
     }
     if (!role) {
-      toast.error("Veuillez choisir un rôle");
+      toast.error("Veuillez choisir un rôle", { scope: TOAST_SCOPE });
       return;
     }
 
@@ -26,12 +29,12 @@ export default function InviteForm({ onSuccess, onCancel }) {
     try {
       const result = await inviteUser(cleanEmail, role);
       const msg = result?.message || "Invitation envoyée";
-      toast.success(msg);
+      toast.success(msg, { scope: TOAST_SCOPE });
       setEmail("");
       setRole("");
       if (onSuccess) onSuccess();
     } catch (err) {
-      toast.error(err?.message || "Erreur lors de l'envoi");
+      toast.error(err?.message || "Erreur lors de l'envoi", { scope: TOAST_SCOPE });
     } finally {
       setLoading(false);
     }
@@ -71,7 +74,9 @@ export default function InviteForm({ onSuccess, onCancel }) {
         />
       </div>
 
-      <div className="w-full flex gap-3">
+      <div className="flex w-full flex-col items-center gap-3">
+        <ActionToastZone scope={TOAST_SCOPE} placement="above" />
+        <div className="flex w-full gap-3">
         {onCancel && (
           <button
             type="button"
@@ -88,6 +93,7 @@ export default function InviteForm({ onSuccess, onCancel }) {
         >
           {loading ? "Envoi..." : "Envoyer invitation"}
         </button>
+        </div>
       </div>
     </form>
   );

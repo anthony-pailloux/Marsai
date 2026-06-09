@@ -30,6 +30,7 @@ function GalleryFilmsListForm({ forcedLocale }) {
     values,
     handleChange,
     submitLoading,
+    toastScope,
     handleSubmit,
   } = useCmsSectionForm({
     page: PAGE,
@@ -56,6 +57,7 @@ function GalleryFilmsListForm({ forcedLocale }) {
                 </CmsBlock>
 
                 <CmsSubmitFooter
+                  toastScope={toastScope}
                   submitLoading={submitLoading}
                 />
             </form>

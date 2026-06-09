@@ -59,6 +59,7 @@ function SectionGoalForm({ forcedLocale }) {
     values,
     handleChange,
     submitLoading,
+    toastScope,
     handleSubmit,
   } = useCmsSectionForm({
     page: PAGE,
@@ -145,6 +146,7 @@ function SectionGoalForm({ forcedLocale }) {
                 </div>
 
                 <CmsSubmitFooter
+                  toastScope={toastScope}
                   submitLoading={submitLoading}
                   btnClassName="flex w-[200px] h-[53px] items-center justify-center gap-[13px] px-[21px] py-[10px] rounded-[5px] border border-[#DBE3E6] bg-white dark:border-[rgba(0,0,0,0.11)] dark:bg-[#333]"
                 />

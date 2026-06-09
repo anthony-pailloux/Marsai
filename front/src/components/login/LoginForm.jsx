@@ -6,7 +6,10 @@ import { typeAdminSection, typeBodySm } from "../../utils/typography.js";
 import Button from "../ui/Button.jsx";
 import Field from "../ui/Field.jsx";
 import { Input } from "../ui/Input.jsx";
+import ActionToastZone from "../ui/ActionToastZone.jsx";
 import { toast } from "../../utils/toast.js";
+
+const TOAST_SCOPE = "login";
 
 /* ========================
    Page de connexion admin
@@ -36,7 +39,7 @@ function LoginForm() {
     }
 
     if (!email.trim() || !password.trim()) {
-      toast.error("Veuillez remplir tous les champs.");
+      toast.error("Veuillez remplir tous les champs.", { scope: TOAST_SCOPE });
       return;
     }
 
@@ -50,7 +53,7 @@ function LoginForm() {
       }
 
       localStorage.setItem("token", result.token);
-      toast.success("Connexion réussie");
+      toast.success("Connexion réussie", { scope: TOAST_SCOPE });
 
       const user = decodeToken();
       const target = user?.role === "selector" ? "/selector/videos" : "/admin";
@@ -61,7 +64,7 @@ function LoginForm() {
       }, 500);
     } catch (err) {
       if (!isMountedRef.current) return;
-      toast.error(err?.message || "Échec de la connexion.");
+      toast.error(err?.message || "Échec de la connexion.", { scope: TOAST_SCOPE });
     } finally {
       setLoading(false);
     }
@@ -112,14 +115,17 @@ function LoginForm() {
               />
             </Field>
 
-            <Button
-              type="submit"
-              variant="primary"
-              loading={loading}
-              className="h-12 w-full rounded-md"
-            >
-              Se connecter
-            </Button>
+            <div className="flex w-full flex-col items-center">
+              <ActionToastZone scope={TOAST_SCOPE} placement="above" />
+              <Button
+                type="submit"
+                variant="primary"
+                loading={loading}
+                className="h-12 w-full rounded-md"
+              >
+                Se connecter
+              </Button>
+            </div>
 
             <p className="text-center text-sm">
               <Link

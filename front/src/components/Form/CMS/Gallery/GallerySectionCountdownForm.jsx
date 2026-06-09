@@ -63,6 +63,7 @@ function GallerySectionCountdownForm({ forcedLocale }) {
     values,
     handleChange,
     submitLoading,
+    toastScope,
     handleSubmit,
   } = useCmsSectionForm({
     page: PAGE,
@@ -136,6 +137,7 @@ function GallerySectionCountdownForm({ forcedLocale }) {
                 </div>
 
                 <CmsSubmitFooter
+                  toastScope={toastScope}
                   submitLoading={submitLoading}
                   btnClassName="flex w-50 h-13.25 items-center justify-center gap-3.25 px-5.25 py-2.5 rounded-[5px] border border-[#DBE3E6] bg-white dark:border-[rgba(0,0,0,0.11)] dark:bg-[#333]"
                 />

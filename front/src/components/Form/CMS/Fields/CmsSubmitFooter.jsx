@@ -1,9 +1,11 @@
 import BtnSubmitForm from "../../../Buttons/BtnSubmitForm.jsx";
+import ActionToastZone from "../../../ui/ActionToastZone.jsx";
 
 const DEFAULT_BTN_CLASS =
   "flex h-[53px] items-center justify-center gap-[13px] rounded-[5px] border border-[#DBE3E6] bg-white px-[21px] py-[10px] dark:border-[rgba(0,0,0,0.11)] dark:bg-[#333]";
 
 export default function CmsSubmitFooter({
+  toastScope,
   submitLoading,
   children = "Mettre à jour",
   btnClassName = DEFAULT_BTN_CLASS,
@@ -11,6 +13,7 @@ export default function CmsSubmitFooter({
 }) {
   return (
     <div className={wrapperClassName}>
+      <ActionToastZone scope={toastScope} placement="above" />
       <BtnSubmitForm loading={submitLoading} className={btnClassName}>
         {children}
       </BtnSubmitForm>

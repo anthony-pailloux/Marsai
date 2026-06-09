@@ -4,7 +4,10 @@ import iconImg from "../../../../assets/imgs/icones/iconImg.svg";
 import iconClose from "../../../../assets/imgs/icones/x.svg"
 import { useForm } from "../../../../hooks/useForm.js";
 import InsertPartnerApi from "../../../../services/Partner/InsertPartnerApi.js";
+import ActionToastZone from "../../../ui/ActionToastZone.jsx";
 import { toast } from "../../../../utils/toast.js";
+
+const TOAST_SCOPE = "partner-add";
 
 function PartnerAdd({ onClose, onAdded }) {
 
@@ -29,7 +32,7 @@ function PartnerAdd({ onClose, onAdded }) {
 
             await InsertPartnerApi(formData);
 
-            toast.success("Partenaire ajouté");
+            toast.success("Partenaire ajouté", { scope: TOAST_SCOPE });
 
             if (onAdded) {
                 onAdded();
@@ -37,7 +40,7 @@ function PartnerAdd({ onClose, onAdded }) {
             
         } catch (error) {
             console.error("erreur:", error);
-            toast.error("Impossible d'ajouter le partenaire");
+            toast.error("Impossible d'ajouter le partenaire", { scope: TOAST_SCOPE });
         }
 
     }
@@ -88,7 +91,8 @@ function PartnerAdd({ onClose, onAdded }) {
                     <input type="text" id="url" name="url" value={values.url} onChange={handleChange} placeholder="https://example.com" className="placeholder:uppercase placeholder:text-[rgba(255, 255, 255, 0.70)] placeholder:text-[14px] placeholder:tracking-[2.24px] flex py-3 px-5 items-center self-stretch gap-3 rounded-[5px] border border-[rgba(0,0,0,0.10)] bg-[rgba(0,0,0,0.07)] dark:border-[rgba(255,255,255,0.10)] dark:bg-[rgba(255,255,255,0.07)] backdrop-blur-[2.4px]" />
                 </div>
                 
-                <div className="w-full flex justify-center">
+                <div className="flex w-full flex-col items-center">
+                    <ActionToastZone scope={TOAST_SCOPE} placement="above" />
                     <button type="submit" className="flex w-50 h-13 items-center justify-center gap-3 px-5 py-3 rounded-[5px] border border-[#DBE3E6] bg-white dark:border-[rgba(0,0,0,0.11)] dark:bg-[#333]">
                         Ajouter
                     </button>

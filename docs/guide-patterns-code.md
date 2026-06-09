@@ -151,24 +151,36 @@ La logique métier et le SQL restent dans `services/` et `models/`.
 
 ## 7) Notifications (toasts)
 
-Système global dans `front/src/utils/toast.js` + `ToastHost` (monté dans `App.jsx`).
+Système dans `front/src/utils/toast.js` avec deux niveaux de placement :
+
+- **Formulaires / actions locales** : toast centré **au-dessus ou en dessous du bouton** via `ActionToastZone` + `scope`.
+- **Actions admin dispersées** (tableaux, chargements page) : fallback global **haut-centre** via `ToastHost` (monté dans `App.jsx`).
 
 ```js
 import { toast } from "../utils/toast.js";
+import ActionToastZone from "../components/ui/ActionToastZone.jsx";
 
-toast.success("Enregistré");  // disparaît après 4 s
-toast.error("Erreur");        // disparaît après 6 s
-toast.info("Information");
+const TOAST_SCOPE = "contact";
+
+// Dans le handler
+toast.success("Enregistré", { scope: TOAST_SCOPE });
+toast.error("Erreur", { scope: TOAST_SCOPE });
+
+// Dans le JSX, juste au-dessus du bouton submit
+<ActionToastZone scope={TOAST_SCOPE} placement="above" />
 ```
+
+Sans `scope`, le toast part dans `ToastHost` (global haut-centre — jamais en coin d'écran).
 
 | Zone | Pattern |
 |------|---------|
-| Toute l'app (CMS, admin, auth, contact, newsletter…) | **Toast uniquement** via `toast.success` / `toast.error` |
+| Formulaires (CMS, auth, contact, newsletter…) | `ActionToastZone` + `toast.xxx(..., { scope })` |
+| Admin (listes, suppressions ligne, chargement page) | `toast.xxx()` sans scope → global haut-centre |
 | Erreurs de champ (validation Zod) | Inline sous le champ concerné (ex. `FaqFieldError`) |
-| Flux majeurs (upload film réussi) | Modal dédiée + toast pour les erreurs |
+| Flux majeurs (upload film réussi) | Modal dédiée + toast scopé pour les erreurs |
 | Suppressions | `ConfirmDialog` (pas `window.confirm`) |
 
-Formulaires CMS : utiliser `CmsSubmitFooter` (bouton seul — le hook affiche le toast automatiquement).
+Formulaires CMS : `CmsSubmitFooter` intègre déjà `ActionToastZone` ; `useCmsSectionForm` envoie les toasts avec `scope: cms:${page}:${section}`.
 
 ---
 
