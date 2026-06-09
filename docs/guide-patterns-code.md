@@ -214,7 +214,7 @@ Workflow branches + PR : `docs/guide_GIT_workflow.md`
 
 ---
 
-## 10) Quand refactorer (et quand s'arrêter)
+## 11) Quand refactorer (et quand s'arrêter)
 
 **Refactorer** si :
 
