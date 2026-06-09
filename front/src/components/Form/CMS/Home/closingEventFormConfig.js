@@ -1,0 +1,58 @@
+export const CLOSING_PAGE = "home";
+export const CLOSING_SECTION = "closingEvent";
+
+export const CLOSING_FIELDS = [
+  "section_visibility",
+  "eyebrow",
+  "eyebrow_text_color",
+  "eyebrow_bg_color",
+  "title_main",
+  "title_main_color",
+  "title_accent",
+  "title_accent_color",
+  "description_ligne1",
+  "description_ligne2",
+  "card_icon",
+  "card_date",
+  "card_hour",
+  "card_localisation",
+  "card_ctaBooking",
+  "card_ctaBooking_link",
+];
+
+export const CLOSING_FILE_FIELDS = ["eyebrow_icon", "card_icon"];
+
+export const CLOSING_DEFAULT_VALUES = {
+  section_visibility: "",
+  section_visibility_is_active: 1,
+  eyebrow: "",
+  eyebrow_is_active: 1,
+  eyebrow_text_color: "",
+  eyebrow_text_color_is_active: 1,
+  eyebrow_bg_color: "",
+  eyebrow_bg_color_is_active: 1,
+  title_main: "",
+  title_main_is_active: 1,
+  title_main_color: "",
+  title_main_color_is_active: 1,
+  title_accent: "",
+  title_accent_is_active: 1,
+  title_accent_color: "",
+  title_accent_color_is_active: 1,
+  description_ligne1: "",
+  description_ligne1_is_active: 1,
+  description_ligne2: "",
+  description_ligne2_is_active: 1,
+  card_icon: "",
+  card_icon_is_active: 1,
+  card_date: "",
+  card_date_is_active: 1,
+  card_hour: "",
+  card_hour_is_active: 1,
+  card_localisation: "",
+  card_localisation_is_active: 1,
+  card_ctaBooking: "",
+  card_ctaBooking_is_active: 1,
+  card_ctaBooking_link: "",
+  card_ctaBooking_link_is_active: 1,
+};
