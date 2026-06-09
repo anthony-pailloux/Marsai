@@ -2,7 +2,10 @@ import { useState } from "react";
 import { createBooking } from "../services/Events/EventsApi.js";
 import { inputBaseClasses } from "../utils/formInputClasses.js";
 import { typeAdminSection, typeCaption } from "../utils/typography.js";
+import ActionToastZone from "./ui/ActionToastZone.jsx";
 import { toast } from "../utils/toast.js";
+
+const TOAST_SCOPE = "booking";
 
 export default function BookingModal({ event, onClose, onSuccess }) {
   const [first_name, setFirst_name] = useState("");
@@ -15,11 +18,13 @@ export default function BookingModal({ event, onClose, onSuccess }) {
     setLoading(true);
     try {
       await createBooking(event.id, { first_name, last_name, email });
-      toast.success("Réservation confirmée");
+      toast.success("Réservation confirmée", { scope: TOAST_SCOPE });
       if (onSuccess) onSuccess();
       onClose();
     } catch (err) {
-      toast.error(err.message || "Erreur lors de la réservation");
+      toast.error(err.message || "Erreur lors de la réservation", {
+        scope: TOAST_SCOPE,
+      });
     } finally {
       setLoading(false);
     }
@@ -64,6 +69,8 @@ export default function BookingModal({ event, onClose, onSuccess }) {
               className={inputBaseClasses}
             />
           </div>
+          <ActionToastZone scope={TOAST_SCOPE} placement="above" />
+
           <div className="flex gap-2 pt-2">
             <button
               type="button"

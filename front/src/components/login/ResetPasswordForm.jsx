@@ -5,7 +5,10 @@ import { typeAdminSection, typeBodySm } from "../../utils/typography.js";
 import Button from "../ui/Button.jsx";
 import Field from "../ui/Field.jsx";
 import { Input } from "../ui/Input.jsx";
+import ActionToastZone from "../ui/ActionToastZone.jsx";
 import { toast } from "../../utils/toast.js";
+
+const TOAST_SCOPE = "reset-password";
 
 function ResetPasswordForm() {
   const [searchParams] = useSearchParams();
@@ -20,17 +23,19 @@ function ResetPasswordForm() {
     event.preventDefault();
 
     if (!token) {
-      toast.error("Lien invalide. Demandez un nouveau lien de réinitialisation.");
+      toast.error("Lien invalide. Demandez un nouveau lien de réinitialisation.", {
+        scope: TOAST_SCOPE,
+      });
       return;
     }
 
     if (!password.trim() || !confirmPassword.trim()) {
-      toast.error("Veuillez remplir tous les champs.");
+      toast.error("Veuillez remplir tous les champs.", { scope: TOAST_SCOPE });
       return;
     }
 
     if (password !== confirmPassword) {
-      toast.error("Les mots de passe ne correspondent pas.");
+      toast.error("Les mots de passe ne correspondent pas.", { scope: TOAST_SCOPE });
       return;
     }
 
@@ -38,10 +43,12 @@ function ResetPasswordForm() {
     try {
       const result = await resetPassword(token, password);
       const msg = result?.message || "Mot de passe mis à jour.";
-      toast.success(msg);
+      toast.success(msg, { scope: TOAST_SCOPE });
       setTimeout(() => navigate("/login", { replace: true }), 1200);
     } catch (err) {
-      toast.error(err?.message || "Impossible de réinitialiser le mot de passe.");
+      toast.error(err?.message || "Impossible de réinitialiser le mot de passe.", {
+        scope: TOAST_SCOPE,
+      });
     } finally {
       setLoading(false);
     }
@@ -107,14 +114,17 @@ function ResetPasswordForm() {
               />
             </Field>
 
-            <Button
-              type="submit"
-              variant="primary"
-              loading={loading}
-              className="h-12 w-full rounded-md"
-            >
-              Réinitialiser
-            </Button>
+            <div className="flex w-full flex-col items-center">
+              <ActionToastZone scope={TOAST_SCOPE} placement="above" />
+              <Button
+                type="submit"
+                variant="primary"
+                loading={loading}
+                className="h-12 w-full rounded-md"
+              >
+                Réinitialiser
+              </Button>
+            </div>
           </form>
         </div>
 

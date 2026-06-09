@@ -5,7 +5,10 @@ import { typeAdminSection, typeBodySm } from "../../utils/typography.js";
 import Button from "../ui/Button.jsx";
 import Field from "../ui/Field.jsx";
 import { Input } from "../ui/Input.jsx";
+import ActionToastZone from "../ui/ActionToastZone.jsx";
 import { toast } from "../../utils/toast.js";
+
+const TOAST_SCOPE = "forgot-password";
 
 function ForgotPasswordForm() {
   const [email, setEmail] = useState("");
@@ -15,7 +18,7 @@ function ForgotPasswordForm() {
     event.preventDefault();
 
     if (!email.trim()) {
-      toast.error("Veuillez saisir votre adresse e-mail.");
+      toast.error("Veuillez saisir votre adresse e-mail.", { scope: TOAST_SCOPE });
       return;
     }
 
@@ -25,9 +28,11 @@ function ForgotPasswordForm() {
       const msg =
         result?.message ||
         "Si un compte existe avec cet email, un lien de réinitialisation a été envoyé.";
-      toast.success(msg);
+      toast.success(msg, { scope: TOAST_SCOPE });
     } catch (err) {
-      toast.error(err?.message || "Impossible d'envoyer la demande.");
+      toast.error(err?.message || "Impossible d'envoyer la demande.", {
+        scope: TOAST_SCOPE,
+      });
     } finally {
       setLoading(false);
     }
@@ -64,14 +69,17 @@ function ForgotPasswordForm() {
               />
             </Field>
 
-            <Button
-              type="submit"
-              variant="primary"
-              loading={loading}
-              className="h-12 w-full rounded-md"
-            >
-              Envoyer le lien
-            </Button>
+            <div className="flex w-full flex-col items-center">
+              <ActionToastZone scope={TOAST_SCOPE} placement="above" />
+              <Button
+                type="submit"
+                variant="primary"
+                loading={loading}
+                className="h-12 w-full rounded-md"
+              >
+                Envoyer le lien
+              </Button>
+            </div>
           </form>
         </div>
 

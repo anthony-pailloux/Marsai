@@ -1,40 +1,54 @@
-import { useEffect, useState } from "react";
-import { subscribeToast } from "../../utils/toast.js";
+import { useEffect, useRef, useState } from "react";
+import { subscribeToastScope, TOAST_SCOPE_GLOBAL } from "../../utils/toast.js";
+import ToastNotification from "./ToastNotification.jsx";
 
-const STYLES = {
-  success:
-    "bg-[#1AFF7A]/15 text-[#0f7a3f] ring-[#1AFF7A]/30 dark:text-[#1AFF7A]",
-  error: "bg-[#DC2626]/15 text-[#DC2626] ring-[#DC2626]/30",
-  info: "bg-[#52A3FF]/15 text-[#1d4ed8] ring-[#52A3FF]/30 dark:text-[#93c5fd]",
-};
-
+/**
+ * Toasts globaux : centrés en haut de l'écran.
+ * Pour les actions de formulaire, préférer ActionToastZone près du bouton.
+ */
 export default function ToastHost() {
   const [toasts, setToasts] = useState([]);
+  const timersRef = useRef(new Map());
+
+  function dismiss(id) {
+    const timer = timersRef.current.get(id);
+    if (timer) {
+      window.clearTimeout(timer);
+      timersRef.current.delete(id);
+    }
+    setToasts((prev) => prev.filter((t) => t.id !== id));
+  }
 
   useEffect(() => {
-    return subscribeToast((toast) => {
-      setToasts((prev) => [...prev, toast]);
-      window.setTimeout(() => {
-        setToasts((prev) => prev.filter((t) => t.id !== toast.id));
-      }, toast.duration);
+    return subscribeToastScope(TOAST_SCOPE_GLOBAL, (toast) => {
+      setToasts((prev) => [toast, ...prev].slice(0, 3));
+
+      const timer = window.setTimeout(() => dismiss(toast.id), toast.duration);
+      timersRef.current.set(toast.id, timer);
     });
   }, []);
+
+  useEffect(
+    () => () => {
+      timersRef.current.forEach((timer) => window.clearTimeout(timer));
+      timersRef.current.clear();
+    },
+    [],
+  );
 
   if (toasts.length === 0) return null;
 
   return (
     <div
-      className="pointer-events-none fixed top-4 right-4 z-[9999] flex w-[min(100vw-2rem,24rem)] flex-col gap-2"
+      className="pointer-events-none fixed z-[100000] left-1/2 flex w-[min(100vw-2rem,28rem)] -translate-x-1/2 flex-col items-center gap-2
+        top-[max(1rem,env(safe-area-inset-top))]"
       aria-live="polite"
-      aria-atomic="true"
+      aria-atomic="false"
+      aria-label="Notifications"
     >
       {toasts.map((t) => (
-        <div
-          key={t.id}
-          role="status"
-          className={`rounded-2xl px-4 py-3 text-sm font-semibold shadow-lg ring-1 ${STYLES[t.type] || STYLES.info}`}
-        >
-          {t.message}
+        <div key={t.id} className="pointer-events-auto w-full">
+          <ToastNotification toast={t} onDismiss={dismiss} />
         </div>
       ))}
     </div>

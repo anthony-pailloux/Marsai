@@ -2,7 +2,10 @@ import { useState } from "react";
 
 import { getApiUrl } from "../../../utils/apiBase.js";
 import { typeBodySm } from "../../../utils/typography.js";
+import ActionToastZone from "../../ui/ActionToastZone.jsx";
 import { toast } from "../../../utils/toast.js";
+
+const TOAST_SCOPE = "contact";
 
 export default function ContactForm() {
   const [form, setForm] = useState({
@@ -44,10 +47,10 @@ export default function ContactForm() {
       const data = await r.json();
       if (!r.ok) throw new Error(data?.error || "Erreur envoi message");
 
-      toast.success("Message envoyé");
+      toast.success("Message envoyé", { scope: TOAST_SCOPE });
       setForm({ name: "", surname: "", subject: "", email: "", message: "" });
     } catch (err) {
-      toast.error(err.message || "Erreur");
+      toast.error(err.message || "Erreur", { scope: TOAST_SCOPE });
     } finally {
       setLoading(false);
     }
@@ -116,18 +119,21 @@ export default function ContactForm() {
           />
         </div>
 
-        <button
-          type="submit"
-          disabled={loading}
-          className="
-            mx-auto mt-6 block w-[220px] rounded-md bg-[#3B82F6] py-2.5
-            text-sm font-semibold text-white transition
-            hover:bg-[#2563EB] active:scale-[0.99]
-            disabled:opacity-60
-          "
-        >
-          {loading ? "Envoi..." : "Submit"}
-        </button>
+        <div className="mx-auto mt-6 flex w-full max-w-[220px] flex-col items-center">
+          <ActionToastZone scope={TOAST_SCOPE} placement="above" />
+          <button
+            type="submit"
+            disabled={loading}
+            className="
+              block w-full rounded-md bg-[#3B82F6] py-2.5
+              text-sm font-semibold text-white transition
+              hover:bg-[#2563EB] active:scale-[0.99]
+              disabled:opacity-60
+            "
+          >
+            {loading ? "Envoi..." : "Submit"}
+          </button>
+        </div>
       </form>
     </div>
   );

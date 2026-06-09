@@ -12,6 +12,11 @@ export default function useRegisterForm({
 }) {
   const navigate = useNavigate();
   const isInviteMode = Boolean(inviteToken);
+  const toastScope = isInviteMode
+    ? "register-invite"
+    : selectableRole
+      ? "register-dashboard"
+      : "register";
 
   const [email, setEmail] = useState("");
   const [firstName, setFirstName] = useState("");
@@ -35,7 +40,7 @@ export default function useRegisterForm({
     });
 
     if (validationError) {
-      toast.error(validationError);
+      toast.error(validationError, { scope: toastScope });
       return;
     }
 
@@ -70,10 +75,10 @@ export default function useRegisterForm({
           ? "Compte créé avec succès !"
           : "Compte créé avec succès !";
 
-      toast.success(successMsg);
+      toast.success(successMsg, { scope: toastScope });
       if (onSuccess) onSuccess();
     } catch (err) {
-      toast.error(err.message);
+      toast.error(err.message, { scope: toastScope });
     }
   }
 
@@ -92,5 +97,6 @@ export default function useRegisterForm({
     selectedRole,
     setSelectedRole,
     handleSubmit,
+    toastScope,
   };
 }

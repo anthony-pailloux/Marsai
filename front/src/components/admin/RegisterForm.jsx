@@ -1,6 +1,7 @@
 ﻿import useRegisterForm from "../../hooks/useRegisterForm.js";
 import { getRegisterFormStyles } from "../../utils/registerFormStyles.js";
 import { typeAdminSection, typeBodySm, typeEyebrow } from "../../utils/typography.js";
+import ActionToastZone from "../ui/ActionToastZone.jsx";
 import RegisterFormFields from "./RegisterFormFields.jsx";
 
 function RegisterForm({
@@ -27,6 +28,7 @@ function RegisterForm({
     selectedRole,
     setSelectedRole,
     handleSubmit,
+    toastScope,
   } = useRegisterForm({ role, selectableRole, onSuccess, inviteToken });
 
   const {
@@ -81,7 +83,9 @@ function RegisterForm({
         setVerifyPassword={setVerifyPassword}
       />
 
-      <div className="w-full flex gap-3">
+      <div className="flex w-full flex-col items-center gap-3">
+        <ActionToastZone scope={toastScope} placement="above" />
+        <div className="flex w-full gap-3">
         {onCancel && (
           <button type="button" onClick={onCancel} className={btnCancelClass}>
             Annuler
@@ -90,6 +94,7 @@ function RegisterForm({
         <button type="submit" className={btnSubmitClass}>
           {onCancel ? "Créer" : "Register"}
         </button>
+        </div>
       </div>
     </form>
   );

@@ -15,6 +15,8 @@ import {
 import useNewsletterBlocks from "./useNewsletterBlocks.js";
 import { toast } from "../utils/toast.js";
 
+export const NEWSLETTER_EDITOR_TOAST_SCOPE = "newsletter-editor";
+
 export default function useNewsletterEditor(newsletterId) {
   const [subject, setSubject] = useState("");
   const [title, setTitle] = useState("");
@@ -67,7 +69,7 @@ export default function useNewsletterEditor(newsletterId) {
 
   async function save() {
     if (!subject.trim()) {
-      toast.error("Le subject est requis.");
+      toast.error("Le subject est requis.", { scope: NEWSLETTER_EDITOR_TOAST_SCOPE });
       return;
     }
 
@@ -83,9 +85,9 @@ export default function useNewsletterEditor(newsletterId) {
         status: "draft",
         scheduled_at: null,
       });
-      toast.success("Newsletter sauvegardée");
+      toast.success("Newsletter sauvegardée", { scope: NEWSLETTER_EDITOR_TOAST_SCOPE });
     } catch (e) {
-      toast.error(e?.message || "Erreur");
+      toast.error(e?.message || "Erreur", { scope: NEWSLETTER_EDITOR_TOAST_SCOPE });
     } finally {
       setSaving(false);
     }
@@ -93,21 +95,25 @@ export default function useNewsletterEditor(newsletterId) {
 
   async function sendTest() {
     if (!testTo.trim()) {
-      toast.error("Ajoute un email pour l'envoi test.");
+      toast.error("Ajoute un email pour l'envoi test.", {
+        scope: NEWSLETTER_EDITOR_TOAST_SCOPE,
+      });
       return;
     }
 
     try {
       await sendTestNewsletter(newsletterId, testTo);
-      toast.success("Email de test envoyé");
+      toast.success("Email de test envoyé", { scope: NEWSLETTER_EDITOR_TOAST_SCOPE });
     } catch (e) {
-      toast.error(e?.message || "Erreur");
+      toast.error(e?.message || "Erreur", { scope: NEWSLETTER_EDITOR_TOAST_SCOPE });
     }
   }
 
   async function scheduleNewsletterAction() {
     if (!scheduledAt) {
-      toast.error("Choisis une date/heure pour programmer.");
+      toast.error("Choisis une date/heure pour programmer.", {
+        scope: NEWSLETTER_EDITOR_TOAST_SCOPE,
+      });
       return;
     }
 
@@ -115,10 +121,10 @@ export default function useNewsletterEditor(newsletterId) {
 
     try {
       await scheduleNewsletter(newsletterId, scheduledAt);
-      toast.success("Newsletter programmée");
+      toast.success("Newsletter programmée", { scope: NEWSLETTER_EDITOR_TOAST_SCOPE });
       await load();
     } catch (e) {
-      toast.error(e?.message || "Erreur");
+      toast.error(e?.message || "Erreur", { scope: NEWSLETTER_EDITOR_TOAST_SCOPE });
     } finally {
       setScheduling(false);
     }
@@ -129,11 +135,11 @@ export default function useNewsletterEditor(newsletterId) {
 
     try {
       await cancelScheduleNewsletter(newsletterId);
-      toast.success("Programmation annulée");
+      toast.success("Programmation annulée", { scope: NEWSLETTER_EDITOR_TOAST_SCOPE });
       setScheduledAt("");
       await load();
     } catch (e) {
-      toast.error(e?.message || "Erreur");
+      toast.error(e?.message || "Erreur", { scope: NEWSLETTER_EDITOR_TOAST_SCOPE });
     } finally {
       setScheduling(false);
     }
@@ -144,10 +150,10 @@ export default function useNewsletterEditor(newsletterId) {
 
     try {
       await sendNowNewsletter(newsletterId);
-      toast.success("Envoi terminé");
+      toast.success("Envoi terminé", { scope: NEWSLETTER_EDITOR_TOAST_SCOPE });
       await load();
     } catch (e) {
-      toast.error(e?.message || "Erreur");
+      toast.error(e?.message || "Erreur", { scope: NEWSLETTER_EDITOR_TOAST_SCOPE });
     } finally {
       setSendingAll(false);
     }
@@ -194,5 +200,6 @@ export default function useNewsletterEditor(newsletterId) {
     scheduleNewsletter: scheduleNewsletterAction,
     cancelSchedule,
     sendNowToAll,
+    toastScope: NEWSLETTER_EDITOR_TOAST_SCOPE,
   };
 }

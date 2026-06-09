@@ -20,6 +20,8 @@ import { submitVideoUpload } from "../components/Form/Participation/ui/videoUplo
 import useVideoUploadCountries from "./useVideoUploadCountries.js";
 import { toast } from "../utils/toast.js";
 
+export const VIDEO_UPLOAD_TOAST_SCOPE = "video-upload";
+
 export default function useVideoUploadForm({ formRef, onCanProceedChange }) {
   const { t, i18n } = useTranslation("participation");
   const navigate = useNavigate();
@@ -70,7 +72,9 @@ export default function useVideoUploadForm({ formRef, onCanProceedChange }) {
         if (uploading || submitRequestedRef.current) return;
 
         if (!canSubmitUpload(form, files, readOwnershipFromStorage())) {
-          toast.error(t("upload.missingValidations"));
+          toast.error(t("upload.missingValidations"), {
+            scope: VIDEO_UPLOAD_TOAST_SCOPE,
+          });
           return;
         }
 
@@ -122,7 +126,9 @@ export default function useVideoUploadForm({ formRef, onCanProceedChange }) {
 
     const ownershipFresh = readOwnershipFromStorage();
     if (!canSubmitUpload(form, files, ownershipFresh)) {
-      toast.error(t("upload.missingValidations"));
+      toast.error(t("upload.missingValidations"), {
+        scope: VIDEO_UPLOAD_TOAST_SCOPE,
+      });
       submitRequestedRef.current = false;
       return;
     }
@@ -142,7 +148,9 @@ export default function useVideoUploadForm({ formRef, onCanProceedChange }) {
       setSuccessOpen(true);
     } catch (err) {
       console.error(err);
-      toast.error(err?.message || t("upload.uploadError"));
+      toast.error(err?.message || t("upload.uploadError"), {
+        scope: VIDEO_UPLOAD_TOAST_SCOPE,
+      });
       submitRequestedRef.current = false;
     } finally {
       setUploading(false);
@@ -154,7 +162,9 @@ export default function useVideoUploadForm({ formRef, onCanProceedChange }) {
     if (uploading || submitRequestedRef.current) return;
 
     if (!canSubmitUpload(form, files, readOwnershipFromStorage())) {
-      toast.error(t("upload.missingValidations"));
+      toast.error(t("upload.missingValidations"), {
+        scope: VIDEO_UPLOAD_TOAST_SCOPE,
+      });
       return;
     }
 

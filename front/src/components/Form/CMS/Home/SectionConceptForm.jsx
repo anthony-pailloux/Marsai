@@ -24,6 +24,7 @@ function SectionConceptForm({ forcedLocale }) {
     values,
     handleChange,
     submitLoading,
+    toastScope,
     handleSubmit,
   } = useCmsSectionForm({
     page: CONCEPT_PAGE,
@@ -87,6 +88,7 @@ function SectionConceptForm({ forcedLocale }) {
         </CmsBlock>
 
         <CmsSubmitFooter
+          toastScope={toastScope}
           submitLoading={submitLoading}
         />
       </form>

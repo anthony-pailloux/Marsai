@@ -3,7 +3,10 @@ import { useTranslation } from "react-i18next";
 
 import { getApiUrl } from "../../utils/apiBase.js";
 import { typeBody, typeCta, typeNewsletterTitle } from "../../utils/typography.js";
+import ActionToastZone from "../ui/ActionToastZone.jsx";
 import { toast } from "../../utils/toast.js";
+
+const TOAST_SCOPE = "newsletter";
 
 function Newsletter() {
   const { t } = useTranslation("newsletters");
@@ -19,7 +22,9 @@ function Newsletter() {
     if (!cleanEmail) return;
 
     if (!consent) {
-      toast.error("Vous devez accepter de recevoir la newsletter.");
+      toast.error("Vous devez accepter de recevoir la newsletter.", {
+        scope: TOAST_SCOPE,
+      });
       return;
     }
 
@@ -41,11 +46,11 @@ function Newsletter() {
         throw new Error(data?.error || "Erreur inscription");
       }
 
-      toast.success(data?.message || "Inscription réussie");
+      toast.success(data?.message || "Inscription réussie", { scope: TOAST_SCOPE });
       setEmail("");
       setConsent(false);
     } catch (err) {
-      toast.error(err?.message || "Erreur");
+      toast.error(err?.message || "Erreur", { scope: TOAST_SCOPE });
     } finally {
       setLoading(false);
     }
@@ -60,6 +65,8 @@ function Newsletter() {
         <span>{t("title_main")}</span>
         <span className="block">{t("title_accent")}</span>
       </h2>
+
+      <ActionToastZone scope={TOAST_SCOPE} placement="above" />
 
       <div className="flex flex-col md:flex-row lg:flex-row items-start md:items-center gap-2 self-stretch">
         <input

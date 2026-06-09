@@ -5,6 +5,8 @@ import {
   VideoUploadForm,
   TeamCompositionForm,
 } from "../components/Form/Participation/ui";
+import ActionToastZone from "../components/ui/ActionToastZone.jsx";
+import { VIDEO_UPLOAD_TOAST_SCOPE } from "../hooks/useVideoUploadForm.js";
 import { typeBodySm, typePageHero } from "../utils/typography.js";
 
 export default function ParticipationUploadPage() {
@@ -160,7 +162,8 @@ export default function ParticipationUploadPage() {
           <div className="space-y-6">
             <TeamCompositionForm onPrev={() => setStep(2)} />
 
-            <div className="flex justify-center">
+            <div className="flex flex-col items-center">
+              <ActionToastZone scope={VIDEO_UPLOAD_TOAST_SCOPE} placement="above" />
               <button
                 type="button"
                 onClick={submitVideoFromStep3}

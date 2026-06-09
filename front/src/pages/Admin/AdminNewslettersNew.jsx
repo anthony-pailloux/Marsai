@@ -4,7 +4,10 @@ import NewsletterCkEditor from "../../components/newsletter/NewsletterCkEditor.j
 import { getAuthHeaders } from "../../utils/authHeaders.js";
 import { getApiUrl } from "../../utils/apiBase.js";
 import { typeAdminTitle } from "../../utils/typography.js";
+import ActionToastZone from "../../components/ui/ActionToastZone.jsx";
 import { toast } from "../../utils/toast.js";
+
+const TOAST_SCOPE = "newsletter-new";
 
 export default function AdminNewsletterNew() {
   const navigate = useNavigate();
@@ -17,7 +20,7 @@ export default function AdminNewsletterNew() {
 
   async function create() {
     if (!subject.trim()) {
-      toast.error("Le subject est requis.");
+      toast.error("Le subject est requis.", { scope: TOAST_SCOPE });
       return;
     }
 
@@ -42,10 +45,10 @@ export default function AdminNewsletterNew() {
       const data = await res.json().catch(() => null);
       if (!res.ok) throw new Error(data?.error || "Erreur création");
 
-      toast.success("Newsletter créée");
+      toast.success("Newsletter créée", { scope: TOAST_SCOPE });
       navigate(`/admin/newsletters/${data.id}`);
     } catch (e) {
-      toast.error(e?.message || "Erreur");
+      toast.error(e?.message || "Erreur", { scope: TOAST_SCOPE });
     } finally {
       setLoading(false);
     }
@@ -112,7 +115,9 @@ export default function AdminNewsletterNew() {
                 />
               </div>
 
-              <div className="mt-6 flex gap-3">
+              <div className="mt-6 flex flex-col items-start gap-3">
+                <ActionToastZone scope={TOAST_SCOPE} placement="above" />
+                <div className="flex gap-3">
                 <button
                   onClick={() => navigate("/admin/newsletters")}
                   className="h-11 rounded-xl border border-black/10 px-4 text-sm font-semibold
@@ -130,6 +135,7 @@ export default function AdminNewsletterNew() {
                 >
                   {loading ? "..." : "Créer"}
                 </button>
+                </div>
               </div>
             </div>
           </main>

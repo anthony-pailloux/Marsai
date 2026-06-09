@@ -5,7 +5,10 @@ import iconClose from "../../../../assets/imgs/icones/x.svg"
 import { useForm } from "../../../../hooks/useForm.js";
 import { useEffect, useState } from "react";
 import updatePartnerApi from "../../../../services/Partner/UpdatePartnerApi.js";
+import ActionToastZone from "../../../ui/ActionToastZone.jsx";
 import { toast } from "../../../../utils/toast.js";
+
+const TOAST_SCOPE = "partner-update";
 
 function PartnerUpdate({ partner, onClose, onUpdated }) {
 
@@ -49,7 +52,7 @@ function PartnerUpdate({ partner, onClose, onUpdated }) {
 
             await updatePartnerApi(partner.id, payload);
 
-            toast.success("Partenaire mis à jour");
+            toast.success("Partenaire mis à jour", { scope: TOAST_SCOPE });
 
             if (onUpdated) {
                 onUpdated();
@@ -57,7 +60,9 @@ function PartnerUpdate({ partner, onClose, onUpdated }) {
             
         } catch (error) {
             console.error("erreur:", error);
-            toast.error("Impossible de mettre à jour le partenaire");
+            toast.error("Impossible de mettre à jour le partenaire", {
+                scope: TOAST_SCOPE,
+            });
         } finally {
 
             setLoading(false);
@@ -114,7 +119,8 @@ function PartnerUpdate({ partner, onClose, onUpdated }) {
                     </label>
                     <input type="text" id="url" name="url" value={values.url} onChange={handleChange} placeholder="https://example.com" className="placeholder:uppercase placeholder:text-[rgba(255, 255, 255, 0.70)] placeholder:text-[14px] placeholder:tracking-[2.24px] flex py-3 px-5 items-center self-stretch gap-3 rounded-[5px] border border-[rgba(0,0,0,0.10)] bg-[rgba(0,0,0,0.07)] dark:border-[rgba(255,255,255,0.10)] dark:bg-[rgba(255,255,255,0.07)] backdrop-blur-[2.4px]" />
                 </div>
-                <div className="w-full flex justify-center">
+                <div className="flex w-full flex-col items-center">
+                    <ActionToastZone scope={TOAST_SCOPE} placement="above" />
                     <button type="submit" disabled={loading} className="flex w-50 h-13 items-center justify-center gap-3 px-5 py-3 rounded-[5px] border border-[#DBE3E6] bg-white dark:border-[rgba(0,0,0,0.11)] dark:bg-[#333]">
                         {loading ? "Enregistrement..." : "Mettre à jour"}
                     </button>

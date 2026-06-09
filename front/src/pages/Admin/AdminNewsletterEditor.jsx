@@ -1,6 +1,7 @@
 import { useNavigate, useParams } from "react-router-dom";
 import NewsletterCkEditor from "../../components/newsletter/NewsletterCkEditor.jsx";
 import NewsletterBlocksEditor from "../../components/admin/NewsletterBlocksEditor.jsx";
+import ActionToastZone from "../../components/ui/ActionToastZone.jsx";
 import useNewsletterEditor from "../../hooks/useNewsletterEditor.js";
 import { typeAdminTitle } from "../../utils/typography.js";
 import { toast } from "../../utils/toast.js";
@@ -90,11 +91,16 @@ export default function AdminNewsletterEditor() {
               onRemoveBlock={editor.removeBlock}
               onMoveBlock={editor.moveBlock}
               onUploadImage={editor.uploadImage}
-              onUploadSuccess={() => toast.success("Image uploadée")}
-              onUploadError={(msg) => toast.error(msg || "Erreur upload")}
+              onUploadSuccess={() =>
+                toast.success("Image uploadée", { scope: editor.toastScope })
+              }
+              onUploadError={(msg) =>
+                toast.error(msg || "Erreur upload", { scope: editor.toastScope })
+              }
             />
 
             <div className="mt-6 flex flex-col gap-3">
+              <ActionToastZone scope={editor.toastScope} placement="above" />
               <div className="flex flex-wrap items-center gap-3">
                 <button
                   onClick={editor.save}
