@@ -5,6 +5,7 @@ import iconClose from "../../../../assets/imgs/icones/x.svg"
 import { useForm } from "../../../../hooks/useForm.js";
 import { useEffect, useState } from "react";
 import updatePartnerApi from "../../../../services/Partner/UpdatePartnerApi.js";
+import { toast } from "../../../../utils/toast.js";
 
 function PartnerUpdate({ partner, onClose, onUpdated }) {
 
@@ -47,17 +48,16 @@ function PartnerUpdate({ partner, onClose, onUpdated }) {
             };
 
             await updatePartnerApi(partner.id, payload);
-            // console.log(res);
 
-            
+            toast.success("Partenaire mis à jour");
+
             if (onUpdated) {
                 onUpdated();
             }
             
         } catch (error) {
-
             console.error("erreur:", error);
-
+            toast.error("Impossible de mettre à jour le partenaire");
         } finally {
 
             setLoading(false);

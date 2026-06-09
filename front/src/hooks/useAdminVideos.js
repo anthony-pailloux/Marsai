@@ -6,6 +6,7 @@ import {
 } from "../services/Videos/adminVideosApi";
 import { decodeToken } from "../utils/decodeToken.js";
 import { filterAdminVideos } from "../utils/adminVideosUtils.js";
+import { toast } from "../utils/toast.js";
 
 export default function useAdminVideos() {
   const user = decodeToken();
@@ -25,7 +26,9 @@ export default function useAdminVideos() {
       const data = await getAdminVideos();
       setVideos(Array.isArray(data?.videos) ? data.videos : []);
     } catch (e) {
-      setError(e?.message || "Erreur chargement");
+      const msg = e?.message || "Erreur chargement";
+      setError(msg);
+      toast.error(msg);
     } finally {
       setLoading(false);
     }
@@ -49,9 +52,10 @@ export default function useAdminVideos() {
 
     try {
       await patchAdminVideoStatus(id, upload_status);
+      toast.success("Statut de la vidéo mis à jour");
     } catch (e) {
       setVideos(prev);
-      alert(e?.message || "Impossible de changer le statut");
+      toast.error(e?.message || "Impossible de changer le statut");
     } finally {
       setBusyId(null);
     }
@@ -66,9 +70,12 @@ export default function useAdminVideos() {
 
     try {
       await patchAdminVideoFeatured(id, next);
+      toast.success(
+        next ? "Vidéo mise en avant" : "Mise en avant retirée",
+      );
     } catch (e) {
       setVideos(prev);
-      alert(e?.message || "Impossible de modifier la mise en avant");
+      toast.error(e?.message || "Impossible de modifier la mise en avant");
     } finally {
       setBusyId(null);
     }

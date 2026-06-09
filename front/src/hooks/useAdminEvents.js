@@ -11,6 +11,7 @@ import {
   saveAdminEvent,
   toggleAdminEventPublish,
 } from "../pages/Admin/adminEventsCrud.js";
+import { toast } from "../utils/toast.js";
 
 export default function useAdminEvents() {
   const [day, setDay] = useState(null);
@@ -21,6 +22,7 @@ export default function useAdminEvents() {
   const [modalOpen, setModalOpen] = useState(false);
   const [editing, setEditing] = useState(null);
   const [form, setForm] = useState({ ...DEFAULT_EVENT_FORM });
+  const [deleteTarget, setDeleteTarget] = useState(null);
 
   useEffect(() => {
     let mounted = true;
@@ -122,6 +124,14 @@ export default function useAdminEvents() {
     setModalOpen(false);
   }
 
+  function requestDelete(ev) {
+    setDeleteTarget(ev);
+  }
+
+  function cancelDelete() {
+    setDeleteTarget(null);
+  }
+
   async function onSave(e) {
     e.preventDefault();
 
@@ -134,28 +144,34 @@ export default function useAdminEvents() {
             x.id === editing.id ? { ...x, ...result.event.patch } : x,
           ),
         );
+        toast.success("Événement mis à jour");
       } else {
         setEvents((prev) => [result.event, ...prev]);
         if (result.day) setDay(result.day);
+        toast.success("Événement créé");
       }
 
       setModalOpen(false);
     } catch (err) {
       console.error("Erreur save event:", err);
-      alert("Impossible d'enregistrer l'événement.");
+      toast.error("Impossible d'enregistrer l'événement.");
     }
   }
 
-  async function onDelete(ev) {
-    const ok = window.confirm(`Supprimer "${ev.title}" ?`);
-    if (!ok) return;
+  async function confirmDelete() {
+    if (!deleteTarget) return;
+
+    const ev = deleteTarget;
 
     try {
       await removeAdminEvent(ev.id);
       setEvents((prev) => prev.filter((x) => x.id !== ev.id));
+      toast.success(`« ${ev.title} » supprimé`);
     } catch (err) {
       console.error("Erreur delete:", err);
-      alert("Impossible de supprimer l'événement.");
+      toast.error("Impossible de supprimer l'événement.");
+    } finally {
+      setDeleteTarget(null);
     }
   }
 
@@ -167,9 +183,12 @@ export default function useAdminEvents() {
           x.id === ev.id ? { ...x, published: res.published } : x,
         ),
       );
+      toast.success(
+        res.published ? "Événement publié" : "Événement dépublié",
+      );
     } catch (err) {
       console.error("Erreur publish:", err);
-      alert("Impossible de changer le statut de publication.");
+      toast.error("Impossible de changer le statut de publication.");
     }
   }
 
@@ -187,11 +206,14 @@ export default function useAdminEvents() {
     dayTabs,
     filtered,
     stats,
+    deleteTarget,
     openCreate,
     openEdit,
     closeModal,
     onSave,
-    onDelete,
+    requestDelete,
+    cancelDelete,
+    confirmDelete,
     onTogglePublish,
   };
 }

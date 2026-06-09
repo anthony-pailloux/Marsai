@@ -4,6 +4,7 @@ import iconImg from "../../../../assets/imgs/icones/iconImg.svg";
 import iconClose from "../../../../assets/imgs/icones/x.svg"
 import { useForm } from "../../../../hooks/useForm.js";
 import InsertPartnerApi from "../../../../services/Partner/InsertPartnerApi.js";
+import { toast } from "../../../../utils/toast.js";
 
 function PartnerAdd({ onClose, onAdded }) {
 
@@ -26,17 +27,17 @@ function PartnerAdd({ onClose, onAdded }) {
             formData.append("img", values.file);
             formData.append("url", values.url);
 
-            await InsertPartnerApi(formData)
-            // console.log(result);
-            
+            await InsertPartnerApi(formData);
+
+            toast.success("Partenaire ajouté");
+
             if (onAdded) {
                 onAdded();
             }
             
         } catch (error) {
-
             console.error("erreur:", error);
-
+            toast.error("Impossible d'ajouter le partenaire");
         }
 
     }

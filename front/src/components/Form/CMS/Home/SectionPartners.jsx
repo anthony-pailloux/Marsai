@@ -3,7 +3,7 @@ import CmsInput from "../Fields/CmsInput";
 import CmsHideToggle from "../Fields/CmsHideToggle";
 import CmsInputImage from "../Fields/CmsInputImage";
 import CmsInputFile from "../Fields/CmsInputFile.jsx";
-import BtnSubmitForm from "../../../Buttons/BtnSubmitForm.jsx";
+import CmsSubmitFooter from "../Fields/CmsSubmitFooter.jsx";
 import CmsFormHeader from "../Titles/CmsFormHeader.jsx";
 import CmsTitleBlock from "../Titles/CmsTitleBlock.jsx";
 import CmsSubtitleBlock from "../Titles/CmsSubtitleBlock.jsx";
@@ -45,6 +45,8 @@ function SectionPartners({ forcedLocale }) {
     locale,
     values,
     handleChange,
+    message,
+    messageType,
     submitLoading,
     handleSubmit,
   } = useCmsSectionForm({
@@ -99,11 +101,12 @@ function SectionPartners({ forcedLocale }) {
 
                 </div>
 
-                <div className="w-full flex justify-center">
-                    <BtnSubmitForm loading={submitLoading} className="flex w-[200px] h-[53px] items-center justify-center gap-[13px] px-[21px] py-[10px] rounded-[5px] border border-[#DBE3E6] bg-white dark:border-[rgba(0,0,0,0.11)] dark:bg-[#333]">
-                        Mettre à jour
-                    </BtnSubmitForm>
-                </div>
+                <CmsSubmitFooter
+                  message={message}
+                  messageType={messageType}
+                  submitLoading={submitLoading}
+                  btnClassName="flex w-[200px] h-[53px] items-center justify-center gap-[13px] px-[21px] py-[10px] rounded-[5px] border border-[#DBE3E6] bg-white dark:border-[rgba(0,0,0,0.11)] dark:bg-[#333]"
+                />
             
             </form>
         </section>

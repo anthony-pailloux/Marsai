@@ -6,6 +6,7 @@ import CmsTextarea from "../Fields/CmsTextarea";
 import CmsHideToggle from "../Fields/CmsHideToggle";
 import CmsInputImage from "../Fields/CmsInputImage";
 import useCmsSectionForm from "../../../../hooks/useCmsSectionForm.js";
+import CmsSubmitFooter from "../Fields/CmsSubmitFooter.jsx";
 
 function SectionGoalForm({ forcedLocale }) {
   const { t } = useTranslation("home");
@@ -57,6 +58,8 @@ function SectionGoalForm({ forcedLocale }) {
     locale,
     values,
     handleChange,
+    message,
+    messageType,
     submitLoading,
     handleSubmit,
   } = useCmsSectionForm({
@@ -143,11 +146,12 @@ function SectionGoalForm({ forcedLocale }) {
 
                 </div>
 
-                <div className="w-full flex justify-center">
-                    <button type="submit" disabled={submitLoading} className="flex w-[200px] h-[53px] items-center justify-center gap-[13px] px-[21px] py-[10px] rounded-[5px] border border-[#DBE3E6] bg-white dark:border-[rgba(0,0,0,0.11)] dark:bg-[#333]">
-                        Mettre Ã  jour
-                    </button>
-                </div>
+                <CmsSubmitFooter
+                  message={message}
+                  messageType={messageType}
+                  submitLoading={submitLoading}
+                  btnClassName="flex w-[200px] h-[53px] items-center justify-center gap-[13px] px-[21px] py-[10px] rounded-[5px] border border-[#DBE3E6] bg-white dark:border-[rgba(0,0,0,0.11)] dark:bg-[#333]"
+                />
 
             </form>
         </section>

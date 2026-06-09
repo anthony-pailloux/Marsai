@@ -6,6 +6,7 @@ import {
 } from "../services/Admin/Users.api.js";
 import { decodeToken } from "../utils/decodeToken.js";
 import { ROLE_FILTER_ALL } from "../utils/dashboardUserConstants.js";
+import { toast } from "../utils/toast.js";
 
 export default function useDashboardUsers() {
   const [users, setUsers] = useState([]);
@@ -29,7 +30,9 @@ export default function useDashboardUsers() {
       const data = await getUsers();
       setUsers(Array.isArray(data?.users) ? data.users : []);
     } catch (err) {
-      setError(err?.message || "Erreur de chargement");
+      const msg = err?.message || "Erreur de chargement";
+      setError(msg);
+      toast.error(msg);
     } finally {
       setLoading(false);
     }
@@ -53,6 +56,7 @@ export default function useDashboardUsers() {
 
   function showSuccessMessage(message) {
     setSuccess(message);
+    toast.success(message);
     setTimeout(() => setSuccess(""), 3000);
   }
 
@@ -71,7 +75,9 @@ export default function useDashboardUsers() {
       showSuccessMessage(`Le rôle a été changé en "${newRole}" avec succès`);
     } catch (err) {
       setUsers(previousUsers);
-      setError(err?.message || "Erreur lors du changement de rôle");
+      const msg = err?.message || "Erreur lors du changement de rôle";
+      setError(msg);
+      toast.error(msg);
     } finally {
       setBusyId(null);
     }
@@ -87,7 +93,9 @@ export default function useDashboardUsers() {
       showSuccessMessage("L'utilisateur a été supprimé avec succès");
     } catch (err) {
       setUsers(previousUsers);
-      setError(err?.message || "Erreur lors de la suppression");
+      const msg = err?.message || "Erreur lors de la suppression";
+      setError(msg);
+      toast.error(msg);
     } finally {
       setBusyId(null);
     }

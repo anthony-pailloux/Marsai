@@ -149,7 +149,29 @@ La logique métier et le SQL restent dans `services/` et `models/`.
 
 ---
 
-## 7) Tests avant de pousser
+## 7) Notifications (toasts)
+
+Système global dans `front/src/utils/toast.js` + `ToastHost` (monté dans `App.jsx`).
+
+```js
+import { toast } from "../utils/toast.js";
+
+toast.success("Enregistré");  // disparaît après 4 s
+toast.error("Erreur");        // disparaît après 6 s
+toast.info("Information");
+```
+
+| Zone | Pattern |
+|------|---------|
+| CMS (`useCmsSectionForm`) | Toast auto + bandeau `CmsFormFeedback` via `CmsSubmitFooter` |
+| Admin (events, FAQ, vidéos…) | `toast.success` / `toast.error` |
+| Suppressions | `ConfirmDialog` (pas `window.confirm`) |
+
+Formulaires CMS : toujours utiliser `CmsSubmitFooter` avec `message` et `messageType` du hook.
+
+---
+
+## 8) Tests avant de pousser
 
 Checklist minimale :
 
@@ -175,7 +197,7 @@ Smoke test **manuel** (UI) recommandé en plus :
 
 ---
 
-## 8) Comptes de test locaux
+## 9) Comptes de test locaux
 
 ```bash
 cd back
@@ -186,7 +208,7 @@ Détails : `docs/comptes-test.md`
 
 ---
 
-## 9) Git en équipe
+## 10) Git en équipe
 
 Workflow branches + PR : `docs/guide_GIT_workflow.md`
 
