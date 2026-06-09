@@ -3,6 +3,7 @@ import { typeAdminSection, typeAdminMeta } from "../../../utils/typography.js";
 import useAdminConferenceProgram from "../../../hooks/useAdminConferenceProgram.js";
 import ConferenceProgramList from "./ConferenceProgramList.jsx";
 import ConferenceProgramModal from "./ConferenceProgramModal.jsx";
+import ConfirmDialog from "../../ConfirmDialog.jsx";
 
 export default function AdminConferenceProgramContent() {
   const { t } = useTranslation("adminConferenceProgram");
@@ -17,8 +18,11 @@ export default function AdminConferenceProgramContent() {
     openEdit,
     closeModal,
     updateField,
+    deleteTarget,
     handleSave,
-    handleDelete,
+    requestDelete,
+    cancelDelete,
+    confirmDelete,
   } = useAdminConferenceProgram(t);
 
   return (
@@ -39,7 +43,7 @@ export default function AdminConferenceProgramContent() {
           loading={loading}
           t={t}
           onEdit={openEdit}
-          onDelete={handleDelete}
+          onDelete={requestDelete}
         />
       </section>
 
@@ -52,6 +56,20 @@ export default function AdminConferenceProgramContent() {
         onClose={closeModal}
         onSubmit={handleSave}
         onFieldChange={updateField}
+      />
+
+      <ConfirmDialog
+        isOpen={!!deleteTarget}
+        onClose={cancelDelete}
+        onConfirm={confirmDelete}
+        title={t("confirmDeleteTitle", { defaultValue: "Supprimer le créneau" })}
+        message={
+          deleteTarget
+            ? t("confirmDelete", { title: deleteTarget.title })
+            : ""
+        }
+        confirmLabel={t("confirmDeleteAction", { defaultValue: "Supprimer" })}
+        confirmVariant="danger"
       />
     </>
   );

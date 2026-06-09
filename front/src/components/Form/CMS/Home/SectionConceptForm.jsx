@@ -1,7 +1,7 @@
 ﻿import CmsInput from "../Fields/CmsInput.jsx";
 import { useTranslation } from "react-i18next";
 import CmsHideToggle from "../Fields/CmsHideToggle.jsx";
-import BtnSubmitForm from "../../../Buttons/BtnSubmitForm.jsx";
+import CmsSubmitFooter from "../Fields/CmsSubmitFooter.jsx";
 import CmsFormHeader from "../Titles/CmsFormHeader.jsx";
 import CmsBlock from "../Titles/CmsBlock.jsx";
 import useCmsSectionForm from "../../../../hooks/useCmsSectionForm.js";
@@ -23,6 +23,8 @@ function SectionConceptForm({ forcedLocale }) {
     locale,
     values,
     handleChange,
+    message,
+    messageType,
     submitLoading,
     handleSubmit,
   } = useCmsSectionForm({
@@ -86,9 +88,11 @@ function SectionConceptForm({ forcedLocale }) {
           ))}
         </CmsBlock>
 
-        <div className="flex w-full justify-center">
-          <BtnSubmitForm loading={submitLoading}>Mettre à jour</BtnSubmitForm>
-        </div>
+        <CmsSubmitFooter
+          message={message}
+          messageType={messageType}
+          submitLoading={submitLoading}
+        />
       </form>
     </section>
   );

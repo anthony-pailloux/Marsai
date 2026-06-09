@@ -10,6 +10,7 @@ import {
   DEFAULT_FORM,
   dayForApi,
 } from "../components/admin/ConferenceProgram/conferenceProgramUtils.js";
+import { toast } from "../utils/toast.js";
 
 export default function useAdminConferenceProgram(t) {
   const [items, setItems] = useState([]);
@@ -17,6 +18,7 @@ export default function useAdminConferenceProgram(t) {
   const [modalOpen, setModalOpen] = useState(false);
   const [editing, setEditing] = useState(null);
   const [form, setForm] = useState({ ...DEFAULT_FORM });
+  const [deleteTarget, setDeleteTarget] = useState(null);
 
   useEffect(() => {
     getProgramAdmin()
@@ -52,12 +54,20 @@ export default function useAdminConferenceProgram(t) {
     setForm((f) => ({ ...f, [name]: value }));
   }
 
+  function requestDelete(item) {
+    setDeleteTarget(item);
+  }
+
+  function cancelDelete() {
+    setDeleteTarget(null);
+  }
+
   async function handleSave(e) {
     e.preventDefault();
     try {
       const apiDay = dayForApi(form, editing);
       if (!editing && !apiDay) {
-        alert("Veuillez choisir un jour pour la conférence.");
+        toast.error("Veuillez choisir un jour pour la conférence.");
         return;
       }
 
@@ -72,23 +82,31 @@ export default function useAdminConferenceProgram(t) {
       if (editing) {
         const updated = await updateItem(editing.id, payload);
         setItems((prev) => prev.map((x) => (x.id === editing.id ? updated : x)));
+        toast.success("Créneau mis à jour");
       } else {
         const created = await createItem(payload);
         setItems((prev) => [...prev, created]);
+        toast.success("Créneau ajouté");
       }
       setModalOpen(false);
     } catch (err) {
-      alert(err?.message || "Erreur");
+      toast.error(err?.message || "Erreur");
     }
   }
 
-  async function handleDelete(item) {
-    if (!confirm(t("confirmDelete", { title: item.title }))) return;
+  async function confirmDelete() {
+    if (!deleteTarget) return;
+
+    const item = deleteTarget;
+
     try {
       await deleteItem(item.id);
       setItems((prev) => prev.filter((x) => x.id !== item.id));
+      toast.success(`« ${item.title} » supprimé`);
     } catch (err) {
-      alert(err?.message || "Erreur");
+      toast.error(err?.message || "Erreur");
+    } finally {
+      setDeleteTarget(null);
     }
   }
 
@@ -99,11 +117,14 @@ export default function useAdminConferenceProgram(t) {
     editing,
     form,
     colors: COLORS,
+    deleteTarget,
     openCreate,
     openEdit,
     closeModal,
     updateField,
     handleSave,
-    handleDelete,
+    requestDelete,
+    cancelDelete,
+    confirmDelete,
   };
 }

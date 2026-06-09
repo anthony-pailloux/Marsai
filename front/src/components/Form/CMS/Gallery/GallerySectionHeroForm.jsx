@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next";
 import CmsFormHeader from "../Titles/CmsFormHeader";
-import BtnSubmitForm from "../../../Buttons/BtnSubmitForm";
+import CmsSubmitFooter from "../Fields/CmsSubmitFooter.jsx";
 import CmsTitleBlock from "../Titles/CmsTitleBlock";
 import CmsBlock from "../Titles/CmsBlock";
 import CmsFieldsBlock from "../Titles/CmsFieldsBlock";
@@ -38,6 +38,8 @@ function GallerySectionHeroForm({ forcedLocale }) {
     locale,
     values,
     handleChange,
+    message,
+    messageType,
     submitLoading,
     handleSubmit,
   } = useCmsSectionForm({
@@ -134,14 +136,12 @@ function GallerySectionHeroForm({ forcedLocale }) {
           </CmsBlock>
         </div>
 
-        <div className="w-full flex justify-center">
-          <BtnSubmitForm
-            loading={submitLoading}
-            className="flex w-50 h-13.25 items-center justify-center gap-3.25 px-5.25 py-2.5 rounded-[5px] border border-[#DBE3E6] bg-white dark:border-[rgba(0,0,0,0.11)] dark:bg-[#333]"
-          >
-            Mettre à jour
-          </BtnSubmitForm>
-        </div>
+        <CmsSubmitFooter
+          message={message}
+          messageType={messageType}
+          submitLoading={submitLoading}
+          btnClassName="flex w-50 h-13.25 items-center justify-center gap-3.25 px-5.25 py-2.5 rounded-[5px] border border-[#DBE3E6] bg-white dark:border-[rgba(0,0,0,0.11)] dark:bg-[#333]"
+        />
       </form>
     </section>
   );

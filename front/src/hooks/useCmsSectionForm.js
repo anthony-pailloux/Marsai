@@ -4,6 +4,7 @@ import { useForm } from "./useForm.js";
 import useCmsContent from "./useCmsContent.js";
 import buildInitialValuesFromCms from "../utils/buildInitialValuesFromCms.js";
 import saveCmsSection from "../utils/saveCmsSection.js";
+import { toast } from "../utils/toast.js";
 
 /**
  * Hook commun pour les formulaires CMS (page + section + champs).
@@ -28,6 +29,7 @@ export default function useCmsSectionForm({
 
   const { values, setValues, handleChange } = useForm(defaultValues);
   const [message, setMessage] = useState("");
+  const [messageType, setMessageType] = useState(null);
   const [submitLoading, setSubmitLoading] = useState(false);
   const [hasHydrated, setHasHydrated] = useState(false);
   const { content, loading: cmsLoading } = useCmsContent(page, locale);
@@ -76,9 +78,13 @@ export default function useCmsSectionForm({
         const save = saveFn ?? saveCmsSection;
         await save({ page, section, locale, fields, values });
         setMessage(successMessage);
+        setMessageType("success");
+        toast.success(successMessage);
       } catch (error) {
         console.error("erreur:", error);
         setMessage(errorMessage);
+        setMessageType("error");
+        toast.error(errorMessage);
       } finally {
         setSubmitLoading(false);
       }
@@ -96,6 +102,7 @@ export default function useCmsSectionForm({
     content,
     cmsLoading,
     message,
+    messageType,
     setMessage,
     submitLoading,
     handleSubmit,

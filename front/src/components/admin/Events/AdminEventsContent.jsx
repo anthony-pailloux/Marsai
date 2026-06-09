@@ -9,6 +9,7 @@ import {
   typeAdminStat,
   typeCaption,
 } from "../../../utils/typography.js";
+import ConfirmDialog from "../../ConfirmDialog.jsx";
 
 export default function AdminEventsContent() {
   const { t } = useTranslation("adminEvents");
@@ -30,8 +31,11 @@ export default function AdminEventsContent() {
     openCreate,
     openEdit,
     closeModal,
+    deleteTarget,
     onSave,
-    onDelete,
+    requestDelete,
+    cancelDelete,
+    confirmDelete,
     onTogglePublish,
   } = useAdminEvents();
 
@@ -145,7 +149,7 @@ export default function AdminEventsContent() {
                   key={ev.id}
                   ev={ev}
                   onEdit={() => openEdit(ev)}
-                  onDelete={() => onDelete(ev)}
+                  onDelete={() => requestDelete(ev)}
                   onTogglePublish={() => onTogglePublish(ev)}
                   onParticipants={() =>
                     navigate(`/admin/events/${ev.id}/participants`)
@@ -165,6 +169,20 @@ export default function AdminEventsContent() {
         onClose={closeModal}
         onSave={onSave}
         t={t}
+      />
+
+      <ConfirmDialog
+        isOpen={!!deleteTarget}
+        onClose={cancelDelete}
+        onConfirm={confirmDelete}
+        title="Supprimer l'événement"
+        message={
+          deleteTarget
+            ? `Supprimer « ${deleteTarget.title} » ?`
+            : ""
+        }
+        confirmLabel="Supprimer"
+        confirmVariant="danger"
       />
     </>
   );

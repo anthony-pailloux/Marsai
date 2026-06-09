@@ -6,6 +6,7 @@ import addFaq from "../services/Faq/addFaqApi.js";
 import { validate } from "../utils/zod/zodValidator.js";
 import { createFaqSchema } from "../utils/zod/zodSchema/zodIndex.js";
 import { EMPTY_FAQ } from "../utils/faqAdminUtils.js";
+import { toast } from "../utils/toast.js";
 
 export default function useFaqAdmin() {
   const [faqs, setFaqs] = useState([]);
@@ -24,6 +25,7 @@ export default function useFaqAdmin() {
         setFaqs(res.data);
       } catch (err) {
         setError(err.message);
+        toast.error(err.message || "Erreur de chargement des FAQ");
       } finally {
         setLoading(false);
       }
@@ -51,11 +53,11 @@ export default function useFaqAdmin() {
       const addedFaq = await addFaq(validation.data);
       setFaqs((prev) => [...prev, addedFaq]);
       setFaqsEdit((prev) => [...prev, addedFaq]);
-      alert("FAQ added !");
+      toast.success("FAQ ajoutée");
     } catch (err) {
       if (err.details) setFormErrorsAdd(err.details);
       console.error(err);
-      alert("Error while adding FAQ");
+      toast.error("Erreur lors de l'ajout de la FAQ");
     } finally {
       setNewFaq({ ...EMPTY_FAQ });
       setLoading(false);
@@ -68,10 +70,10 @@ export default function useFaqAdmin() {
       await deleteFaq(id);
       setFaqs((prev) => prev.filter((faq) => faq.id !== id));
       setFaqsEdit((prev) => prev.filter((faq) => faq.id !== id));
-      alert("FAQ deleted !");
+      toast.success("FAQ supprimée");
     } catch (err) {
       console.error(err);
-      alert("Error while deleting FAQ");
+      toast.error("Erreur lors de la suppression de la FAQ");
     } finally {
       setLoading(false);
     }
@@ -100,13 +102,13 @@ export default function useFaqAdmin() {
       setFaqsEdit((prev) =>
         prev.map((item) => (item.id === faq.id ? updatedFaq : item)),
       );
-      alert("FAQ updated !");
+      toast.success("FAQ mise à jour");
     } catch (err) {
       if (err.details) {
         setFormErrorsEdit((prev) => ({ ...prev, [faq.id]: err.details }));
       }
       console.error(err);
-      alert("Error while updating the FAQ");
+      toast.error("Erreur lors de la mise à jour de la FAQ");
     } finally {
       setLoading(false);
     }
