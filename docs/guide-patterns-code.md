@@ -43,6 +43,9 @@ Exemples déjà en place :
 |---------|--------|---------------------|
 | Concept Home | `conceptFormConfig.js` | `SectionConceptForm.jsx` |
 | Hero Home | `heroFormConfig.js` | `SectionHeroForm.jsx` + `SectionHeroFormBody.jsx` |
+| Programme Home | `eventsFormConfig.js` | `SectionEventsForm.jsx` + `EventsFormCardEditor.jsx` |
+| Clôture Home | `closingEventFormConfig.js` | `SectionClosingEventForm.jsx` |
+| Localisation Home | `localisationEventFormConfig.js` | `SectionLocalisationEventForm.jsx` |
 | Footer | `footerFormConfig.js` | `FooterForm.jsx` |
 
 ### Hook `useCmsSectionForm`
@@ -203,4 +206,4 @@ Workflow branches + PR : `docs/guide_GIT_workflow.md`
 - le changement est « plus joli » sans gain de compréhension
 - les tests auto ne courent pas encore le parcours concerné
 
-Les phases 1 à 9 ont couvert l'essentiel. Priorité maintenant : **stabilité**, **tests**, **petites features**.
+Les phases 1 à 10 ont uniformisé les formulaires CMS Home. Priorité maintenant : **stabilité**, **tests**, **petites features**.
