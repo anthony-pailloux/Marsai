@@ -4,7 +4,7 @@ import CmsHideToggle from "../Fields/CmsHideToggle";
 import { useTranslation } from "react-i18next";
 import iconPaintDark from "../../../../assets/imgs/icones/IconPaintDark.svg";
 import iconPaint from "../../../../assets/imgs/icones/IconPaint.svg";
-import BtnSubmitForm from "../../../Buttons/BtnSubmitForm";
+import CmsSubmitFooter from "../Fields/CmsSubmitFooter.jsx";
 import useCmsSectionForm from "../../../../hooks/useCmsSectionForm.js";
 import saveFooterCmsSection from "../../../../utils/saveFooterCmsSection.js";
 import {
@@ -27,9 +27,10 @@ function FooterForm({ forcedLocale }) {
     locale,
     values,
     handleChange,
+    message,
+    messageType,
     submitLoading,
     handleSubmit,
-    message,
   } = useCmsSectionForm({
     page: PAGE,
     section: SECTION,
@@ -136,15 +137,13 @@ function FooterForm({ forcedLocale }) {
           </div>
         </div>
 
-        <div className="w-full flex flex-col justify-center">
-          <BtnSubmitForm
-            loading={submitLoading}
-            className="flex h-[53px] items-center justify-center gap-[13px] px-[21px] py-[10px] rounded-[5px] border border-[#DBE3E6] bg-white dark:border-[rgba(0,0,0,0.11)] dark:bg-[#333] w-full"
-          >
-            Mettre à jour
-          </BtnSubmitForm>
-          {message && <p className="text-sm">{message}</p>}
-        </div>
+        <CmsSubmitFooter
+          message={message}
+          messageType={messageType}
+          submitLoading={submitLoading}
+          btnClassName="flex h-[53px] items-center justify-center gap-[13px] px-[21px] py-[10px] rounded-[5px] border border-[#DBE3E6] bg-white dark:border-[rgba(0,0,0,0.11)] dark:bg-[#333] w-full"
+          wrapperClassName="flex w-full flex-col justify-center"
+        />
       </form>
     </section>
   );

@@ -2,6 +2,7 @@
 import CmsBlock from "../Titles/CmsBlock";
 import CmsTitleBlock from "../Titles/CmsTitleBlock";
 import useCmsSectionForm from "../../../../hooks/useCmsSectionForm.js";
+import CmsSubmitFooter from "../Fields/CmsSubmitFooter.jsx";
 
 
 function GalleryFilmsListForm({ forcedLocale }) {
@@ -28,6 +29,9 @@ function GalleryFilmsListForm({ forcedLocale }) {
     locale,
     values,
     handleChange,
+    message,
+    messageType,
+    submitLoading,
     handleSubmit,
   } = useCmsSectionForm({
     page: PAGE,
@@ -52,6 +56,12 @@ function GalleryFilmsListForm({ forcedLocale }) {
                 <CmsBlock>
                     <CmsTitleBlock title="Gestion de la grille de films" toggleName="films_grid_visibility" values={values} handleChange={handleChange} page={page} section={section} locale={locale}/>
                 </CmsBlock>
+
+                <CmsSubmitFooter
+                  message={message}
+                  messageType={messageType}
+                  submitLoading={submitLoading}
+                />
             </form>
         </section>
     )

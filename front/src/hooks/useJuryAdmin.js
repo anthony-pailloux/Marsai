@@ -7,6 +7,7 @@ import {
   mapMemberToEditForm,
   sortJuryMembers,
 } from "../utils/juryAdminUtils.js";
+import { toast } from "../utils/toast.js";
 
 export default function useJuryAdmin() {
   const { t } = useTranslation("jury");
@@ -19,6 +20,7 @@ export default function useJuryAdmin() {
   const [initialValues, setInitialValues] = useState(null);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
+  const [deleteTarget, setDeleteTarget] = useState(null);
 
   async function refresh() {
     setLoading(true);
@@ -28,7 +30,9 @@ export default function useJuryAdmin() {
       const d = await r.json();
       setJury(d?.jury || []);
     } catch {
-      setError(t("admin.errors.load"));
+      const msg = t("admin.errors.load");
+      setError(msg);
+      toast.error(msg);
     } finally {
       setLoading(false);
     }
@@ -61,6 +65,14 @@ export default function useJuryAdmin() {
     setOpen(false);
   }
 
+  function requestDelete(member) {
+    setDeleteTarget(member);
+  }
+
+  function cancelDelete() {
+    setDeleteTarget(null);
+  }
+
   async function submitForm(form) {
     setSaving(true);
     setError("");
@@ -87,21 +99,22 @@ export default function useJuryAdmin() {
 
       setOpen(false);
       await refresh();
+      toast.success(
+        mode === "create" ? "Membre du jury ajouté" : "Membre du jury mis à jour",
+      );
     } catch (e) {
-      setError(e?.message || t("admin.errors.generic"));
+      const msg = e?.message || t("admin.errors.generic");
+      setError(msg);
+      toast.error(msg);
     } finally {
       setSaving(false);
     }
   }
 
-  async function removeMember(member) {
-    const ok = confirm(
-      t("admin.confirmDelete", {
-        first_name: member.first_name,
-        name: member.name,
-      }),
-    );
-    if (!ok) return;
+  async function confirmDelete() {
+    if (!deleteTarget) return;
+
+    const member = deleteTarget;
 
     try {
       const r = await fetch(`${getApiUrl()}/jury/${member.id}`, {
@@ -111,8 +124,11 @@ export default function useJuryAdmin() {
       const d = await r.json().catch(() => ({}));
       if (!r.ok) throw new Error(d?.error || t("admin.errors.delete"));
       await refresh();
+      toast.success("Membre du jury supprimé");
     } catch (e) {
-      alert(e?.message || t("admin.errors.delete"));
+      toast.error(e?.message || t("admin.errors.delete"));
+    } finally {
+      setDeleteTarget(null);
     }
   }
 
@@ -124,10 +140,13 @@ export default function useJuryAdmin() {
     mode,
     initialValues,
     saving,
+    deleteTarget,
     openCreate,
     openEdit,
     closeForm,
     submitForm,
-    removeMember,
+    requestDelete,
+    cancelDelete,
+    confirmDelete,
   };
 }

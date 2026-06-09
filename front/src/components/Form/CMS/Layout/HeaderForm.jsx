@@ -2,7 +2,7 @@ import { useTranslation } from "react-i18next"
 import CmsInputImage from "../Fields/CmsInputImage";
 import CmsHideToggle from "../Fields/CmsHideToggle";
 import CmsInput from "../Fields/CmsInput";
-import BtnSubmitForm from "../../../Buttons/BtnSubmitForm";
+import CmsSubmitFooter from "../Fields/CmsSubmitFooter.jsx";
 import CmsFormHeader from "../Titles/CmsFormHeader.jsx";
 import CmsTitleBlock from "../Titles/CmsTitleBlock.jsx";
 import CmsFieldsBlock from "../Titles/CmsFieldsBlock.jsx";
@@ -63,6 +63,8 @@ function HeaderForm({ forcedLocale }) {
     locale,
     values,
     handleChange,
+    message,
+    messageType,
     submitLoading,
     handleSubmit,
   } = useCmsSectionForm({
@@ -163,11 +165,12 @@ function HeaderForm({ forcedLocale }) {
 
                 </div>
 
-                <div className="w-full flex justify-center">
-                    <BtnSubmitForm loading={submitLoading} className="flex h-[53px] items-center justify-center gap-[13px] px-[21px] py-[10px] rounded-[5px] border border-[#DBE3E6] bg-white dark:border-[rgba(0,0,0,0.11)] dark:bg-[#333] w-full">
-                        Mettre à jour
-                    </BtnSubmitForm>
-                </div>
+                <CmsSubmitFooter
+                  message={message}
+                  messageType={messageType}
+                  submitLoading={submitLoading}
+                  btnClassName="flex h-[53px] items-center justify-center gap-[13px] px-[21px] py-[10px] rounded-[5px] border border-[#DBE3E6] bg-white dark:border-[rgba(0,0,0,0.11)] dark:bg-[#333] w-full"
+                />
 
             </form>
         </section>

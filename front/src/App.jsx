@@ -24,11 +24,12 @@ import AdminVideos from "./pages/Admin/AdminVideos.jsx";
 import RequireAuth from "./routes/RequireAuth.jsx";
 import About from "./pages/About.jsx";
 import NotFound from "./pages/NotFound.jsx";
-
-
+import ToastHost from "./components/ui/ToastHost.jsx";
 
 export default function App() {
   return (
+    <>
+    <ToastHost />
     <Routes>
 
       <Route element={<MainLayout />}>
@@ -85,5 +86,6 @@ export default function App() {
       <Route path="*" element={<NotFound />} />
 
     </Routes>
+    </>
   );
 }

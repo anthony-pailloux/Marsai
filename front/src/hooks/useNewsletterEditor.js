@@ -13,6 +13,7 @@ import {
   sendTestNewsletter,
 } from "../services/Admin/newsletterEditorApi.js";
 import useNewsletterBlocks from "./useNewsletterBlocks.js";
+import { toast } from "../utils/toast.js";
 
 export default function useNewsletterEditor(newsletterId) {
   const [subject, setSubject] = useState("");
@@ -59,7 +60,9 @@ export default function useNewsletterEditor(newsletterId) {
       setContentHtml(data?.content_html || "");
       setBlocks(parseNewsletterBlocks(data?.content_json));
     } catch (e) {
-      setError(e?.message || "Erreur");
+      const msg = e?.message || "Erreur";
+      setError(msg);
+      toast.error(msg);
     } finally {
       setLoading(false);
     }
@@ -73,7 +76,9 @@ export default function useNewsletterEditor(newsletterId) {
 
   async function save() {
     if (!subject.trim()) {
-      setError("Le subject est requis.");
+      const msg = "Le subject est requis.";
+      setError(msg);
+      toast.error(msg);
       return;
     }
 
@@ -92,8 +97,11 @@ export default function useNewsletterEditor(newsletterId) {
         scheduled_at: null,
       });
       setMsg("Sauvegardé");
+      toast.success("Newsletter sauvegardée");
     } catch (e) {
-      setError(e?.message || "Erreur");
+      const msg = e?.message || "Erreur";
+      setError(msg);
+      toast.error(msg);
     } finally {
       setSaving(false);
     }
@@ -101,7 +109,9 @@ export default function useNewsletterEditor(newsletterId) {
 
   async function sendTest() {
     if (!testTo.trim()) {
-      setError("Ajoute un email pour l'envoi test.");
+      const msg = "Ajoute un email pour l'envoi test.";
+      setError(msg);
+      toast.error(msg);
       return;
     }
 
@@ -111,14 +121,19 @@ export default function useNewsletterEditor(newsletterId) {
     try {
       await sendTestNewsletter(newsletterId, testTo);
       setMsg("Test envoyé (check Mailtrap)");
+      toast.success("Email de test envoyé");
     } catch (e) {
-      setError(e?.message || "Erreur");
+      const msg = e?.message || "Erreur";
+      setError(msg);
+      toast.error(msg);
     }
   }
 
   async function scheduleNewsletterAction() {
     if (!scheduledAt) {
-      setError("Choisis une date/heure pour programmer.");
+      const msg = "Choisis une date/heure pour programmer.";
+      setError(msg);
+      toast.error(msg);
       return;
     }
 
@@ -129,9 +144,12 @@ export default function useNewsletterEditor(newsletterId) {
     try {
       await scheduleNewsletter(newsletterId, scheduledAt);
       setMsg("Programmée");
+      toast.success("Newsletter programmée");
       await load();
     } catch (e) {
-      setError(e?.message || "Erreur");
+      const msg = e?.message || "Erreur";
+      setError(msg);
+      toast.error(msg);
     } finally {
       setScheduling(false);
     }
@@ -145,10 +163,13 @@ export default function useNewsletterEditor(newsletterId) {
     try {
       await cancelScheduleNewsletter(newsletterId);
       setMsg("Programmation annulée");
+      toast.success("Programmation annulée");
       setScheduledAt("");
       await load();
     } catch (e) {
-      setError(e?.message || "Erreur");
+      const msg = e?.message || "Erreur";
+      setError(msg);
+      toast.error(msg);
     } finally {
       setScheduling(false);
     }
@@ -162,9 +183,12 @@ export default function useNewsletterEditor(newsletterId) {
     try {
       await sendNowNewsletter(newsletterId);
       setMsg("Envoi terminé (check Mailtrap)");
+      toast.success("Envoi terminé");
       await load();
     } catch (e) {
-      setError(e?.message || "Erreur");
+      const msg = e?.message || "Erreur";
+      setError(msg);
+      toast.error(msg);
     } finally {
       setSendingAll(false);
     }

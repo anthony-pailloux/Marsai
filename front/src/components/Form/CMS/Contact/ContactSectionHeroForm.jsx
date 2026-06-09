@@ -5,7 +5,7 @@ import CmsTitleBlock from "../Titles/CmsTitleBlock";
 import CmsFieldsBlock from "../Titles/CmsFieldsBlock";
 import CmsInput from "../Fields/CmsInput";
 import CmsHideToggle from "../Fields/CmsHideToggle";
-import BtnSubmitForm from "../../../Buttons/BtnSubmitForm";
+import CmsSubmitFooter from "../Fields/CmsSubmitFooter.jsx";
 import useCmsSectionForm from "../../../../hooks/useCmsSectionForm.js";
 
 
@@ -40,6 +40,8 @@ function ContactSectionHeroForm({ forcedLocale }) {
     locale,
     values,
     handleChange,
+    message,
+    messageType,
     submitLoading,
     handleSubmit,
   } = useCmsSectionForm({
@@ -84,12 +86,12 @@ function ContactSectionHeroForm({ forcedLocale }) {
                     </CmsBlock>
                 </div>
 
-                {/**** Footer du formulaire : bouton de submission ****/}
-                <div className="w-full flex justify-center">
-                    <BtnSubmitForm loading={submitLoading} className="flex w-50 h-13.25 items-center justify-center gap-3.25 px-5.25 py-2.5 rounded-[5px] border border-[#DBE3E6] bg-white dark:border-[rgba(0,0,0,0.11)] dark:bg-[#333]">
-                        Mettre à jour
-                    </BtnSubmitForm>
-                </div>
+                <CmsSubmitFooter
+                  message={message}
+                  messageType={messageType}
+                  submitLoading={submitLoading}
+                  btnClassName="flex w-50 h-13.25 items-center justify-center gap-3.25 px-5.25 py-2.5 rounded-[5px] border border-[#DBE3E6] bg-white dark:border-[rgba(0,0,0,0.11)] dark:bg-[#333]"
+                />
 
             </form>
         </section>

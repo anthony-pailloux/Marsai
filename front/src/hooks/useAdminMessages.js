@@ -5,6 +5,7 @@ import {
   CONTACT_MESSAGES_ENDPOINTS,
   getMessageStatus,
 } from "../utils/adminMessagesUtils.js";
+import { toast } from "../utils/toast.js";
 
 export default function useAdminMessages() {
   const [messages, setMessages] = useState([]);
@@ -143,6 +144,7 @@ export default function useAdminMessages() {
       if (!res.ok) throw new Error(data?.error || "Erreur envoi réponse");
 
       setSendOk("Réponse enregistrée");
+      toast.success("Réponse enregistrée");
       setReply("");
 
       setMessages((prev) =>
@@ -158,7 +160,9 @@ export default function useAdminMessages() {
         ),
       );
     } catch (e) {
-      setSendErr(e?.message || "Erreur");
+      const msg = e?.message || "Erreur";
+      setSendErr(msg);
+      toast.error(msg);
     } finally {
       setSending(false);
     }

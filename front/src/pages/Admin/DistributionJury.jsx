@@ -4,6 +4,7 @@ import JuryMemberCard from "../../components/admin/JuryMemberCard.jsx";
 import SelectorAssignmentPanel from "../../components/admin/SelectorAssignmentPanel.jsx";
 import useJuryAdmin from "../../hooks/useJuryAdmin.js";
 import { typeAdminTitle } from "../../utils/typography.js";
+import ConfirmDialog from "../../components/ConfirmDialog.jsx";
 
 export default function DistributionJury() {
   const { t } = useTranslation("jury");
@@ -20,7 +21,10 @@ export default function DistributionJury() {
     openEdit,
     closeForm,
     submitForm,
-    removeMember,
+    deleteTarget,
+    requestDelete,
+    cancelDelete,
+    confirmDelete,
   } = useJuryAdmin();
 
   return (
@@ -59,7 +63,7 @@ export default function DistributionJury() {
                   key={member.id}
                   member={member}
                   onEdit={openEdit}
-                  onDelete={removeMember}
+                  onDelete={requestDelete}
                 />
               ))}
           </div>
@@ -74,6 +78,27 @@ export default function DistributionJury() {
             error={error}
             onClose={closeForm}
             onSubmit={submitForm}
+          />
+
+          <ConfirmDialog
+            isOpen={!!deleteTarget}
+            onClose={cancelDelete}
+            onConfirm={confirmDelete}
+            title={t("admin.confirmDeleteTitle", {
+              defaultValue: "Supprimer le membre",
+            })}
+            message={
+              deleteTarget
+                ? t("admin.confirmDelete", {
+                    first_name: deleteTarget.first_name,
+                    name: deleteTarget.name,
+                  })
+                : ""
+            }
+            confirmLabel={t("admin.confirmDeleteAction", {
+              defaultValue: "Supprimer",
+            })}
+            confirmVariant="danger"
           />
         </main>
       </div>
