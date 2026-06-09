@@ -10,13 +10,13 @@ import { resolveCmsAssetWithFallback } from "../../utils/cmsAssets.js";
 import { toMediaUrl } from "../../utils/mediaUrl";
 import { getApiBaseUrl } from "../../utils/apiBase.js";
 import { HOME_CARD, HOME_EYEBROW, HOME_EYEBROW_ICON, HOME_PILL_LINK } from "./homeCardStyles.js";
+import { toast } from "../../utils/toast.js";
 
 
 
 function SectionAward() {
   const [videos, setVideos] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [errorMsg, setErrorMsg] = useState("");
 
   const { t, i18n } = useTranslation("home");
   const isFr = i18n.language?.startsWith("fr");
@@ -38,7 +38,6 @@ function SectionAward() {
 
     async function load() {
       setLoading(true);
-      setErrorMsg("");
 
       try {
         let showcase = [];
@@ -66,7 +65,7 @@ function SectionAward() {
         if (!controller.signal.aborted) setVideos(showcase);
       } catch (err) {
         if (controller.signal.aborted) return;
-        setErrorMsg(err?.message || "Erreur inconnue");
+        toast.error(err?.message || "Erreur inconnue");
       } finally {
         if (!controller.signal.aborted) setLoading(false);
       }
@@ -132,20 +131,13 @@ function SectionAward() {
               </div>
             )}
 
-            {!loading && errorMsg && (
-              <div className="col-span-full alert alert-error">
-                <span>{t("award.error")} {errorMsg}</span>
-              </div>
-            )}
-
-            {!loading && !errorMsg && videos.length === 0 && (
+            {!loading && videos.length === 0 && (
               <div className="col-span-full alert">
                 <span>{t("award.notFound")}</span>
               </div>
             )}
 
             {!loading &&
-              !errorMsg &&
               videos.map((video) => {
                 const title = isFr ? (video?.title || video?.title_en || "Sans titre") : (video?.title_en || video?.title || "Untitled");
 

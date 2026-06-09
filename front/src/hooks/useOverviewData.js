@@ -6,16 +6,15 @@ import {
   buildTopFilms,
   computeOverviewKpi,
 } from "../utils/overviewUtils.js";
+import { toast } from "../utils/toast.js";
 
 export default function useOverviewData() {
   const [list, setList] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [err, setErr] = useState("");
 
   async function loadAll() {
     try {
       setLoading(true);
-      setErr("");
 
       const res = await fetch(`${getApiBaseUrl()}${TOP_FILMS_ENDPOINT}`, {
         headers: getAuthHeaders({ Accept: "application/json" }),
@@ -32,7 +31,7 @@ export default function useOverviewData() {
 
       setList(arr);
     } catch (e) {
-      setErr(e?.message || "Erreur");
+      toast.error(e?.message || "Erreur");
       setList([]);
     } finally {
       setLoading(false);
@@ -46,5 +45,5 @@ export default function useOverviewData() {
   const kpi = useMemo(() => computeOverviewKpi(list), [list]);
   const topFilms = useMemo(() => buildTopFilms(list), [list]);
 
-  return { loading, err, kpi, topFilms };
+  return { loading, kpi, topFilms };
 }

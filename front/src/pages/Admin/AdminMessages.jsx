@@ -13,7 +13,6 @@ const panelClass =
 export default function AdminMessages() {
   const {
     loading,
-    err,
     q,
     setQ,
     selected,
@@ -22,8 +21,6 @@ export default function AdminMessages() {
     reply,
     setReply,
     sending,
-    sendErr,
-    sendOk,
     filtered,
     loadMessages,
     sendReply,
@@ -75,20 +72,13 @@ export default function AdminMessages() {
                     </div>
                   )}
 
-                  {!loading && err && (
-                    <div className="px-6 py-8 text-sm text-red-600 dark:text-red-300">
-                      {err}
-                    </div>
-                  )}
-
-                  {!loading && !err && filtered.length === 0 && (
+                  {!loading && filtered.length === 0 && (
                     <div className="px-6 py-10 text-sm text-black/50 dark:text-white/50">
                       Aucun message.
                     </div>
                   )}
 
                   {!loading &&
-                    !err &&
                     filtered.map((m) => (
                       <MessageListItem
                         key={m.id}
@@ -108,8 +98,6 @@ export default function AdminMessages() {
                   reply={reply}
                   setReply={setReply}
                   sending={sending}
-                  sendErr={sendErr}
-                  sendOk={sendOk}
                   onSendReply={sendReply}
                 />
               </div>

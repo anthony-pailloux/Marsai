@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { registerUser, registerWithInvite } from "../services/Auth/RegisterApi.js";
 import { validateRegisterForm } from "../utils/registerFormValidation.js";
+import { toast } from "../utils/toast.js";
 
 export default function useRegisterForm({
   role = "admin",
@@ -17,14 +18,10 @@ export default function useRegisterForm({
   const [lastName, setLastName] = useState("");
   const [password, setPassword] = useState("");
   const [verifyPassword, setVerifyPassword] = useState("");
-  const [success, setSuccess] = useState("");
-  const [error, setError] = useState("");
   const [selectedRole, setSelectedRole] = useState(selectableRole ? "" : role);
 
   async function handleSubmit(e) {
     e.preventDefault();
-    setError("");
-    setSuccess("");
 
     const validationError = validateRegisterForm({
       firstName,
@@ -38,7 +35,7 @@ export default function useRegisterForm({
     });
 
     if (validationError) {
-      setError(validationError);
+      toast.error(validationError);
       return;
     }
 
@@ -67,16 +64,16 @@ export default function useRegisterForm({
         );
       }
 
-      setSuccess(
-        onSuccess
-          ? "Utilisateur créé avec succès !"
-          : isInviteMode
-            ? "Compte créé avec succès !"
-            : "User created successfully !",
-      );
+      const successMsg = onSuccess
+        ? "Utilisateur créé avec succès !"
+        : isInviteMode
+          ? "Compte créé avec succès !"
+          : "Compte créé avec succès !";
+
+      toast.success(successMsg);
       if (onSuccess) onSuccess();
     } catch (err) {
-      setError(err.message);
+      toast.error(err.message);
     }
   }
 
@@ -94,8 +91,6 @@ export default function useRegisterForm({
     setVerifyPassword,
     selectedRole,
     setSelectedRole,
-    success,
-    error,
     handleSubmit,
   };
 }

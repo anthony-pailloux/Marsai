@@ -2,9 +2,9 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import NewsletterCkEditor from "../../components/newsletter/NewsletterCkEditor.jsx";
 import { getAuthHeaders } from "../../utils/authHeaders.js";
-
 import { getApiUrl } from "../../utils/apiBase.js";
 import { typeAdminTitle } from "../../utils/typography.js";
+import { toast } from "../../utils/toast.js";
 
 export default function AdminNewsletterNew() {
   const navigate = useNavigate();
@@ -12,21 +12,16 @@ export default function AdminNewsletterNew() {
   const [subject, setSubject] = useState("");
   const [title, setTitle] = useState("");
   const [background, setBackground] = useState("#ffffff");
-
-  // NEW: contenu HTML (CKEditor)
   const [contentHtml, setContentHtml] = useState("<p>Bonjour 👋</p>");
-
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
 
   async function create() {
     if (!subject.trim()) {
-      setError("Le subject est requis.");
+      toast.error("Le subject est requis.");
       return;
     }
 
     setLoading(true);
-    setError("");
 
     try {
       const res = await fetch(`${getApiUrl()}/admin/newsletters`, {
@@ -47,9 +42,10 @@ export default function AdminNewsletterNew() {
       const data = await res.json().catch(() => null);
       if (!res.ok) throw new Error(data?.error || "Erreur création");
 
+      toast.success("Newsletter créée");
       navigate(`/admin/newsletters/${data.id}`);
     } catch (e) {
-      setError(e?.message || "Erreur");
+      toast.error(e?.message || "Erreur");
     } finally {
       setLoading(false);
     }
@@ -57,12 +53,9 @@ export default function AdminNewsletterNew() {
 
   return (
     <div className="w-full">
-
       <div className="mx-auto w-full px-6 pb-14 pt-10">
         <div className="flex gap-7">
-
           <main className="min-w-0 flex-1 w-full">
-
             <div className="mt-10 w-full">
               <h1 className={typeAdminTitle}>NOUVELLE NEWSLETTER</h1>
               <p className="mt-2 text-sm opacity-70">
@@ -109,7 +102,6 @@ export default function AdminNewsletterNew() {
                 />
               </div>
 
-              {/* ✅ NEW: CKEditor */}
               <label className="mt-6 block text-xs font-semibold tracking-widest uppercase opacity-70">
                 Contenu (CKEditor)
               </label>
@@ -119,12 +111,6 @@ export default function AdminNewsletterNew() {
                   onChange={setContentHtml}
                 />
               </div>
-
-              {error ? (
-                <p className="mt-5 text-sm text-red-700 dark:text-red-400">
-                  {error}
-                </p>
-              ) : null}
 
               <div className="mt-6 flex gap-3">
                 <button

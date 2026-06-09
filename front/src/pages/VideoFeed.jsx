@@ -7,7 +7,7 @@ export default function VideoFeed() {
   const { id } = useParams();
   const startId = String(id || "");
 
-  const { items, loading, err, containerRef, activeIndex, goBack } =
+  const { items, loading, containerRef, activeIndex, goBack } =
     useVideoFeed(startId);
 
   if (loading) {
@@ -18,10 +18,12 @@ export default function VideoFeed() {
     );
   }
 
-  if (err) {
+  if (!items.length) {
     return (
       <div className="fixed inset-0 z-[9999] grid place-items-center bg-neutral-950 text-white">
-        <div className="text-red-400">{err}</div>
+        <button type="button" onClick={goBack} className="text-white/70 underline">
+          Retour à la galerie
+        </button>
       </div>
     );
   }

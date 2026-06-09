@@ -6,6 +6,7 @@ import AdminLayoutSidebar from "../../components/admin/AdminLayoutSidebar.jsx";
 import AdminSidebarModal from "../../components/admin/AdminSidebarModal.jsx";
 import { getEventBookings } from "../../services/Events/AdminEventApi.js";
 import { typeAdminSection } from "../../utils/typography.js";
+import { toast } from "../../utils/toast.js";
 
 export default function AdminEventParticipants() {
   const { t } = useTranslation("adminEventParticipants");
@@ -15,7 +16,6 @@ export default function AdminEventParticipants() {
   const [event, setEvent] = useState(null);
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [err, setErr] = useState("");
 
   useEffect(() => {
     if (!eventId) return;
@@ -28,7 +28,7 @@ export default function AdminEventParticipants() {
         }
       })
       .catch((e) => {
-        if (alive) setErr(e?.message || "Erreur chargement");
+        if (alive) toast.error(e?.message || "Erreur chargement");
       })
       .finally(() => {
         if (alive) setLoading(false);
@@ -93,13 +93,7 @@ export default function AdminEventParticipants() {
               </div>
             )}
 
-            {err && (
-              <div className="mt-8 rounded-2xl bg-red-500/10 px-4 py-3 text-sm text-red-700 dark:text-red-400">
-                {err}
-              </div>
-            )}
-
-            {!loading && !err && (
+            {!loading && (
               <div className="mt-8 overflow-hidden rounded-3xl border border-black/10 bg-black/5 dark:border-[#FF8C42]/60 dark:bg-white/5">
                 <div className="overflow-x-auto">
                   <table className="min-w-full text-sm">

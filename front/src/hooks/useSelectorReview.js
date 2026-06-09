@@ -1,16 +1,15 @@
 import { useEffect, useState } from "react";
 import { getApiUrl } from "../utils/apiBase.js";
 import { getAuthToken, isSelectorFromToken } from "../utils/authToken.js";
+import { toast } from "../utils/toast.js";
 
 /** Gère la review sélectionneur sur une vidéo (chargement + sauvegarde). */
 export default function useSelectorReview(videoId) {
   const [isSelector, setIsSelector] = useState(false);
   const [reviewOpen, setReviewOpen] = useState(false);
   const [reviewLoading, setReviewLoading] = useState(false);
-  const [reviewError, setReviewError] = useState("");
   const [myRating, setMyRating] = useState(10);
   const [myComment, setMyComment] = useState("");
-  const [savedMsg, setSavedMsg] = useState("");
 
   useEffect(() => {
     const ok = isSelectorFromToken();
@@ -22,7 +21,6 @@ export default function useSelectorReview(videoId) {
     async function loadMyReview() {
       try {
         setReviewLoading(true);
-        setReviewError("");
 
         const token = getAuthToken();
         const res = await fetch(`${getApiUrl()}/videos/${videoId}/review/me`, {
@@ -42,7 +40,7 @@ export default function useSelectorReview(videoId) {
           setMyComment("");
         }
       } catch (e) {
-        if (alive) setReviewError(e?.message || "Erreur review");
+        if (alive) toast.error(e?.message || "Erreur review");
       } finally {
         if (alive) setReviewLoading(false);
       }
@@ -57,8 +55,6 @@ export default function useSelectorReview(videoId) {
   async function saveReview() {
     try {
       setReviewLoading(true);
-      setReviewError("");
-      setSavedMsg("");
 
       const token = getAuthToken();
       const res = await fetch(`${getApiUrl()}/videos/${videoId}/review`, {
@@ -76,11 +72,10 @@ export default function useSelectorReview(videoId) {
       const data = await res.json();
       if (!res.ok) throw new Error(data?.error || "Erreur sauvegarde");
 
-      setSavedMsg("✅ Enregistré !");
-      setTimeout(() => setSavedMsg(""), 1200);
+      toast.success("Évaluation enregistrée");
       setReviewOpen(false);
     } catch (e) {
-      setReviewError(e?.message || "Erreur sauvegarde");
+      toast.error(e?.message || "Erreur sauvegarde");
     } finally {
       setReviewLoading(false);
     }
@@ -91,12 +86,10 @@ export default function useSelectorReview(videoId) {
     reviewOpen,
     setReviewOpen,
     reviewLoading,
-    reviewError,
     myRating,
     setMyRating,
     myComment,
     setMyComment,
-    savedMsg,
     saveReview,
   };
 }

@@ -5,6 +5,7 @@ import { typeAdminSection, typeBodySm } from "../../utils/typography.js";
 import Button from "../ui/Button.jsx";
 import Field from "../ui/Field.jsx";
 import { Input } from "../ui/Input.jsx";
+import { toast } from "../../utils/toast.js";
 
 function ResetPasswordForm() {
   const [searchParams] = useSearchParams();
@@ -13,37 +14,34 @@ function ResetPasswordForm() {
 
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    setError("");
-    setSuccess("");
 
     if (!token) {
-      setError("Lien invalide. Demandez un nouveau lien de réinitialisation.");
+      toast.error("Lien invalide. Demandez un nouveau lien de réinitialisation.");
       return;
     }
 
     if (!password.trim() || !confirmPassword.trim()) {
-      setError("Veuillez remplir tous les champs.");
+      toast.error("Veuillez remplir tous les champs.");
       return;
     }
 
     if (password !== confirmPassword) {
-      setError("Les mots de passe ne correspondent pas.");
+      toast.error("Les mots de passe ne correspondent pas.");
       return;
     }
 
     setLoading(true);
     try {
       const result = await resetPassword(token, password);
-      setSuccess(result?.message || "Mot de passe mis à jour.");
+      const msg = result?.message || "Mot de passe mis à jour.";
+      toast.success(msg);
       setTimeout(() => navigate("/login", { replace: true }), 1200);
     } catch (err) {
-      setError(err?.message || "Impossible de réinitialiser le mot de passe.");
+      toast.error(err?.message || "Impossible de réinitialiser le mot de passe.");
     } finally {
       setLoading(false);
     }
@@ -108,18 +106,6 @@ function ResetPasswordForm() {
                 className="h-12"
               />
             </Field>
-
-            {error && (
-              <div className="rounded-md bg-danger/10 px-4 py-3 text-sm text-danger">
-                {error}
-              </div>
-            )}
-
-            {success && (
-              <div className="rounded-md bg-success/10 px-4 py-3 text-sm text-success">
-                {success}
-              </div>
-            )}
 
             <Button
               type="submit"

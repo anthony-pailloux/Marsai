@@ -11,8 +11,6 @@ import { toast } from "../utils/toast.js";
 export default function useDashboardUsers() {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
   const [roleFilter, setRoleFilter] = useState(ROLE_FILTER_ALL);
   const [busyId, setBusyId] = useState(null);
   const [currentUser, setCurrentUser] = useState(null);
@@ -26,13 +24,10 @@ export default function useDashboardUsers() {
   async function refresh() {
     try {
       setLoading(true);
-      setError("");
       const data = await getUsers();
       setUsers(Array.isArray(data?.users) ? data.users : []);
     } catch (err) {
-      const msg = err?.message || "Erreur de chargement";
-      setError(msg);
-      toast.error(msg);
+      toast.error(err?.message || "Erreur de chargement");
     } finally {
       setLoading(false);
     }
@@ -55,9 +50,7 @@ export default function useDashboardUsers() {
   }, []);
 
   function showSuccessMessage(message) {
-    setSuccess(message);
     toast.success(message);
-    setTimeout(() => setSuccess(""), 3000);
   }
 
   async function onChangeRole(userId, newRole) {
@@ -75,9 +68,7 @@ export default function useDashboardUsers() {
       showSuccessMessage(`Le rôle a été changé en "${newRole}" avec succès`);
     } catch (err) {
       setUsers(previousUsers);
-      const msg = err?.message || "Erreur lors du changement de rôle";
-      setError(msg);
-      toast.error(msg);
+      toast.error(err?.message || "Erreur lors du changement de rôle");
     } finally {
       setBusyId(null);
     }
@@ -93,9 +84,7 @@ export default function useDashboardUsers() {
       showSuccessMessage("L'utilisateur a été supprimé avec succès");
     } catch (err) {
       setUsers(previousUsers);
-      const msg = err?.message || "Erreur lors de la suppression";
-      setError(msg);
-      toast.error(msg);
+      toast.error(err?.message || "Erreur lors de la suppression");
     } finally {
       setBusyId(null);
     }
@@ -104,8 +93,6 @@ export default function useDashboardUsers() {
   return {
     users,
     loading,
-    error,
-    success,
     roleFilter,
     setRoleFilter,
     busyId,

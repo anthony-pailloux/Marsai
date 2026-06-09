@@ -22,7 +22,6 @@ export default function VideoDetails() {
   const {
     video,
     loading,
-    err,
     title,
     synopsis,
     director,
@@ -38,12 +37,10 @@ export default function VideoDetails() {
     reviewOpen,
     setReviewOpen,
     reviewLoading,
-    reviewError,
     myRating,
     setMyRating,
     myComment,
     setMyComment,
-    savedMsg,
     saveReview,
   } = useSelectorReview(id);
 
@@ -57,15 +54,13 @@ export default function VideoDetails() {
     );
   }
 
-  if (err) {
+  if (!video) {
     return (
-      <div className="py-16 text-center text-red-600 dark:bg-neutral-950 dark:text-red-400">
-        {err}
+      <div className="py-16 text-center text-neutral-500 dark:bg-neutral-950 dark:text-white/60">
+        {loading ? "Chargement…" : "Vidéo introuvable."}
       </div>
     );
   }
-
-  if (!video) return null;
 
   return (
     <div className="min-h-screen bg-white text-neutral-900 dark:bg-neutral-950 dark:text-white">
@@ -115,12 +110,10 @@ export default function VideoDetails() {
         open={reviewOpen}
         onClose={() => setReviewOpen(false)}
         reviewLoading={reviewLoading}
-        reviewError={reviewError}
         myRating={myRating}
         onRatingChange={setMyRating}
         myComment={myComment}
         onCommentChange={setMyComment}
-        savedMsg={savedMsg}
         onSave={saveReview}
       />
     </div>

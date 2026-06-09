@@ -5,32 +5,29 @@ import { typeAdminSection, typeBodySm } from "../../utils/typography.js";
 import Button from "../ui/Button.jsx";
 import Field from "../ui/Field.jsx";
 import { Input } from "../ui/Input.jsx";
+import { toast } from "../../utils/toast.js";
 
 function ForgotPasswordForm() {
   const [email, setEmail] = useState("");
-  const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    setError("");
-    setSuccess("");
 
     if (!email.trim()) {
-      setError("Veuillez saisir votre adresse e-mail.");
+      toast.error("Veuillez saisir votre adresse e-mail.");
       return;
     }
 
     setLoading(true);
     try {
       const result = await requestPasswordReset(email.trim());
-      setSuccess(
+      const msg =
         result?.message ||
-          "Si un compte existe avec cet email, un lien de réinitialisation a été envoyé.",
-      );
+        "Si un compte existe avec cet email, un lien de réinitialisation a été envoyé.";
+      toast.success(msg);
     } catch (err) {
-      setError(err?.message || "Impossible d'envoyer la demande.");
+      toast.error(err?.message || "Impossible d'envoyer la demande.");
     } finally {
       setLoading(false);
     }
@@ -66,18 +63,6 @@ function ForgotPasswordForm() {
                 className="h-12"
               />
             </Field>
-
-            {error && (
-              <div className="rounded-md bg-danger/10 px-4 py-3 text-sm text-danger">
-                {error}
-              </div>
-            )}
-
-            {success && (
-              <div className="rounded-md bg-success/10 px-4 py-3 text-sm text-success">
-                {success}
-              </div>
-            )}
 
             <Button
               type="submit"

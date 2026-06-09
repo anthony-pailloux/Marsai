@@ -7,8 +7,8 @@ import {
 } from "../../services/Admin/AssignmentApi.js";
 import { getAuthHeaders } from "../../utils/authHeaders.js";
 import { typeAdminSection } from "../../utils/typography.js";
-
 import { getApiUrl } from "../../utils/apiBase.js";
+import { toast } from "../../utils/toast.js";
 
 export default function SelectorAssignmentPanel() {
   const [assignments, setAssignments] = useState([]);
@@ -17,11 +17,9 @@ export default function SelectorAssignmentPanel() {
   const [selectorId, setSelectorId] = useState("");
   const [videoId, setVideoId] = useState("");
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
 
   async function load() {
     setLoading(true);
-    setError("");
     try {
       const [assigns, selectorList, videosRes] = await Promise.all([
         fetchAssignments(),
@@ -37,7 +35,7 @@ export default function SelectorAssignmentPanel() {
       const videosData = await videosRes.json();
       setVideos(videosData?.videos ?? []);
     } catch (e) {
-      setError(e?.message || "Erreur chargement");
+      toast.error(e?.message || "Erreur chargement");
     } finally {
       setLoading(false);
     }
@@ -52,20 +50,22 @@ export default function SelectorAssignmentPanel() {
     if (!selectorId || !videoId) return;
     try {
       await createAssignment(Number(selectorId), Number(videoId));
+      toast.success("Film assigné");
       setSelectorId("");
       setVideoId("");
       await load();
     } catch (err) {
-      setError(err?.message || "Erreur");
+      toast.error(err?.message || "Erreur");
     }
   }
 
   async function onRemove(selector_id, video_id) {
     try {
       await deleteAssignment(selector_id, video_id);
+      toast.success("Assignation retirée");
       await load();
     } catch (err) {
-      setError(err?.message || "Erreur");
+      toast.error(err?.message || "Erreur");
     }
   }
 
@@ -75,10 +75,6 @@ export default function SelectorAssignmentPanel() {
       <p className="mt-1 text-sm text-black/60 dark:text-white/60">
         Chaque sélecteur ne voit que les films qui lui sont assignés.
       </p>
-
-      {error && (
-        <p className="mt-4 text-sm text-red-600 dark:text-red-300">{error}</p>
-      )}
 
       <form onSubmit={onAssign} className="mt-6 flex flex-wrap gap-3">
         <select

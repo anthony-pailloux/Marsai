@@ -20,8 +20,6 @@ function SectionLocalisationEventForm({ forcedLocale }) {
     locale,
     values,
     handleChange,
-    message,
-    messageType,
     submitLoading,
     handleSubmit,
   } = useCmsSectionForm({
@@ -60,8 +58,6 @@ function SectionLocalisationEventForm({ forcedLocale }) {
         />
 
         <CmsSubmitFooter
-          message={message}
-          messageType={messageType}
           submitLoading={submitLoading}
           btnClassName="flex w-[200px] h-[53px] items-center justify-center gap-[13px] px-[21px] py-[10px] rounded-[5px] border border-[#DBE3E6] bg-white dark:border-[rgba(0,0,0,0.11)] dark:bg-[#333]"
         />

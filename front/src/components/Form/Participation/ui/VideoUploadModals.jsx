@@ -3,7 +3,6 @@ import ModalShell from "./ModalShell.jsx";
 export function VideoUploadConfirmModal({
   open,
   t,
-  errorMsg,
   uploading,
   onClose,
   onConfirm,
@@ -13,12 +12,6 @@ export function VideoUploadConfirmModal({
       <div className="space-y-4 text-sm text-neutral-800">
         <p>{t("upload.confirm.text")}</p>
         <p className="text-xs text-neutral-500">{t("upload.confirm.hint")}</p>
-
-        {errorMsg ? (
-          <div className="rounded-xl bg-red-50 p-3 text-sm text-red-700 ring-1 ring-red-100">
-            {errorMsg}
-          </div>
-        ) : null}
 
         <div className="flex items-center justify-end gap-3 pt-2">
           <button

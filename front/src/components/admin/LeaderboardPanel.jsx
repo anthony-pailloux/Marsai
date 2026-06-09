@@ -10,7 +10,6 @@ import {
 
 export default function LeaderboardPanel({
   loading,
-  err,
   q,
   onQueryChange,
   filtered,
@@ -99,20 +98,13 @@ export default function LeaderboardPanel({
           </div>
         )}
 
-        {!loading && err && (
-          <div className="px-6 py-8 text-sm text-red-600 dark:text-red-300">
-            {err}
-          </div>
-        )}
-
-        {!loading && !err && filtered.length === 0 && (
+        {!loading && filtered.length === 0 && (
           <div className="px-6 py-10 text-sm text-black/50 dark:text-white/50">
             Aucun résultat.
           </div>
         )}
 
         {!loading &&
-          !err &&
           filtered.map((v, idx) => {
             const title = v.title || v.title_en || "Sans titre";
             const author =

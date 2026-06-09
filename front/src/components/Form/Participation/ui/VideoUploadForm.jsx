@@ -19,7 +19,6 @@ export default function VideoUploadForm({ formRef, onCanProceedChange }) {
     successOpen,
     uploading,
     successInfo,
-    errorMsg,
     update,
     updateFile,
     updateStill,
@@ -42,7 +41,6 @@ export default function VideoUploadForm({ formRef, onCanProceedChange }) {
       <VideoUploadConfirmModal
         open={confirmOpen}
         t={t}
-        errorMsg={errorMsg}
         uploading={uploading}
         onClose={closeConfirm}
         onConfirm={confirmAndUpload}
@@ -77,12 +75,6 @@ export default function VideoUploadForm({ formRef, onCanProceedChange }) {
             SEND
           </button>
         </div>
-
-        {errorMsg ? (
-          <div className="rounded-xl bg-red-50 p-3 text-sm text-red-700 ring-1 ring-red-100">
-            {errorMsg}
-          </div>
-        ) : null}
       </form>
     </>
   );

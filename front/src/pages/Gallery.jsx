@@ -23,7 +23,6 @@ export default function Gallery() {
     page,
     setPage,
     loading,
-    err,
     pageItems,
     total,
     totalPages,
@@ -50,7 +49,6 @@ export default function Gallery() {
               <section>
                 <GalleryGridSection
                   loading={loading}
-                  err={err}
                   pageItems={pageItems}
                   page={page}
                   totalPages={totalPages}

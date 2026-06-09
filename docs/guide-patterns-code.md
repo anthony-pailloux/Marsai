@@ -163,11 +163,12 @@ toast.info("Information");
 
 | Zone | Pattern |
 |------|---------|
-| CMS (`useCmsSectionForm`) | Toast auto + bandeau `CmsFormFeedback` via `CmsSubmitFooter` |
-| Admin (events, FAQ, vidéos…) | `toast.success` / `toast.error` |
+| Toute l'app (CMS, admin, auth, contact, newsletter…) | **Toast uniquement** via `toast.success` / `toast.error` |
+| Erreurs de champ (validation Zod) | Inline sous le champ concerné (ex. `FaqFieldError`) |
+| Flux majeurs (upload film réussi) | Modal dédiée + toast pour les erreurs |
 | Suppressions | `ConfirmDialog` (pas `window.confirm`) |
 
-Formulaires CMS : toujours utiliser `CmsSubmitFooter` avec `message` et `messageType` du hook.
+Formulaires CMS : utiliser `CmsSubmitFooter` (bouton seul — le hook affiche le toast automatiquement).
 
 ---
 
@@ -214,7 +215,7 @@ Workflow branches + PR : `docs/guide_GIT_workflow.md`
 
 ---
 
-## 10) Quand refactorer (et quand s'arrêter)
+## 11) Quand refactorer (et quand s'arrêter)
 
 **Refactorer** si :
 

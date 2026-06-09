@@ -3,6 +3,7 @@ import NewsletterCkEditor from "../../components/newsletter/NewsletterCkEditor.j
 import NewsletterBlocksEditor from "../../components/admin/NewsletterBlocksEditor.jsx";
 import useNewsletterEditor from "../../hooks/useNewsletterEditor.js";
 import { typeAdminTitle } from "../../utils/typography.js";
+import { toast } from "../../utils/toast.js";
 
 export default function AdminNewsletterEditor() {
   const { id } = useParams();
@@ -89,22 +90,11 @@ export default function AdminNewsletterEditor() {
               onRemoveBlock={editor.removeBlock}
               onMoveBlock={editor.moveBlock}
               onUploadImage={editor.uploadImage}
-              onUploadSuccess={editor.setMsg}
-              onUploadError={editor.setError}
+              onUploadSuccess={() => toast.success("Image uploadée")}
+              onUploadError={(msg) => toast.error(msg || "Erreur upload")}
             />
 
             <div className="mt-6 flex flex-col gap-3">
-              {editor.error ? (
-                <p className="text-sm text-red-700 dark:text-red-400">
-                  {editor.error}
-                </p>
-              ) : null}
-              {editor.msg ? (
-                <p className="text-sm text-green-700 dark:text-green-400">
-                  {editor.msg}
-                </p>
-              ) : null}
-
               <div className="flex flex-wrap items-center gap-3">
                 <button
                   onClick={editor.save}
