@@ -18,6 +18,7 @@ import {
 } from "../components/Form/Participation/ui/videoUploadDraft.js";
 import { submitVideoUpload } from "../components/Form/Participation/ui/videoUploadSubmit.js";
 import useVideoUploadCountries from "./useVideoUploadCountries.js";
+import { toast } from "../utils/toast.js";
 
 export default function useVideoUploadForm({ formRef, onCanProceedChange }) {
   const { t, i18n } = useTranslation("participation");
@@ -40,7 +41,6 @@ export default function useVideoUploadForm({ formRef, onCanProceedChange }) {
   const [successOpen, setSuccessOpen] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [successInfo, setSuccessInfo] = useState("");
-  const [errorMsg, setErrorMsg] = useState("");
 
   useEffect(() => {
     const draft = restoreVideoUploadDraft();
@@ -70,7 +70,7 @@ export default function useVideoUploadForm({ formRef, onCanProceedChange }) {
         if (uploading || submitRequestedRef.current) return;
 
         if (!canSubmitUpload(form, files, readOwnershipFromStorage())) {
-          setErrorMsg(t("upload.missingValidations"));
+          toast.error(t("upload.missingValidations"));
           return;
         }
 
@@ -122,12 +122,11 @@ export default function useVideoUploadForm({ formRef, onCanProceedChange }) {
 
     const ownershipFresh = readOwnershipFromStorage();
     if (!canSubmitUpload(form, files, ownershipFresh)) {
-      setErrorMsg(t("upload.missingValidations"));
+      toast.error(t("upload.missingValidations"));
       submitRequestedRef.current = false;
       return;
     }
 
-    setErrorMsg("");
     setUploading(true);
 
     try {
@@ -143,7 +142,7 @@ export default function useVideoUploadForm({ formRef, onCanProceedChange }) {
       setSuccessOpen(true);
     } catch (err) {
       console.error(err);
-      setErrorMsg(err?.message || t("upload.uploadError"));
+      toast.error(err?.message || t("upload.uploadError"));
       submitRequestedRef.current = false;
     } finally {
       setUploading(false);
@@ -155,7 +154,7 @@ export default function useVideoUploadForm({ formRef, onCanProceedChange }) {
     if (uploading || submitRequestedRef.current) return;
 
     if (!canSubmitUpload(form, files, readOwnershipFromStorage())) {
-      setErrorMsg(t("upload.missingValidations"));
+      toast.error(t("upload.missingValidations"));
       return;
     }
 
@@ -182,7 +181,6 @@ export default function useVideoUploadForm({ formRef, onCanProceedChange }) {
     successOpen,
     uploading,
     successInfo,
-    errorMsg,
     update,
     updateFile,
     updateStill,

@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { getApiUrl, getApiBaseUrl } from "../utils/apiBase.js";
+import { toast } from "../utils/toast.js";
 
 export const PLACEHOLDER_COVER = "/cover-fallback.jpg";
 
@@ -16,7 +17,6 @@ function parseAiTags(raw) {
 export default function useVideoDetails(id) {
   const [video, setVideo] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [err, setErr] = useState("");
 
   useEffect(() => {
     let alive = true;
@@ -24,7 +24,6 @@ export default function useVideoDetails(id) {
     async function load() {
       try {
         setLoading(true);
-        setErr("");
 
         const res = await fetch(`${getApiUrl()}/videos/${id}`);
         const data = await res.json();
@@ -32,7 +31,7 @@ export default function useVideoDetails(id) {
         if (!res.ok) throw new Error(data?.error || "Erreur chargement vidéo");
         if (alive) setVideo(data.video);
       } catch (e) {
-        if (alive) setErr(e?.message || "Erreur");
+        if (alive) toast.error(e?.message || "Erreur");
       } finally {
         if (alive) setLoading(false);
       }
@@ -81,7 +80,6 @@ export default function useVideoDetails(id) {
   return {
     video,
     loading,
-    err,
     title,
     synopsis,
     director,

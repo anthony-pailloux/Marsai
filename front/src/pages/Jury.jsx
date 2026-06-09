@@ -13,7 +13,7 @@ export default function Jury() {
   const hero = "hero";
 
   const { content } = useCmsContent(page, locale);
-  const { loading, err, president, members } = useJuryPage(t);
+  const { loading, president, members } = useJuryPage(t);
 
   if (loading) return null;
 
@@ -21,17 +21,10 @@ export default function Jury() {
     <div className="pt-25">
       <div className="mx-auto w-full max-w-6xl px-6">
         <JuryHeroSection content={content} page={page} hero={hero} t={t} />
-
-        {err ? (
-          <div className="py-16 text-center text-red-600 dark:text-red-300">
-            {err}
-          </div>
-        ) : (
-          <JuryPresidentSection president={president} t={t} />
-        )}
+        <JuryPresidentSection president={president} t={t} />
       </div>
 
-      {!err && <JuryMembersGrid members={members} t={t} />}
+      <JuryMembersGrid members={members} t={t} />
     </div>
   );
 }

@@ -2,38 +2,36 @@
 import { inviteUser } from "../../services/Admin/Users.api.js";
 import AdminSelect from "./AdminSelect.jsx";
 import { typeBodySm } from "../../utils/typography.js";
+import { toast } from "../../utils/toast.js";
 
 export default function InviteForm({ onSuccess, onCancel }) {
   const [email, setEmail] = useState("");
   const [role, setRole] = useState("");
-  const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(false);
 
   async function onSubmit(e) {
     e.preventDefault();
-    setError("");
-    setSuccess("");
 
     const cleanEmail = email.trim();
     if (!cleanEmail) {
-      setError("Email requis");
+      toast.error("Email requis");
       return;
     }
     if (!role) {
-      setError("Veuillez choisir un rôle");
+      toast.error("Veuillez choisir un rôle");
       return;
     }
 
     setLoading(true);
     try {
       const result = await inviteUser(cleanEmail, role);
-      setSuccess(result?.message || "Invitation envoyée");
+      const msg = result?.message || "Invitation envoyée";
+      toast.success(msg);
       setEmail("");
       setRole("");
       if (onSuccess) onSuccess();
     } catch (err) {
-      setError(err?.message || "Erreur lors de l'envoi");
+      toast.error(err?.message || "Erreur lors de l'envoi");
     } finally {
       setLoading(false);
     }
@@ -72,9 +70,6 @@ export default function InviteForm({ onSuccess, onCancel }) {
           ]}
         />
       </div>
-
-      {error && <p className="text-sm text-[#DC2626]">{error}</p>}
-      {success && <p className="text-sm text-[#1AFF7A]">{success}</p>}
 
       <div className="w-full flex gap-3">
         {onCancel && (

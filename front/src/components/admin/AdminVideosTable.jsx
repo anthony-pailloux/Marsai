@@ -9,7 +9,6 @@ import {
 
 export default function AdminVideosTable({
   loading,
-  error,
   filtered,
   busyId,
   onChangeStatus,
@@ -50,18 +49,7 @@ export default function AdminVideosTable({
             </tr>
           )}
 
-          {!loading && error && (
-            <tr className="border-t border-black/10 dark:border-white/10">
-              <td
-                colSpan={6}
-                className="px-6 py-6 text-sm text-red-600 dark:text-red-300"
-              >
-                {error}
-              </td>
-            </tr>
-          )}
-
-          {!loading && !error && filtered.length === 0 && (
+          {!loading && filtered.length === 0 && (
             <tr className="border-t border-black/10 dark:border-white/10">
               <td
                 colSpan={6}
@@ -73,7 +61,6 @@ export default function AdminVideosTable({
           )}
 
           {!loading &&
-            !error &&
             filtered.map((v) => (
               <tr
                 key={v.id}

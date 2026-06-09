@@ -4,13 +4,13 @@ import {
   filterGalleryVideos,
   paginateItems,
 } from "../utils/galleryPageUtils.js";
+import { toast } from "../utils/toast.js";
 
 export default function useGalleryPage() {
   const [query, setQuery] = useState("");
   const [page, setPage] = useState(1);
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [err, setErr] = useState("");
 
   useEffect(() => {
     let alive = true;
@@ -18,13 +18,12 @@ export default function useGalleryPage() {
     async function load() {
       try {
         setLoading(true);
-        setErr("");
 
         const data = await fetchJson("/videos");
         const list = Array.isArray(data) ? data : data?.videos || [];
         if (alive) setItems(list);
       } catch (e) {
-        if (alive) setErr(e?.message || "Erreur");
+        if (alive) toast.error(e?.message || "Erreur");
       } finally {
         if (alive) setLoading(false);
       }
@@ -56,7 +55,6 @@ export default function useGalleryPage() {
     page,
     setPage,
     loading,
-    err,
     pageItems: pagination.pageItems,
     total: pagination.total,
     totalPages: pagination.totalPages,

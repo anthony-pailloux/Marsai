@@ -9,7 +9,6 @@ export default function JuryForm({
   mode,
   initialValues,
   saving,
-  error,
   onClose,
   onSubmit,
 }) {
@@ -46,12 +45,6 @@ export default function JuryForm({
         </div>
 
         <div className="px-8 pb-8">
-          {error && (
-            <div className="mb-5 rounded-2xl border border-red-200 bg-red-50 px-5 py-4 text-sm text-red-700 dark:border-red-500/30 dark:bg-red-500/10 dark:text-red-200">
-              {error}
-            </div>
-          )}
-
           <JuryFormFields
             form={form}
             fileName={fileName}

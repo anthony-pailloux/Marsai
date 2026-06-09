@@ -3,7 +3,7 @@ import useAdminLeaderboard from "../../hooks/useAdminLeaderboard.js";
 import { typeAdminTitle, typeBodySm } from "../../utils/typography.js";
 
 export default function AdminLeaderboard() {
-  const { loading, err, q, setQ, filtered, best, refresh } =
+  const { loading, q, setQ, filtered, best, refresh } =
     useAdminLeaderboard();
 
   return (
@@ -22,7 +22,6 @@ export default function AdminLeaderboard() {
 
             <LeaderboardPanel
               loading={loading}
-              err={err}
               q={q}
               onQueryChange={setQ}
               filtered={filtered}

@@ -1,4 +1,4 @@
-﻿import CmsFormHeader from "../Titles/CmsFormHeader";
+import CmsFormHeader from "../Titles/CmsFormHeader";
 import CmsBlock from "../Titles/CmsBlock";
 import CmsTitleBlock from "../Titles/CmsTitleBlock";
 import useCmsSectionForm from "../../../../hooks/useCmsSectionForm.js";
@@ -29,8 +29,6 @@ function GalleryFilmsListForm({ forcedLocale }) {
     locale,
     values,
     handleChange,
-    message,
-    messageType,
     submitLoading,
     handleSubmit,
   } = useCmsSectionForm({
@@ -58,8 +56,6 @@ function GalleryFilmsListForm({ forcedLocale }) {
                 </CmsBlock>
 
                 <CmsSubmitFooter
-                  message={message}
-                  messageType={messageType}
                   submitLoading={submitLoading}
                 />
             </form>

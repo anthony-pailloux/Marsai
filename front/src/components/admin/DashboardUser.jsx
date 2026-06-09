@@ -8,8 +8,6 @@ import useDashboardUsers from "../../hooks/useDashboardUsers.js";
 function DashboardUser() {
   const {
     loading,
-    error,
-    success,
     roleFilter,
     setRoleFilter,
     busyId,
@@ -66,17 +64,6 @@ function DashboardUser() {
         onConfirmRole={confirmRoleChange}
         pendingRoleChange={pendingRoleChange}
       />
-
-      {error && (
-        <div className="mb-3 rounded-2xl bg-[#DC2626]/15 px-5 py-3 text-sm font-semibold text-[#DC2626] ring-1 ring-[#DC2626]/25">
-          {error}
-        </div>
-      )}
-      {success && (
-        <div className="mb-3 rounded-2xl bg-[#1AFF7A]/15 px-5 py-3 text-sm font-semibold text-[#1AFF7A] ring-1 ring-[#1AFF7A]/25">
-          {success}
-        </div>
-      )}
 
       <DashboardUserCollapsible
         icon="➕"

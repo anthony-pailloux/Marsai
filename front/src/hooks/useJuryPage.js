@@ -1,11 +1,11 @@
 import { useEffect, useMemo, useState } from "react";
 import { getApiUrl } from "../utils/apiBase.js";
 import { getJuryMembers, getJuryPresident } from "../utils/juryPageUtils.js";
+import { toast } from "../utils/toast.js";
 
 export default function useJuryPage(t) {
   const [jury, setJury] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [err, setErr] = useState("");
 
   useEffect(() => {
     let alive = true;
@@ -13,7 +13,6 @@ export default function useJuryPage(t) {
     async function loadJury() {
       try {
         setLoading(true);
-        setErr("");
 
         const res = await fetch(`${getApiUrl()}/jury`, {
           headers: { Accept: "application/json" },
@@ -28,7 +27,7 @@ export default function useJuryPage(t) {
         const list = Array.isArray(data?.jury) ? data.jury : [];
         if (alive) setJury(list);
       } catch (e) {
-        if (alive) setErr(e?.message || t("errorLoading"));
+        if (alive) toast.error(e?.message || t("errorLoading"));
       } finally {
         if (alive) setLoading(false);
       }
@@ -41,5 +40,5 @@ export default function useJuryPage(t) {
   const president = useMemo(() => getJuryPresident(jury), [jury]);
   const members = useMemo(() => getJuryMembers(jury), [jury]);
 
-  return { jury, loading, err, president, members };
+  return { jury, loading, president, members };
 }

@@ -10,20 +10,16 @@ import { toast } from "../utils/toast.js";
 export default function useAdminMessages() {
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [err, setErr] = useState("");
 
   const [q, setQ] = useState("");
   const [selectedId, setSelectedId] = useState(null);
 
   const [reply, setReply] = useState("");
   const [sending, setSending] = useState(false);
-  const [sendErr, setSendErr] = useState("");
-  const [sendOk, setSendOk] = useState("");
 
   async function loadMessages() {
     try {
       setLoading(true);
-      setErr("");
 
       const res = await fetch(
         `${getApiBaseUrl()}${CONTACT_MESSAGES_ENDPOINTS.list}`,
@@ -51,7 +47,7 @@ export default function useAdminMessages() {
         setSelectedId(list[0].id);
       }
     } catch (e) {
-      setErr(e?.message || "Erreur");
+      toast.error(e?.message || "Erreur");
       setMessages([]);
     } finally {
       setLoading(false);
@@ -125,8 +121,6 @@ export default function useAdminMessages() {
 
     try {
       setSending(true);
-      setSendErr("");
-      setSendOk("");
 
       const res = await fetch(
         `${getApiBaseUrl()}${CONTACT_MESSAGES_ENDPOINTS.reply(selected.id)}`,
@@ -143,7 +137,6 @@ export default function useAdminMessages() {
       const data = await res.json().catch(() => null);
       if (!res.ok) throw new Error(data?.error || "Erreur envoi réponse");
 
-      setSendOk("Réponse enregistrée");
       toast.success("Réponse enregistrée");
       setReply("");
 
@@ -160,9 +153,7 @@ export default function useAdminMessages() {
         ),
       );
     } catch (e) {
-      const msg = e?.message || "Erreur";
-      setSendErr(msg);
-      toast.error(msg);
+      toast.error(e?.message || "Erreur");
     } finally {
       setSending(false);
     }
@@ -171,7 +162,6 @@ export default function useAdminMessages() {
   return {
     messages,
     loading,
-    err,
     q,
     setQ,
     selectedId,
@@ -179,8 +169,6 @@ export default function useAdminMessages() {
     reply,
     setReply,
     sending,
-    sendErr,
-    sendOk,
     filtered,
     selected,
     loadMessages,

@@ -19,20 +19,16 @@ export default function useJuryAdmin() {
   const [currentId, setCurrentId] = useState(null);
   const [initialValues, setInitialValues] = useState(null);
   const [saving, setSaving] = useState(false);
-  const [error, setError] = useState("");
   const [deleteTarget, setDeleteTarget] = useState(null);
 
   async function refresh() {
     setLoading(true);
-    setError("");
     try {
       const r = await fetch(`${getApiUrl()}/jury`);
       const d = await r.json();
       setJury(d?.jury || []);
     } catch {
-      const msg = t("admin.errors.load");
-      setError(msg);
-      toast.error(msg);
+      toast.error(t("admin.errors.load"));
     } finally {
       setLoading(false);
     }
@@ -49,7 +45,6 @@ export default function useJuryAdmin() {
     setMode("create");
     setCurrentId(null);
     setInitialValues({ sort_order: (jury?.length || 0) + 1 });
-    setError("");
     setOpen(true);
   }
 
@@ -57,7 +52,6 @@ export default function useJuryAdmin() {
     setMode("edit");
     setCurrentId(member.id);
     setInitialValues(mapMemberToEditForm(member));
-    setError("");
     setOpen(true);
   }
 
@@ -75,7 +69,6 @@ export default function useJuryAdmin() {
 
   async function submitForm(form) {
     setSaving(true);
-    setError("");
 
     try {
       if (!form.first_name?.trim() || !form.name?.trim()) {
@@ -103,9 +96,7 @@ export default function useJuryAdmin() {
         mode === "create" ? "Membre du jury ajouté" : "Membre du jury mis à jour",
       );
     } catch (e) {
-      const msg = e?.message || t("admin.errors.generic");
-      setError(msg);
-      toast.error(msg);
+      toast.error(e?.message || t("admin.errors.generic"));
     } finally {
       setSaving(false);
     }
@@ -134,17 +125,16 @@ export default function useJuryAdmin() {
 
   return {
     loading,
-    error,
     sortedJury,
     open,
     mode,
     initialValues,
     saving,
-    deleteTarget,
     openCreate,
     openEdit,
     closeForm,
     submitForm,
+    deleteTarget,
     requestDelete,
     cancelDelete,
     confirmDelete,

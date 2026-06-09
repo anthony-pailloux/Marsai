@@ -3,20 +3,15 @@ import { useTranslation } from "react-i18next";
 
 import { getApiUrl } from "../../utils/apiBase.js";
 import { typeBody, typeCta, typeNewsletterTitle } from "../../utils/typography.js";
+import { toast } from "../../utils/toast.js";
 
 function Newsletter() {
-
   const { t } = useTranslation("newsletters");
 
-  // Etat du formulaire newsletter
   const [email, setEmail] = useState("");
   const [consent, setConsent] = useState(false);
-
   const [loading, setLoading] = useState(false);
-  const [msg, setMsg] = useState("");
-  const [error, setError] = useState("");
 
-  // Envoie l'email au backend
   async function submit(e) {
     e.preventDefault();
 
@@ -24,15 +19,12 @@ function Newsletter() {
     if (!cleanEmail) return;
 
     if (!consent) {
-      setMsg("");
-      setError("Vous devez accepter de recevoir la newsletter.");
+      toast.error("Vous devez accepter de recevoir la newsletter.");
       return;
     }
 
     try {
       setLoading(true);
-      setMsg("");
-      setError("");
 
       const res = await fetch(`${getApiUrl()}/newsletter`, {
         method: "POST",
@@ -49,12 +41,11 @@ function Newsletter() {
         throw new Error(data?.error || "Erreur inscription");
       }
 
-      // Message succès + reset champ
-      setMsg(data?.message || "Inscription réussie");
+      toast.success(data?.message || "Inscription réussie");
       setEmail("");
       setConsent(false);
     } catch (err) {
-      setError(err?.message || "Erreur");
+      toast.error(err?.message || "Erreur");
     } finally {
       setLoading(false);
     }
@@ -88,7 +79,6 @@ function Newsletter() {
         </button>
       </div>
 
-      {/* Consentement obligatoire */}
       <label className="w-full flex items-start gap-2 text-xs opacity-80">
         <input
           type="checkbox"
@@ -96,24 +86,8 @@ function Newsletter() {
           onChange={(e) => setConsent(e.target.checked)}
           className="mt-1"
         />
-        <span>
-          {t("consent")}
-        </span>
+        <span>{t("consent")}</span>
       </label>
-
-      {/* Affiche message succès */}
-      {msg ? (
-        <p className={`w-full text-left text-green-700 dark:text-green-400 ${typeBody}`}>
-          {msg}
-        </p>
-      ) : null}
-
-      {/* Affiche message erreur */}
-      {error ? (
-        <p className="w-full text-left text-xs text-red-700 dark:text-red-400">
-          {error}
-        </p>
-      ) : null}
     </form>
   );
 }

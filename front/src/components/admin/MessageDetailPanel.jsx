@@ -7,8 +7,6 @@ export default function MessageDetailPanel({
   reply,
   setReply,
   sending,
-  sendErr,
-  sendOk,
   onSendReply,
 }) {
   if (!selected) {
@@ -80,18 +78,6 @@ export default function MessageDetailPanel({
           placeholder="Écris ta réponse ici…"
           className="mt-3 w-full resize-none rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm text-black/80 outline-none focus:ring-2 focus:ring-black/10 dark:border-white/10 dark:bg-black/30 dark:text-white/80 dark:focus:ring-white/10"
         />
-
-        {sendErr ? (
-          <div className="mt-3 text-sm text-red-600 dark:text-red-300">
-            {sendErr}
-          </div>
-        ) : null}
-
-        {sendOk ? (
-          <div className="mt-3 text-sm text-emerald-600 dark:text-emerald-300">
-            {sendOk}
-          </div>
-        ) : null}
 
         <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
           <button

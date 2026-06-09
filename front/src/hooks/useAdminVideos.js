@@ -17,18 +17,14 @@ export default function useAdminVideos() {
   const [busyId, setBusyId] = useState(null);
   const [q, setQ] = useState("");
   const [statusFilter, setStatusFilter] = useState("All");
-  const [error, setError] = useState("");
 
   async function refresh() {
     try {
       setLoading(true);
-      setError("");
       const data = await getAdminVideos();
       setVideos(Array.isArray(data?.videos) ? data.videos : []);
     } catch (e) {
-      const msg = e?.message || "Erreur chargement";
-      setError(msg);
-      toast.error(msg);
+      toast.error(e?.message || "Erreur chargement");
     } finally {
       setLoading(false);
     }
@@ -90,7 +86,6 @@ export default function useAdminVideos() {
     setQ,
     statusFilter,
     setStatusFilter,
-    error,
     filtered,
     refresh,
     onChangeStatus,

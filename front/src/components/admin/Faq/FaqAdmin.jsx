@@ -1,11 +1,8 @@
-import { useTranslation } from "react-i18next";
 import FaqForm from "../../Form/Faq/FaqForm.jsx";
 import useFaqAdmin from "../../../hooks/useFaqAdmin.js";
 
 function FaqAdmin() {
-  const { t } = useTranslation("faq");
   const {
-    error,
     loading,
     newFaq,
     faqsEdit,
@@ -20,8 +17,6 @@ function FaqAdmin() {
 
   return (
     <>
-      {error && <p className="text-center text-red-500">{t(error)}</p>}
-
       {loading && faqsEdit.length === 0 && (
         <p className="text-center text-gray-500">Loading…</p>
       )}

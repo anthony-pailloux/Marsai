@@ -26,8 +26,6 @@ function RegisterForm({
     setVerifyPassword,
     selectedRole,
     setSelectedRole,
-    success,
-    error,
     handleSubmit,
   } = useRegisterForm({ role, selectableRole, onSuccess, inviteToken });
 
@@ -82,27 +80,6 @@ function RegisterForm({
         verifyPassword={verifyPassword}
         setVerifyPassword={setVerifyPassword}
       />
-
-      {error && (
-        <p
-          className={
-            isDashboard ? "text-sm text-[#DC2626]" : "text-red-500 text-sm text-center"
-          }
-        >
-          {error}
-        </p>
-      )}
-      {success && (
-        <p
-          className={
-            isDashboard
-              ? "text-sm text-[#1AFF7A]"
-              : "text-green-500 text-sm text-center"
-          }
-        >
-          {success}
-        </p>
-      )}
 
       <div className="w-full flex gap-3">
         {onCancel && (

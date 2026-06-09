@@ -8,6 +8,7 @@ import { useTranslation } from "react-i18next";
 import SectionHero from "../components/FAQ/SectionHero.jsx";
 import { isSectionVisible } from "../utils/isVisible.js";
 import useCmsContent from "../hooks/useCmsContent.js";
+import { toast } from "../utils/toast.js";
 
 function Faq() {
 
@@ -24,7 +25,6 @@ function Faq() {
 
     //usestate pour le fetch (***********************commun mais avec une variation a public et admin******************************)
     const [faqs, setFaqs] = useState([]);
-    const [error, setError] = useState(null);
     const [openFaq, setOpenFaq] = useState(null);
     const [loading, setLoading] = useState(false);
 
@@ -40,7 +40,7 @@ function Faq() {
                 const res = await getAllFaq();
                 setFaqs(res.data);
             }catch (error){
-                setError(error.message);
+                toast.error(error.message || "Erreur de chargement");
             }finally{
                 setLoading(false);
             }
@@ -62,9 +62,6 @@ function Faq() {
 				{isSectionVisible(content, page, hero) && (
                     <SectionHero/>
                 )}
-                {/* Affichage des erreurs si il y en a */}
-				{error && (<p className="text-red-500 text-center">{t(error)}</p>)}
-
                 {/* Affichage du loading pendant le fetch initial */}
                 {loading && faqs.length === 0 && (
                     <p className="text-gray-500 text-center">Loading…</p>

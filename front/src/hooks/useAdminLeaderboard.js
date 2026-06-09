@@ -6,17 +6,16 @@ import {
   getBestLeaderboardEntry,
   sortLeaderboardItems,
 } from "../utils/leaderboardUtils.js";
+import { toast } from "../utils/toast.js";
 
 export default function useAdminLeaderboard() {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [err, setErr] = useState("");
   const [q, setQ] = useState("");
 
   async function refresh() {
     try {
       setLoading(true);
-      setErr("");
 
       const res = await fetch(`${getApiUrl()}/videos/admin/leaderboard`, {
         headers: getAuthHeaders({ Accept: "application/json" }),
@@ -35,7 +34,7 @@ export default function useAdminLeaderboard() {
 
       setItems(list);
     } catch (e) {
-      setErr(e?.message || "Erreur");
+      toast.error(e?.message || "Erreur");
     } finally {
       setLoading(false);
     }
@@ -56,7 +55,6 @@ export default function useAdminLeaderboard() {
 
   return {
     loading,
-    err,
     q,
     setQ,
     filtered,

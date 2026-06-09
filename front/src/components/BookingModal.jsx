@@ -1,25 +1,25 @@
 import { useState } from "react";
 import { createBooking } from "../services/Events/EventsApi.js";
 import { inputBaseClasses } from "../utils/formInputClasses.js";
-import { typeAdminSection, typeBodySm, typeCaption } from "../utils/typography.js";
+import { typeAdminSection, typeCaption } from "../utils/typography.js";
+import { toast } from "../utils/toast.js";
 
 export default function BookingModal({ event, onClose, onSuccess }) {
   const [first_name, setFirst_name] = useState("");
   const [last_name, setLast_name] = useState("");
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError("");
     setLoading(true);
     try {
       await createBooking(event.id, { first_name, last_name, email });
+      toast.success("Réservation confirmée");
       if (onSuccess) onSuccess();
       onClose();
     } catch (err) {
-      setError(err.message || "Erreur lors de la réservation");
+      toast.error(err.message || "Erreur lors de la réservation");
     } finally {
       setLoading(false);
     }
@@ -34,9 +34,6 @@ export default function BookingModal({ event, onClose, onSuccess }) {
           Réserver pour : {event.title}
         </h3>
         <form onSubmit={handleSubmit} className="mt-4 space-y-4">
-          {error && (
-            <p className={`text-red-600 dark:text-red-400 ${typeBodySm}`}>{error}</p>
-          )}
           <div>
             <label className={`block text-black/70 dark:text-white/70 mb-1 ${typeCaption} font-medium`}>Prénom</label>
             <input

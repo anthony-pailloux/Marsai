@@ -6,6 +6,7 @@ import { typeAdminSection, typeBodySm } from "../../utils/typography.js";
 import Button from "../ui/Button.jsx";
 import Field from "../ui/Field.jsx";
 import { Input } from "../ui/Input.jsx";
+import { toast } from "../../utils/toast.js";
 
 /* ========================
    Page de connexion admin
@@ -13,8 +14,6 @@ import { Input } from "../ui/Input.jsx";
 function LoginForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-  const [success, setSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
@@ -36,11 +35,8 @@ function LoginForm() {
       return;
     }
 
-    setError("");
-    setSuccess(false);
-
     if (!email.trim() || !password.trim()) {
-      setError("Veuillez remplir tous les champs.");
+      toast.error("Veuillez remplir tous les champs.");
       return;
     }
 
@@ -54,7 +50,7 @@ function LoginForm() {
       }
 
       localStorage.setItem("token", result.token);
-      setSuccess(true);
+      toast.success("Connexion réussie");
 
       const user = decodeToken();
       const target = user?.role === "selector" ? "/selector/videos" : "/admin";
@@ -65,7 +61,7 @@ function LoginForm() {
       }, 500);
     } catch (err) {
       if (!isMountedRef.current) return;
-      setError(err?.message || "Échec de la connexion.");
+      toast.error(err?.message || "Échec de la connexion.");
     } finally {
       setLoading(false);
     }
@@ -115,18 +111,6 @@ function LoginForm() {
                 className="h-12"
               />
             </Field>
-
-            {error && (
-              <div className="rounded-md bg-danger/10 px-4 py-3 text-sm text-danger">
-                {error}
-              </div>
-            )}
-
-            {success && (
-              <div className="rounded-md bg-success/10 px-4 py-3 text-sm text-success">
-                Connexion réussie, redirection…
-              </div>
-            )}
 
             <Button
               type="submit"

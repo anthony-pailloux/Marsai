@@ -11,7 +11,6 @@ export default function DistributionJury() {
 
   const {
     loading,
-    error,
     sortedJury,
     open,
     mode,
@@ -48,12 +47,6 @@ export default function DistributionJury() {
             </button>
           </div>
 
-          {error && !open && (
-            <div className="mt-6 rounded-2xl border border-red-200 bg-red-50 px-5 py-4 text-sm text-red-700 dark:border-red-500/30 dark:bg-red-500/10 dark:text-red-200">
-              {error}
-            </div>
-          )}
-
           <div className="mt-10 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
             {loading && <div>{t("admin.states.loading")}</div>}
 
@@ -75,7 +68,6 @@ export default function DistributionJury() {
             mode={mode}
             initialValues={initialValues}
             saving={saving}
-            error={error}
             onClose={closeForm}
             onSubmit={submitForm}
           />

@@ -77,12 +77,10 @@ export function SelectorReviewModal({
   open,
   onClose,
   reviewLoading,
-  reviewError,
   myRating,
   onRatingChange,
   myComment,
   onCommentChange,
-  savedMsg,
   onSave,
 }) {
   if (!open) return null;
@@ -140,24 +138,6 @@ export function SelectorReviewModal({
             placeholder="Ton avis..."
             className="mt-3 w-full rounded-2xl border border-neutral-200 bg-white p-4 text-sm text-neutral-800 outline-none focus:ring-2 focus:ring-[#FF8C42]/30 dark:border-white/10 dark:bg-white/5 dark:text-white"
           />
-
-          {reviewError ? (
-            <div className="mt-4 rounded-xl bg-red-50 p-3 text-sm font-semibold text-red-700 dark:bg-red-500/10 dark:text-red-300">
-              {reviewError}
-            </div>
-          ) : null}
-
-          {savedMsg ? (
-            <div className="mt-4 rounded-xl bg-green-50 p-3 text-sm font-semibold text-green-700 dark:bg-green-500/10 dark:text-green-300">
-              {savedMsg}
-            </div>
-          ) : null}
-
-          {!reviewLoading && reviewError ? (
-            <div className="mt-4 rounded-xl bg-amber-50 p-3 text-sm font-semibold text-amber-700 dark:bg-amber-500/10 dark:text-amber-300">
-              Accès réservé aux sélectionneurs
-            </div>
-          ) : null}
 
           <div className="mt-6 flex items-center justify-end gap-3">
             <button

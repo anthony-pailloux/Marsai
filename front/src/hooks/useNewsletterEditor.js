@@ -28,12 +28,6 @@ export default function useNewsletterEditor(newsletterId) {
 
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  const [msg, setMsg] = useState("");
-  const [error, setError] = useState("");
-
-  function clearFeedback() {
-    setMsg("");
-  }
 
   const {
     blocks,
@@ -43,11 +37,10 @@ export default function useNewsletterEditor(newsletterId) {
     removeBlock,
     moveBlock,
     uploadImage,
-  } = useNewsletterBlocks(clearFeedback);
+  } = useNewsletterBlocks();
 
   async function load() {
     setLoading(true);
-    setError("");
 
     try {
       const data = await fetchNewsletter(newsletterId);
@@ -60,9 +53,7 @@ export default function useNewsletterEditor(newsletterId) {
       setContentHtml(data?.content_html || "");
       setBlocks(parseNewsletterBlocks(data?.content_json));
     } catch (e) {
-      const msg = e?.message || "Erreur";
-      setError(msg);
-      toast.error(msg);
+      toast.error(e?.message || "Erreur");
     } finally {
       setLoading(false);
     }
@@ -76,15 +67,11 @@ export default function useNewsletterEditor(newsletterId) {
 
   async function save() {
     if (!subject.trim()) {
-      const msg = "Le subject est requis.";
-      setError(msg);
-      toast.error(msg);
+      toast.error("Le subject est requis.");
       return;
     }
 
     setSaving(true);
-    setError("");
-    setMsg("");
 
     try {
       await saveNewsletter(newsletterId, {
@@ -96,12 +83,9 @@ export default function useNewsletterEditor(newsletterId) {
         status: "draft",
         scheduled_at: null,
       });
-      setMsg("Sauvegardé");
       toast.success("Newsletter sauvegardée");
     } catch (e) {
-      const msg = e?.message || "Erreur";
-      setError(msg);
-      toast.error(msg);
+      toast.error(e?.message || "Erreur");
     } finally {
       setSaving(false);
     }
@@ -109,47 +93,32 @@ export default function useNewsletterEditor(newsletterId) {
 
   async function sendTest() {
     if (!testTo.trim()) {
-      const msg = "Ajoute un email pour l'envoi test.";
-      setError(msg);
-      toast.error(msg);
+      toast.error("Ajoute un email pour l'envoi test.");
       return;
     }
 
-    setError("");
-    setMsg("");
-
     try {
       await sendTestNewsletter(newsletterId, testTo);
-      setMsg("Test envoyé (check Mailtrap)");
       toast.success("Email de test envoyé");
     } catch (e) {
-      const msg = e?.message || "Erreur";
-      setError(msg);
-      toast.error(msg);
+      toast.error(e?.message || "Erreur");
     }
   }
 
   async function scheduleNewsletterAction() {
     if (!scheduledAt) {
-      const msg = "Choisis une date/heure pour programmer.";
-      setError(msg);
-      toast.error(msg);
+      toast.error("Choisis une date/heure pour programmer.");
       return;
     }
 
     setScheduling(true);
-    setError("");
-    setMsg("");
 
     try {
       await scheduleNewsletter(newsletterId, scheduledAt);
-      setMsg("Programmée");
       toast.success("Newsletter programmée");
       await load();
     } catch (e) {
-      const msg = e?.message || "Erreur";
-      setError(msg);
-      toast.error(msg);
+      toast.error(e?.message || "Erreur");
     } finally {
       setScheduling(false);
     }
@@ -157,19 +126,14 @@ export default function useNewsletterEditor(newsletterId) {
 
   async function cancelSchedule() {
     setScheduling(true);
-    setError("");
-    setMsg("");
 
     try {
       await cancelScheduleNewsletter(newsletterId);
-      setMsg("Programmation annulée");
       toast.success("Programmation annulée");
       setScheduledAt("");
       await load();
     } catch (e) {
-      const msg = e?.message || "Erreur";
-      setError(msg);
-      toast.error(msg);
+      toast.error(e?.message || "Erreur");
     } finally {
       setScheduling(false);
     }
@@ -177,18 +141,13 @@ export default function useNewsletterEditor(newsletterId) {
 
   async function sendNowToAll() {
     setSendingAll(true);
-    setError("");
-    setMsg("");
 
     try {
       await sendNowNewsletter(newsletterId);
-      setMsg("Envoi terminé (check Mailtrap)");
       toast.success("Envoi terminé");
       await load();
     } catch (e) {
-      const msg = e?.message || "Erreur";
-      setError(msg);
-      toast.error(msg);
+      toast.error(e?.message || "Erreur");
     } finally {
       setSendingAll(false);
     }
@@ -224,8 +183,6 @@ export default function useNewsletterEditor(newsletterId) {
     scheduling,
     loading,
     saving,
-    msg,
-    error,
     previewDoc,
     addBlock,
     updateBlock,
@@ -237,7 +194,5 @@ export default function useNewsletterEditor(newsletterId) {
     scheduleNewsletter: scheduleNewsletterAction,
     cancelSchedule,
     sendNowToAll,
-    setMsg,
-    setError,
   };
 }

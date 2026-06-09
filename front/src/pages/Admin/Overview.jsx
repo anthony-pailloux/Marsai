@@ -9,7 +9,7 @@ import {
 } from "../../utils/typography.js";
 
 export default function Overview() {
-  const { loading, err, kpi, topFilms } = useOverviewData();
+  const { loading, kpi, topFilms } = useOverviewData();
 
   return (
     <div className="min-h-screen bg-white text-black dark:bg-black dark:text-white">
@@ -95,20 +95,13 @@ export default function Overview() {
                   </div>
                 )}
 
-                {!loading && err && (
-                  <div className="py-8 text-sm text-red-600 dark:text-red-300">
-                    {err}
-                  </div>
-                )}
-
-                {!loading && !err && topFilms.length === 0 && (
+                {!loading && topFilms.length === 0 && (
                   <div className="py-8 text-sm text-black/55 dark:text-white/55">
                     Aucun film trouvé.
                   </div>
                 )}
 
                 {!loading &&
-                  !err &&
                   topFilms.map((f, idx) => (
                     <TopFilmRow
                       key={f.id}

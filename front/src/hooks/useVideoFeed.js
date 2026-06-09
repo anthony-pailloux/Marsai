@@ -2,12 +2,12 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getApiUrl } from "../utils/apiBase.js";
 import useActiveFeedIndex from "./useActiveFeedIndex.js";
+import { toast } from "../utils/toast.js";
 
 export default function useVideoFeed(startId) {
   const navigate = useNavigate();
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [err, setErr] = useState("");
   const containerRef = useRef(null);
   const [activeIndex, setActiveIndex] = useActiveFeedIndex(
     containerRef,
@@ -40,7 +40,6 @@ export default function useVideoFeed(startId) {
     async function load() {
       try {
         setLoading(true);
-        setErr("");
 
         const res = await fetch(`${getApiUrl()}/videos`);
         const data = await res.json();
@@ -49,7 +48,7 @@ export default function useVideoFeed(startId) {
         const list = Array.isArray(data) ? data : data?.videos || [];
         if (alive) setItems(list);
       } catch (e) {
-        if (alive) setErr(e?.message || "Erreur");
+        if (alive) toast.error(e?.message || "Erreur");
       } finally {
         if (alive) setLoading(false);
       }
@@ -107,7 +106,6 @@ export default function useVideoFeed(startId) {
   return {
     items,
     loading,
-    err,
     containerRef,
     activeIndex,
     goBack: () => navigate("/gallery"),

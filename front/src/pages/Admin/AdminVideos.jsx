@@ -13,7 +13,6 @@ export default function AdminVideos() {
     setQ,
     statusFilter,
     setStatusFilter,
-    error,
     filtered,
     refresh,
     onChangeStatus,
@@ -107,7 +106,6 @@ export default function AdminVideos() {
 
               <AdminVideosTable
                 loading={loading}
-                error={error}
                 filtered={filtered}
                 busyId={busyId}
                 onChangeStatus={onChangeStatus}

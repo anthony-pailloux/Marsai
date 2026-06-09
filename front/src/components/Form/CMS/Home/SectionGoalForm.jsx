@@ -1,4 +1,4 @@
-﻿import CmsInput from "../Fields/CmsInput"
+import CmsInput from "../Fields/CmsInput"
 import iconPaintDark from "../../../../assets/imgs/icones/IconPaintDark.svg";
 import iconPaint from "../../../../assets/imgs/icones/IconPaint.svg";
 import { useTranslation } from "react-i18next";
@@ -58,8 +58,6 @@ function SectionGoalForm({ forcedLocale }) {
     locale,
     values,
     handleChange,
-    message,
-    messageType,
     submitLoading,
     handleSubmit,
   } = useCmsSectionForm({
@@ -147,8 +145,6 @@ function SectionGoalForm({ forcedLocale }) {
                 </div>
 
                 <CmsSubmitFooter
-                  message={message}
-                  messageType={messageType}
                   submitLoading={submitLoading}
                   btnClassName="flex w-[200px] h-[53px] items-center justify-center gap-[13px] px-[21px] py-[10px] rounded-[5px] border border-[#DBE3E6] bg-white dark:border-[rgba(0,0,0,0.11)] dark:bg-[#333]"
                 />

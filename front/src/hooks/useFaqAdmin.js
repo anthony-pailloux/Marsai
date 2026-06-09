@@ -10,7 +10,6 @@ import { toast } from "../utils/toast.js";
 
 export default function useFaqAdmin() {
   const [faqs, setFaqs] = useState([]);
-  const [error, setError] = useState(null);
   const [formErrorsAdd, setFormErrorsAdd] = useState([]);
   const [formErrorsEdit, setFormErrorsEdit] = useState({});
   const [loading, setLoading] = useState(false);
@@ -24,7 +23,6 @@ export default function useFaqAdmin() {
         const res = await getAllFaq();
         setFaqs(res.data);
       } catch (err) {
-        setError(err.message);
         toast.error(err.message || "Erreur de chargement des FAQ");
       } finally {
         setLoading(false);
@@ -125,7 +123,6 @@ export default function useFaqAdmin() {
   }
 
   return {
-    error,
     loading,
     newFaq,
     faqsEdit,

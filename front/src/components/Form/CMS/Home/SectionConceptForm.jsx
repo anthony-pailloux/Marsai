@@ -1,4 +1,4 @@
-﻿import CmsInput from "../Fields/CmsInput.jsx";
+import CmsInput from "../Fields/CmsInput.jsx";
 import { useTranslation } from "react-i18next";
 import CmsHideToggle from "../Fields/CmsHideToggle.jsx";
 import CmsSubmitFooter from "../Fields/CmsSubmitFooter.jsx";
@@ -23,8 +23,6 @@ function SectionConceptForm({ forcedLocale }) {
     locale,
     values,
     handleChange,
-    message,
-    messageType,
     submitLoading,
     handleSubmit,
   } = useCmsSectionForm({
@@ -89,8 +87,6 @@ function SectionConceptForm({ forcedLocale }) {
         </CmsBlock>
 
         <CmsSubmitFooter
-          message={message}
-          messageType={messageType}
           submitLoading={submitLoading}
         />
       </form>
